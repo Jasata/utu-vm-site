@@ -1,0 +1,222 @@
+/* site.css - Turku University, Course Virtual Machine site
+   10.11.2019 // Jani Tammi <jasata@utu.fi>
+*/
+:root
+{
+    --utu-purple:           #8b5dcb;
+    --page-bg-color:        #f2f2f2;
+    --text-color:           Black;
+    --header-bg-color:      White;
+    --footer-link-color:    var(--utu-purple);
+    --footer-bg-color:      Black;
+    --footer-height:        7.5rem;
+    --menu-bg-color:        White; /* rgb(248, 248, 248); */
+    --menu-title-color:     rgb(102, 102, 102);
+}
+
+/* page basics ***************************************************************/
+body
+{
+    background-color:       var(--page-bg-color);
+
+    min-height:             100vh;  /* Allow footer to stay at the bottom */
+    position:               relative;
+    margin:                 0;
+    padding:                0;
+    padding-bottom:         10.0rem;
+}
+footer
+{
+    position:               absolute;
+    bottom:                 0;
+    margin:                 0;
+    padding:                0;
+/* Defining the below items will royally screw the layout... */
+/*    width:                  100%; */
+/*    height:                 var(--footer-height); */
+    background-color:       var(--footer-bg-color);
+}
+a:link
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:visited
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:hover
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:active
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+/* Page basics END ***********************************************************/
+
+
+/* vertical center with flexbox */
+.vflexbox {
+    display:                -webkit-box;
+    display:                -ms-flexbox;
+    display:                flex;
+    height:                 100%;
+    -webkit-box-align:      center;
+    -ms-flex-align:         center;
+    align-items:            center;
+    -webkit-box-pack:       center;
+    -ms-flex-pack:          center;
+    justify-content:        center;
+}
+
+
+
+a.footerlink
+{
+    text-decoration:        none;
+    color:                  var(--footer-link-color);
+    font-size:              1.6vw;
+    font-weight:            bold;
+}
+a.footerlink:after
+{
+    content:                " | ";
+}
+a.footerlink:first-child:before
+{
+    content:                " ";
+}
+a.footerlink:last-child:after
+{
+    content:                "";
+}
+
+.showborder
+{
+    border:                 1px Black Solid;
+}
+
+.header-row
+{
+    height:                 120px;
+    max-height:             120px;
+    margin-bottom:          30px;
+    background-color:       var(--header-bg-color);
+}
+
+.index-menu
+{
+    padding:                10px;
+    border-radius:          10px;
+    background-color:       var(--menu-bg-color);
+}
+
+
+.student-menu
+{
+    margin-left:            5%;
+    margin-right:           2%;
+}
+
+.lecturer-menu
+{
+    margin-left:            2%;
+    margin-right:           5%;
+}
+
+
+/* STUDENTS and LECTURERS titles for respective segments */
+.menutitle
+{
+    color:                  var(--menu-title-color);
+    font-family:            Verdana, Geneva, Tahoma, sans-serif;
+    font-size:              2.8vw;
+    font-weight:            bolder;
+    text-transform:         uppercase;
+    text-shadow:            5.0rem 1.0rem rgb(245,245,245);
+    margin-left:            15px;
+    margin-right:           15px;
+}
+.menulabel
+{
+    font-size:              1.6vw;
+}
+.menutext
+{
+    font-size:              1.3vw;
+    font-weight:            normal;
+}
+
+.hard-shadow
+{
+    -webkit-box-shadow:     0 10px 6px -6px #777;
+    -moz-box-shadow:        0 10px 6px -6px #777;
+    box-shadow:             0 10px 6px -6px #777;
+}
+
+.soft-shadow
+{
+    position:               relative;
+}
+.soft-shadow:before, .soft-shadow:after
+{
+    z-index:                -1;
+    position:               absolute;
+    content:                "";
+    bottom:                 15px;
+    left:                   10px;
+    width:                  50%;
+    top:                    80%;
+    max-width:              300px;
+    background:             #777;
+    -webkit-box-shadow:     0 15px 10px #777;
+    -moz-box-shadow:        0 15px 10px #777;
+    box-shadow:             0 15px 10px #777;
+    -webkit-transform:      rotate(-3deg);
+    -moz-transform:         rotate(-3deg);
+    -o-transform:           rotate(-3deg);
+    -ms-transform:          rotate(-3deg);
+    transform:              rotate(-3deg);
+}
+.soft-shadow:after
+{
+    -webkit-transform:      rotate(3deg);
+    -moz-transform:         rotate(3deg);
+    -o-transform:           rotate(3deg);
+    -ms-transform:          rotate(3deg);
+    transform:              rotate(3deg);
+    right:                  10px;
+    left:                   auto;
+}
+
+/* MAIN MENU ITEMS ***********************************************************/
+/* https://codepen.io/avithour/pen/xzNJaV */
+.box
+{
+    font-size:              0.8rem;
+    font-weight:            bold;
+    border-radius:          5px;
+    background:             var(--menu-bg-color);
+    margin:                 auto;
+    margin-top:             5%;
+    padding:                10px 25px;
+    box-shadow:             0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-left:            10px solid var(--menu-bg-color);
+    -webkit-transition:     0.5s ease-out;
+    -moz-transition:        0.5s ease-out;
+    -o-transition:          0.5s ease-out;
+    transition:             0.5s ease-out;
+}
+.box:hover
+{
+    border-left:            10px solid var(--utu-purple);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+/*****************************************************************************/
+
+/* EOF */
