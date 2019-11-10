@@ -1,0 +1,90 @@
+/* index.css - Turku University, Course Virtual Machine site
+   Styles specific to index page only
+   10.11.2019 // Jani Tammi <jasata@utu.fi>
+*/
+:root
+{
+    --imenu-bg-color:        White; /* rgb(248, 248, 248); */
+    --imenu-title-color:     rgb(102, 102, 102);
+}
+
+h1
+{
+    font-size:              4vw;
+    font-weight:            700;
+}
+
+/* Index Menu */
+.imenu
+{
+    padding:                10px;
+    border-radius:          10px;
+    background-color:       var(--imenu-bg-color);
+    -webkit-box-shadow:     0 10px 6px -6px #777;
+    -moz-box-shadow:        0 10px 6px -6px #777;
+    box-shadow:             0 10px 6px -6px #777;
+}
+.imenu-student
+{
+    margin-left:            5%;
+    margin-right:           2%;
+}
+.imenu-lecturer
+{
+    margin-left:            2%;
+    margin-right:           5%;
+}
+
+/* adapted from https://codepen.io/avithour/pen/xzNJaV */
+.imenu-item
+{
+    font-size:              0.8rem;
+    font-weight:            bold;
+    border-radius:          5px;
+    background:             var(--imenu-bg-color);
+    margin:                 auto;
+    margin-top:             5%;
+    padding:                10px 25px;
+    box-shadow:             0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-left:            10px solid var(--imenu-bg-color);
+    -webkit-transition:     0.5s ease-out;
+    -moz-transition:        0.5s ease-out;
+    -o-transition:          0.5s ease-out;
+    transition:             0.5s ease-out;
+}
+.imenu-item:hover
+{
+    border-left:            10px solid var(--utu-purple);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+/* STUDENTS and LECTURERS titles for respective segments */
+.imenu-title
+{
+    color:                  var(--imenu-title-color);
+    font-family:            Verdana, Geneva, Tahoma, sans-serif;
+    font-size:              2.8vw;
+    font-weight:            bolder;
+    text-transform:         uppercase;
+    text-shadow:            5.0rem 1.0rem rgb(245,245,245);
+    margin-left:            15px;
+    margin-right:           15px;
+}
+.imenu-label
+{
+    font-size:              1.6vw;
+}
+.imenu-text
+{
+    font-size:              1.3vw;
+    font-weight:            normal;
+}
+.imenu-icon
+{
+    font-size:              4.0vw;
+    padding-top:            0.3vw;
+    padding-left:           0.6vw;
+    padding-right:          1.4vw;
+}
+
+/* EOF */
