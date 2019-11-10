@@ -151,6 +151,13 @@ a.footerlink:last-child:after
     font-size:              1.3vw;
     font-weight:            normal;
 }
+.menuicon
+{
+    font-size:              4.0vw;
+    padding-top:            0.3vw;
+    padding-left:           0.6vw;
+    padding-right:          1.4vw;
+}
 
 .hard-shadow
 {
