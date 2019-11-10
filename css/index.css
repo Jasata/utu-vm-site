@@ -8,12 +8,6 @@
     --imenu-title-color:     rgb(102, 102, 102);
 }
 
-h1
-{
-    font-size:              4vw;
-    font-weight:            700;
-}
-
 /* Index Menu */
 .imenu
 {
@@ -57,13 +51,18 @@ h1
     border-left:            10px solid var(--utu-purple);
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
+.imenu:last-child
+{
+    /* Applied to the last <A> */
+    padding-bottom:          2rem;
+}
 
 /* STUDENTS and LECTURERS titles for respective segments */
 .imenu-title
 {
     color:                  var(--imenu-title-color);
     font-family:            Verdana, Geneva, Tahoma, sans-serif;
-    font-size:              2.8vw;
+    font-size:              2.6vw;
     font-weight:            bolder;
     text-transform:         uppercase;
     text-shadow:            5.0rem 1.0rem rgb(245,245,245);
@@ -72,7 +71,7 @@ h1
 }
 .imenu-label
 {
-    font-size:              1.6vw;
+    font-size:              2.0vw;
 }
 .imenu-text
 {
@@ -82,9 +81,10 @@ h1
 .imenu-icon
 {
     font-size:              4.0vw;
-    padding-top:            0.3vw;
+    padding-top:            0.5vw;
     padding-left:           0.6vw;
     padding-right:          1.4vw;
 }
+
 
 /* EOF */

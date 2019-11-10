@@ -7,9 +7,10 @@
     --page-bg-color:        #f2f2f2;
     --text-color:           Black;
     --header-bg-color:      White;
+    --header-height:        9.0vw;
     --footer-link-color:    var(--utu-purple);
     --footer-bg-color:      Black;
-    --footer-height:        7.5rem;
+    --footer-height:        5.5vw; /* 7.5rem; */
 }
 
 /* page basics ***************************************************************/
@@ -27,7 +28,8 @@ body
     position:               relative;
     margin:                 0;
     padding:                0;
-    padding-bottom:         var(--footer-height);
+    /* Reserve space for footer */
+    padding-bottom:         calc(var(--footer-height) + 2.0rem);
 }
 footer
 {
@@ -59,6 +61,30 @@ a:active
 }
 /* Page basics END ***********************************************************/
 
+.footer-logo
+{
+    width:                  auto;
+    height:                 var(--footer-height);
+    max-height:             var(--footer-height);
+}
+.footer-copyright
+{
+    font-size:              1.1vw;
+    color:                  White;
+    padding:                0;
+    margin:                 0.4vw;
+    position: absolute;
+    bottom: 0;
+}
+.footer-copyright > a
+{
+    color:                  White;
+}
+.footer-copyright > a:hover
+{
+    color:                  var(--utu-purple);
+}
+
 
 /* vertical center with flexbox */
 .vflexbox {
@@ -72,7 +98,7 @@ a:active
     -webkit-box-pack:       center;
     -ms-flex-pack:          center;
     justify-content:        center;
-}
+}    
 
 
 a.footerlink
@@ -81,27 +107,51 @@ a.footerlink
     color:                  var(--footer-link-color);
     font-size:              1.6vw;
     font-weight:            bold;
-}
+    margin-right:           0.3vw;
+    margin-left:            0.3vw;
+}    
 a.footerlink:after
 {
     content:                " | ";
-}
+}    
 a.footerlink:first-child:before
 {
     content:                " ";
-}
+}    
 a.footerlink:last-child:after
 {
     content:                "";
-}
+}    
 
+
+.header-title
+{
+    --y-scaler:             1.2;
+    font-size:              3.6vw;
+    font-weight:            700;
+    text-transform:         uppercase;
+    transform:              scale(1, var(--y-scaler));
+    -webkit-transform:      scale(1, var(--y-scaler)); /* Safari and Chrome */
+    -moz-transform:         scale(1, var(--y-scaler)); /* Firefox */
+    -ms-transform:          scale(1, var(--y-scaler)); /* IE 9+ */
+    -o-transform:           scale(1, var(--y-scaler)); /* Opera */
+}
 
 .header-row
 {
-    height:                 120px;
-    max-height:             120px;
-    margin-bottom:          30px;
+    height:                 var(--header-height);
+    max-height:             var(--header-height);
+    margin-bottom:          3.0vw;
     background-color:       var(--header-bg-color);
+}
+
+/* header logo image is somehow LARGER than it's container??? */
+.header-site-logo
+{
+    
+    max-height:             100%;
+    max-width:              100%;
+    height:                 auto; 
 }
 
 
