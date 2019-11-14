@@ -126,6 +126,7 @@ a.footerlink:last-child:after
 
 .header-title
 {
+    font-family:            'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     --y-scaler:             1.2;
     font-size:              3.6vw;
     font-weight:            700;
@@ -151,7 +152,7 @@ a.footerlink:last-child:after
     
     max-height:             100%;
     max-width:              100%;
-    height:                 auto; 
+    height:                 100%; 
 }
 
 
