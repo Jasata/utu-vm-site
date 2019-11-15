@@ -155,5 +155,19 @@ a.footerlink:last-child:after
     height:                 100%; 
 }
 
-
+/* Content navigation bar (scroll spy) */
+.navbar-light .navbar-nav .nav-link.active
+{
+    background-color:       magenta;
+}
+.nav-pills .nav-link.active, .nav-pills .show >.nav-link
+{
+    background-color:       var(--utu-purple);
+}
+/* Scrollspy (in introduction.html) */
+.scrollspy-example
+{
+    position:               relative;
+    overflow:               auto;
+}
 /* EOF */

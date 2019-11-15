@@ -24,49 +24,15 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
-    <style>
-        body
-        {
-            padding-top:            var(--header-height);
-        }
-    </style>
+
 </head>
-
-
-<!-- NAVBAR ---------------------------------------------------------------->
-<!-- SEE: https://www.codeply.com/go/7CDRomtM0D/bootstrap-4-scrollspy     -->
-<nav class="navbar navbar-expand-md fixed-top navbar-light py-0 bg-white"> <!-- bg-light py-0"> -->
-    <div class="container">
-        <img    class="img-responsive header-site-logo"
-                style="display: block; height: 6.0vw; min-height: 40px;"
-                src="img/UTU_logo-black_EN_transparent.png">
-        <a class="navbar-brand py-2" href="#">Getting started</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="nav navbar-nav">
-                <a class="nav-link p-3" href="#sec1">One</a>
-                <a class="nav-link p-3" href="#sec2">Two</a>
-                <a class="nav-link p-3" href="#sec3">Three</a>
-                <a class="nav-link p-3" href="#sec2">Two</a>
-                <a class="nav-link p-3" href="#sec3">Three</a>
-                <a class="nav-link p-3" href="#sec2">Two</a>
-                <a class="nav-link p-3" href="#sec3">Three</a>
-                <a class="nav-link p-3" href="#sec2">Two</a>
-                <a class="nav-link p-3" href="#sec3">Three</a>
-            </ul>
-        </div>
-    </div>
-</nav>
-<!-- NAVBAR ---------------------------------------------------------------->
 
 
 
 <div class="container-fluid">
 
 
-    <!-- HEADER -------------------------------------------------------------- >
+    <!-- HEADER -------------------------------------------------------------->
     <div class="row header-row">
         <div class="col-4" style="height: 100%;">
             <img    class="img-fluid float-left header-site-logo"
@@ -86,25 +52,42 @@
 
     <!-- MAIN --------------------------------------------------------------->
     <div class="row">
-        <div class="col-md-1 grayside"></div>
-        <div class="col-md-10">
-            <h1 id="sec1">Getting Started</h1>
+        <!--- SCROLLSPY -->
+        <!-- https://codepen.io/codingdefined/pen/VPobqg -->
+        <!-- USELESS like this ... MUST be fixed to the page, also, must be responsive => become sandwich menu-->
+        <!-- THIS looks much better: https://www.bitdegree.org/learn/bootstrap-scrollspy -->
+        <!-- ALSO this https://pythonbasics.org/pyqt/ -->
+        <div class="col-sm-3" id="spy">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item"><a class="nav-link active" href="#scroll1">Getting Started</a></li>
+                <li class="nav-item"><a class="nav-link" href="#scroll2">Enable Virtualization from BIOS</a></li>
+                <li class="nav-item"><a class="nav-link" href="#scroll3">Profit</a></li>
+                <li class="nav-item"><a class="nav-link" href="#scroll4">Fourth Section</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 scrollspy-example" data-spy="scroll" data-target="#spy">
+        <div id="scroll1">
+            <h1>Getting Started</h1>
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Feugiat scelerisque varius morbi enim. Semper auctor neque vitae tempus. Blandit massa enim nec dui. Faucibus vitae aliquet nec ullamcorper sit amet risus. Arcu non sodales neque sodales ut etiam. Amet mauris commodo quis imperdiet. Vulputate mi sit amet mauris commodo quis imperdiet. Laoreet non curabitur gravida arcu ac. Enim facilisis gravida neque convallis a cras. Pharetra et ultrices neque ornare aenean euismod elementum.
             </p>
             <img src="img/site-logo.png" class="img-fluid">
-            <h1 id="sec2">Enable Virtualization Extensions from You BIOS</h1>
+        </div>
+        <div id="scroll2">
+            <h1>Enable Virtualization Extensions from You BIOS</h1>
             <p>
                 Risus pretium quam vulputate dignissim. Tempor nec feugiat nisl pretium fusce id velit ut. Egestas erat imperdiet sed euismod nisi porta. Tincidunt vitae semper quis lectus nulla at volutpat diam ut. Venenatis a condimentum vitae sapien. Tortor condimentum lacinia quis vel eros. Ultrices in iaculis nunc sed augue lacus. Vitae turpis massa sed elementum tempus egestas sed. In hendrerit gravida rutrum quisque non tellus. Et egestas quis ipsum suspendisse ultrices gravida dictum fusce. Dui nunc mattis enim ut tellus elementum sagittis vitae et. Suspendisse sed nisi lacus sed viverra tellus. Scelerisque fermentum dui faucibus in ornare. Est lorem ipsum dolor sit amet consectetur adipiscing. Orci eu lobortis elementum nibh tellus molestie. Fermentum odio eu feugiat pretium nibh ipsum consequat nisl. Diam vulputate ut pharetra sit amet. Nulla malesuada pellentesque elit eget. Fermentum iaculis eu non diam phasellus vestibulum lorem. In nisl nisi scelerisque eu ultrices vitae auctor eu.
             </p>
             <p>
                 Eget magna fermentum iaculis eu non diam phasellus. Elementum pulvinar etiam non quam lacus suspendisse faucibus interdum. Nulla porttitor massa id neque aliquam vestibulum morbi blandit cursus. Velit aliquet sagittis id consectetur purus ut faucibus. Vivamus at augue eget arcu dictum varius duis at. Quis blandit turpis cursus in hac habitasse platea. Condimentum lacinia quis vel eros donec. Egestas sed tempus urna et pharetra pharetra massa massa. Nunc aliquet bibendum enim facilisis gravida neque convallis. Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Tempor orci eu lobortis elementum nibh.
             </p>
+        </div>
+        <div id="scroll3">
+            <h1>Profit</h1>
             <p>
                 Nisi est sit amet facilisis magna etiam tempor. Blandit massa enim nec dui nunc. Habitant morbi tristique senectus et netus et malesuada fames. Nunc scelerisque viverra mauris in aliquam sem. Ut etiam sit amet nisl purus in. Blandit massa enim nec dui nunc mattis enim. Tellus rutrum tellus pellentesque eu tincidunt tortor aliquam nulla facilisi. Dapibus ultrices in iaculis nunc sed augue lacus viverra. Quam adipiscing vitae proin sagittis nisl rhoncus. Porttitor eget dolor morbi non arcu risus quis varius. Id porta nibh venenatis cras sed felis eget velit aliquet. Vulputate dignissim suspendisse in est ante. Fringilla urna porttitor rhoncus dolor purus non enim praesent.
             </p>
         </div>
-        <div class="col-md-1 grayside"></div>
     </div><!-- row -->
     <!-- MAIN ENDS -->
 
