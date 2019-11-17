@@ -7,6 +7,11 @@
     --imenu-bg-color:        White; /* rgb(248, 248, 248); */
     --imenu-title-color:     rgb(102, 102, 102);
 }
+/*
+body
+{
+}
+*/
 
 /* Index Menu */
 .imenu
@@ -86,5 +91,34 @@
     padding-right:          1.4vw;
 }
 
+
+.header-title
+{
+    font-family:            'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    --y-scaler:             1.2;
+    font-size:              3.6vw;
+    font-weight:            700;
+    text-transform:         uppercase;
+    transform:              scale(1, var(--y-scaler));
+    -webkit-transform:      scale(1, var(--y-scaler)); /* Safari and Chrome */
+    -moz-transform:         scale(1, var(--y-scaler)); /* Firefox */
+    -ms-transform:          scale(1, var(--y-scaler)); /* IE 9+ */
+    -o-transform:           scale(1, var(--y-scaler)); /* Opera */
+}
+
+.header-row
+{
+    height:                 var(--header-height);
+    max-height:             var(--header-height);
+    margin-bottom:          3.0vw;
+    background-color:       var(--header-bg-color);
+}
+
+.header-site-logo
+{
+    max-height:             100%;
+    max-width:              100%;
+    height:                 100%; 
+}
 
 /* EOF */

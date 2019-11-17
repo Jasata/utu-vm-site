@@ -1,0 +1,136 @@
+/* common.css - Turku University, Course Virtual Machine site
+ * 10.11.2019 // Jani Tammi <jasata@utu.fi>
+ * Style common to whole site. Include also "index.css" for "index.html" or
+ * "subpage.css" for all other pages.
+ */
+:root
+{
+    --utu-purple:           #8b5dcb;
+    --page-bg-color:        #f2f2f2;
+    --text-color:           Black;
+    --content-bg-color:     White;
+    --header-bg-color:      White;
+    --header-height:        9.0vw;
+    --footer-link-color:    var(--utu-purple);
+    --footer-bg-color:      Black;
+    --footer-height:        5.5vw;
+}
+
+/* page basics ***************************************************************/
+html
+{
+    font-family:            Verdana, Geneva, Tahoma, sans-serif;
+    position:               relative;
+    min-height:             100%;
+}
+body
+{
+    background-color:       var(--page-bg-color);
+
+    position:               relative;
+    margin:                 0;
+    padding:                0;
+    /* Allow footer to stay at the bottom by making the page
+       as tall as the view port */
+    min-height:             100vh;
+    /* Reserve space for footer, so that our content will not
+       go underneath it */
+    padding-bottom:         calc(var(--footer-height) + 2.0rem);
+}
+a:link
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:visited
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:hover
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:active
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+/* Page basics END ***********************************************************/
+
+footer
+{
+    position:               absolute;
+    bottom:                 0;
+    width:                  100%;
+    height:                 var(--footer-height);
+    background-color:       var(--footer-bg-color);
+}
+.footer-logo
+{
+    width:                  auto;
+    height:                 var(--footer-height);
+    max-height:             var(--footer-height);
+}
+.footer-copyright
+{
+    font-size:              1.1vw;
+    color:                  White;
+    padding:                0;
+    margin:                 0.4vw;
+    position: absolute;
+    bottom: 0;
+}
+.footer-copyright > a
+{
+    color:                  White;
+}
+.footer-copyright > a:hover
+{
+    color:                  var(--utu-purple);
+}
+
+
+
+a.footerlink
+{
+    text-decoration:        none;
+    color:                  var(--footer-link-color);
+    font-size:              1.6vw;
+    font-weight:            bold;
+    margin-right:           0.3vw;
+    margin-left:            0.3vw;
+}
+a.footerlink:after
+{
+    content:                " | ";
+}
+a.footerlink:first-child:before
+{
+    content:                " ";
+}
+a.footerlink:last-child:after
+{
+    content:                "";
+}
+
+
+/* vertical center with flexbox        */
+/* Used by footer AND index.html title */
+.vflexbox {
+    display:                -webkit-box;
+    display:                -ms-flexbox;
+    display:                flex;
+    height:                 100%;
+    -webkit-box-align:      center;
+    -ms-flex-align:         center;
+    align-items:            center;
+    -webkit-box-pack:       center;
+    -ms-flex-pack:          center;
+    justify-content:        center;
+}
+
+
+
+/* EOF */

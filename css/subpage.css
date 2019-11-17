@@ -1,0 +1,174 @@
+/* subpage.css - Turku University, Course Virtual Machine site
+   Styles shared among subpages
+   17.11.2019 // Jani Tammi <jasata@utu.fi>
+*/
+:root
+{
+    --navbar-padding:       80px;
+}
+html
+{
+    scroll-behavior:        smooth;
+}
+
+/********************************************************************
+ *
+ * Scrollspy-like navbar implementation
+ * ("page navigator")
+ */
+body
+/* hidden spacer before sections for proper offset */
+{
+    padding-top:            var(--navbar-padding);
+    overflow-y:             auto;
+    /* Required by Bootstrap Scrollspy */
+    position:               relative;
+}
+#navbar-logo
+/* ID for the UTU torch image */
+{
+    width:                  40px;
+}
+.navbar-light .navbar-nav .nav-link.active
+/* optional style active link */
+{
+    background-color:       var(--utu-purple);
+}
+
+
+/******************************************************************************
+ *
+ * Site navigator
+ */
+nav.site
+{
+    border-bottom:          1px solid darkgrey;
+    font-size:              80%;
+}
+nav.site ol
+{
+    list-style-type:        none;
+    padding-left:           0;
+}
+nav.site ol li
+{
+    display:                inline-block;
+}
+nav.site ol li a
+{
+    font-weight:            normal;
+}
+nav.site ol li a::after
+{
+    display:                inline-block;
+    color:                  #000;
+    content:                '>';
+    padding:                0 3px;
+}
+
+
+
+/******************************************************************************
+ *
+ * Main / Section / Article -styling
+ */
+main
+{
+    margin:                 1.0rem;
+    /* max-width:              727.5px; */
+    width:                  100%;
+    min-height:             320px;
+    min-width:              var(--main-min-width);
+    background:             var(--content-bg-color);
+    flex:                   3 1 auto;
+    border-radius:          7px;
+    padding:                1.0rem;
+}
+
+article > header
+{
+    color:                  var(--utu-purple);
+    font-size:              2.25em;
+    font-weight:            bold;
+    font-weight:            700;
+    line-height:            1.2;
+    position:               relative;
+    padding-bottom:         .3em;
+    margin-top:             1em;
+    margin-bottom:          16px;
+    box-sizing:             border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+article > h1
+{
+    color:                  magenta;
+    font-size:              1.75em;
+}
+article > h2
+{
+    color:                  Red;
+    font-size:              1.5em;
+}
+article p:first-of-type
+/* first section is the executive summary (aka. "abstract") */
+{
+    font-style:             italic;
+}
+
+
+/***********************************************************************
+ *
+ * DETAILS - SUMMARY  (HTML5 Widget)
+ */
+details
+{
+    margin-left:            30px;
+}
+details > p
+{
+    padding-left:           30px;
+}
+details > summary
+{
+    /* Disable the annoying outline box over summary */
+    outline:                none;
+    /* Just in case that the "+" is not strong enough hint ... */
+    color:                  var(--utu-purple);
+}
+/*
+ * Hide the ugly default triagle shape
+ */
+details > summary::marker
+/* Standard way, but works in no-browser... */
+{
+    display:                none;
+}
+details > summary:first-of-type
+/* for Firefox... */
+{
+    list-style-type:        none;
+}
+details > summary::-webkit-details-marker
+/* for Chrome... */
+{
+    display:                 none;
+}
+/*
+ * Prefix with + / - signs
+ */
+summary:after
+{
+    content:                "+";
+    float:                  left;
+    font-weight:            bold;
+    padding:                0;
+    text-align:             center;
+    width:                  20px;
+}
+details[open] summary:after
+{
+    content:                "-";
+}
+
+
+ /* EOF */
