@@ -33,6 +33,9 @@ body
 /* optional style active link */
 {
     background-color:       var(--utu-purple);
+    font-weight:            bold;
+    color:                  White;
+    border-radius:          5px;
 }
 
 
