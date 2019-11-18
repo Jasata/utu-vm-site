@@ -76,10 +76,7 @@ footer
     width:                  100%;
     height:                 var(--footer-height);
     background-color:       var(--footer-bg-color);
-} 
-footer > div
-/* Flex container */
-{
+    /* Flex container */
     display:                flex;
     flex-direction:         row;
     flex-wrap:              nowrap;
@@ -87,7 +84,7 @@ footer > div
     align-items:            baseline;
     align-content:          center;
 }
-footer > div > div:nth-child(1)
+footer > div:nth-child(1)
 /* UTU logo flex-item */
 {
     order:                  1;
@@ -96,45 +93,42 @@ footer > div > div:nth-child(1)
     height:                 var(--footer-height);
     max-height:             var(--footer-height);
 }
-footer > div > div:nth-child(1) > img
+footer > div:nth-child(1) > img
 /* UTU logo image */
 {
     width:                  auto;
     height:                 var(--footer-height);
     max-height:             var(--footer-height);
 }
-footer > div > div:nth-child(2)
+footer > div:nth-child(2)
 /* Copyright text flex-item */
 {
     order:                  2;
     flex:                   1 0 auto;
     font-size:              1.1vw;
     color:                  White;
-    padding:                0;
-    margin:                 0.4vw;
-    bottom:                 0;
 }
-footer > div > div:nth-child(2) > a:link
+footer > div:nth-child(2) > a:link
 {
     color:                  White;
     text-decoration:        none;
 }
-footer > div > div:nth-child(2) > a:visited
+footer > div:nth-child(2) > a:visited
 {
     color:                  White;
     text-decoration:        none;
 }
-footer > div > div:nth-child(2) > a:hover
+footer > div:nth-child(2) > a:hover
 {
     color:                  var(--utu-purple);
     text-decoration:        none;
 }
-footer > div > div:nth-child(2) > a:active
+footer > div:nth-child(2) > a:active
 {
     color:                  White;
     text-decoration:        none;
 }
-footer > div > div:nth-child(3)
+footer > div:nth-child(3)
 /* Footer links flex-item */
 {
     order:                  3;
@@ -142,7 +136,6 @@ footer > div > div:nth-child(3)
     display:                -webkit-box;
     display:                -ms-flexbox;
     display:                flex;
-    height:                 100%;
     -webkit-box-align:      center;
     -ms-flex-align:         center;
     align-items:            center;
@@ -150,7 +143,7 @@ footer > div > div:nth-child(3)
     -ms-flex-pack:          center;
     justify-content:        center;
 }
-footer > div > div:nth-child(3) > a
+footer > div:nth-child(3) > a
 {
     text-decoration:        none;
     color:                  var(--footer-link-color);
@@ -159,15 +152,15 @@ footer > div > div:nth-child(3) > a
     margin-right:           0.3vw;
     margin-left:            0.3vw;
 }
-footer > div > div:nth-child(3) > a:after
+footer > div:nth-child(3) > a:after
 {
     content:                " | ";
 }
-footer > div > div:nth-child(3) > a:first-child:before
+footer > div:nth-child(3) > a:first-child:before
 {
     content:                " ";
 }
-footer > div > div:nth-child(3) > a:last-child:after
+footer > div:nth-child(3) > a:last-child:after
 {
     content:                "";
 }
@@ -179,34 +172,26 @@ footer > div > div:nth-child(3) > a:last-child:after
     footer
     {
         height:                 auto; /* 170px; */
-    }
-    footer > div
-    {
-        background-color: darkcyan;
+        background-color:       darkcyan;
         flex-direction:         column;
+        justify-content:        center;
     }
-    footer > div > div:nth-child(1)
+    footer > div:nth-child(1)
     {
-        background-color: pink;
-        order:              2;
+        background-color:       pink;
+        order:                  2;
     }
-    footer > div > div:nth-child(2)
+    footer > div:nth-child(2)
     {
-        background-color: yellow;
-        order:              3;
+        background-color:       yellow;
+        order:                  3;
     }
-    footer > div > div:nth-child(3)
+    footer > div:nth-child(3)
     {
-        background-color: green;
-        order:              1;
+        background-color:       green;
+        order:                  1;
     }
-    .footer-copyright
-    {
-        position:               relative;
-        bottom:                 0;
-    
-    }
-    a.footerlink
+    footer > div:nth-child(3) > a
     {
         font-size:              1.0em;
     }
