@@ -59,6 +59,16 @@ a:active
 }
 /* Page basics END ***********************************************************/
 
+
+
+
+/******************************************************************************
+ *
+ * Footer style
+ * https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+ * flex:  shorthand for flex-grow, flex-shrink and flex-basis
+ *        Default is 0 1 auto.
+ */
 footer
 {
     position:               absolute;
@@ -66,59 +76,69 @@ footer
     width:                  100%;
     height:                 var(--footer-height);
     background-color:       var(--footer-bg-color);
+} 
+footer > div
+/* Flex container */
+{
+    display:                flex;
+    flex-direction:         row;
+    flex-wrap:              nowrap;
+    justify-content:        space-between;
+    align-items:            baseline;
+    align-content:          center;
 }
-.footer-logo
+footer > div > div:nth-child(1)
+/* UTU logo flex-item */
+{
+    order:                  1;
+    flex:                   0 0 auto;
+    width:                  auto;
+    height:                 var(--footer-height);
+    max-height:             var(--footer-height);
+}
+footer > div > div:nth-child(1) > img
+/* UTU logo image */
 {
     width:                  auto;
     height:                 var(--footer-height);
     max-height:             var(--footer-height);
 }
-.footer-copyright
+footer > div > div:nth-child(2)
+/* Copyright text flex-item */
 {
+    order:                  2;
+    flex:                   1 0 auto;
     font-size:              1.1vw;
     color:                  White;
     padding:                0;
     margin:                 0.4vw;
-    position: absolute;
-    bottom: 0;
+    bottom:                 0;
 }
-.footer-copyright > a
+footer > div > div:nth-child(2) > a:link
 {
     color:                  White;
+    text-decoration:        none;
 }
-.footer-copyright > a:hover
+footer > div > div:nth-child(2) > a:visited
+{
+    color:                  White;
+    text-decoration:        none;
+}
+footer > div > div:nth-child(2) > a:hover
 {
     color:                  var(--utu-purple);
-}
-
-
-
-a.footerlink
-{
     text-decoration:        none;
-    color:                  var(--footer-link-color);
-    font-size:              1.6vw;
-    font-weight:            bold;
-    margin-right:           0.3vw;
-    margin-left:            0.3vw;
 }
-a.footerlink:after
+footer > div > div:nth-child(2) > a:active
 {
-    content:                " | ";
+    color:                  White;
+    text-decoration:        none;
 }
-a.footerlink:first-child:before
+footer > div > div:nth-child(3)
+/* Footer links flex-item */
 {
-    content:                " ";
-}
-a.footerlink:last-child:after
-{
-    content:                "";
-}
-
-
-/* vertical center with flexbox        */
-/* Used by footer AND index.html title */
-.vflexbox {
+    order:                  3;
+    flex:                   1 1 auto;
     display:                -webkit-box;
     display:                -ms-flexbox;
     display:                flex;
@@ -130,7 +150,66 @@ a.footerlink:last-child:after
     -ms-flex-pack:          center;
     justify-content:        center;
 }
+footer > div > div:nth-child(3) > a
+{
+    text-decoration:        none;
+    color:                  var(--footer-link-color);
+    font-size:              1.6vw;
+    font-weight:            bold;
+    margin-right:           0.3vw;
+    margin-left:            0.3vw;
+}
+footer > div > div:nth-child(3) > a:after
+{
+    content:                " | ";
+}
+footer > div > div:nth-child(3) > a:first-child:before
+{
+    content:                " ";
+}
+footer > div > div:nth-child(3) > a:last-child:after
+{
+    content:                "";
+}
 
 
+
+@media only screen and (max-width: 767px)
+{
+    footer
+    {
+        height:                 auto; /* 170px; */
+    }
+    footer > div
+    {
+        background-color: darkcyan;
+        flex-direction:         column;
+    }
+    footer > div > div:nth-child(1)
+    {
+        background-color: pink;
+        order:              2;
+    }
+    footer > div > div:nth-child(2)
+    {
+        background-color: yellow;
+        order:              3;
+    }
+    footer > div > div:nth-child(3)
+    {
+        background-color: green;
+        order:              1;
+    }
+    .footer-copyright
+    {
+        position:               relative;
+        bottom:                 0;
+    
+    }
+    a.footerlink
+    {
+        font-size:              1.0em;
+    }
+}
 
 /* EOF */
