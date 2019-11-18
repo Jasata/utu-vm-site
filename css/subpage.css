@@ -112,12 +112,25 @@ article > h2
     color:                  Red;
     font-size:              1.5em;
 }
-article p:first-of-type
+article > p
+{
+    padding-bottom:         30px;
+}
+article > p:first-of-type
 /* first section is the executive summary (aka. "abstract") */
 {
+    padding:                50px;
     font-style:             italic;
 }
-
+article > h1,h2,h3,h4,h5,h6
+/* This sad hack exists because boostrap navbar does not have a configuration
+   item for scrolling offset. The data-offset ONLY adjust when the follow
+   highlight swaps to next navbar item... */
+{
+    padding-top:            90px;
+    margin-top:             -90px;
+    padding-bottom:         20px;
+}
 
 /***********************************************************************
  *
