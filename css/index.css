@@ -121,4 +121,42 @@ body
     height:                 100%; 
 }
 
+
+
+
+@media only screen and (max-width: 800px)
+{
+    body
+    /* Indicator when media query is in effect */
+    {
+        background-color:       lightblue;
+    }
+    .imenu
+    {
+        margin-left:            10px;
+        margin-right:           10px;
+        margin-bottom:          25px;
+    }
+    .imenu-title
+    {
+        font-size:              1.4em;
+        text-shadow:            2.0rem 0.7rem rgb(245,245,245);
+    }
+    .imenu-label
+    {
+        font-size:              1.2em;
+    }
+    .imenu-text
+    {
+        font-size:              1.0em;
+    }
+    .imenu-icon
+    {
+        font-size:              2.6em;
+        padding-top:            0.15em;
+        padding-left:           0.1em;
+        padding-right:          0.3em;
+    }
+}
+
 /* EOF */
