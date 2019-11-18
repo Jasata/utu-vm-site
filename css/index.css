@@ -82,7 +82,11 @@ body
 {
     font-size:              1.3vw;
     font-weight:            normal;
-    white-space: nowrap;
+    white-space:            nowrap;
+    /* ellipses not supported in your browser? I don't give a flying ... */
+    text-overflow:          ellipsis;
+    overflow:               hidden;
+    width: 100%;
 }
 .imenu-icon
 {
@@ -143,6 +147,10 @@ body
         margin-left:            10px;
         margin-right:           10px;
         margin-bottom:          25px;
+    }
+    .imenu-item
+    {
+        margin-top:             10px;
     }
     .imenu-title
     {
