@@ -14,6 +14,7 @@
     --footer-link-color:    var(--utu-purple);
     --footer-bg-color:      Black;
     --footer-height:        5.5vw;
+    --footer-sm-height:     70px;
 }
 
 /* page basics ***************************************************************/
@@ -80,14 +81,14 @@ footer
     display:                flex;
     flex-direction:         row;
     flex-wrap:              nowrap;
-    justify-content:        space-between;
+    justify-content:        flex-start;
     align-items:            baseline;
     align-content:          center;
 }
 footer > div:nth-child(1)
 /* UTU logo flex-item */
 {
-    order:                  1;
+    order:                  0;
     flex:                   0 0 auto;
     width:                  auto;
     height:                 var(--footer-height);
@@ -101,37 +102,49 @@ footer > div:nth-child(1) > img
     max-height:             var(--footer-height);
 }
 footer > div:nth-child(2)
-/* Copyright text flex-item */
+/* Flex container for links and copyright text */
 {
     order:                  2;
+    flex:                   1 0 auto;
+    display:                flex;
+    flex-direction:         row;
+    flex-wrap:              nowrap;
+    justify-content:        space-between;
+    align-items:            baseline;
+    align-content:          center;
+}
+footer > div:nth-child(2) > div:nth-child(1)
+/* Copyright text flex-item */
+{
+    order:                  1;
     flex:                   1 0 auto;
     font-size:              1.1vw;
     color:                  White;
 }
-footer > div:nth-child(2) > a:link
+footer > div:nth-child(2) > div:nth-child(1) > a:link
 {
     color:                  White;
     text-decoration:        none;
 }
-footer > div:nth-child(2) > a:visited
+footer > div:nth-child(2) > div:nth-child(1) > a:visited
 {
     color:                  White;
     text-decoration:        none;
 }
-footer > div:nth-child(2) > a:hover
+footer > div:nth-child(2) > div:nth-child(1) > a:hover
 {
     color:                  var(--utu-purple);
     text-decoration:        none;
 }
-footer > div:nth-child(2) > a:active
+footer > div:nth-child(2) > div:nth-child(1) > a:active
 {
     color:                  White;
     text-decoration:        none;
 }
-footer > div:nth-child(3)
+footer > div:nth-child(2) > div:nth-child(2) 
 /* Footer links flex-item */
 {
-    order:                  3;
+    order:                  2;
     flex:                   1 1 auto;
     display:                -webkit-box;
     display:                -ms-flexbox;
@@ -143,7 +156,7 @@ footer > div:nth-child(3)
     -ms-flex-pack:          center;
     justify-content:        center;
 }
-footer > div:nth-child(3) > a
+footer > div:nth-child(2) > div:nth-child(2) > a
 {
     text-decoration:        none;
     color:                  var(--footer-link-color);
@@ -152,15 +165,15 @@ footer > div:nth-child(3) > a
     margin-right:           0.3vw;
     margin-left:            0.3vw;
 }
-footer > div:nth-child(3) > a:after
+footer > div:nth-child(2) > div:nth-child(2) > a:after
 {
     content:                " | ";
 }
-footer > div:nth-child(3) > a:first-child:before
+footer > div:nth-child(2) > div:nth-child(2) > a:first-child:before
 {
     content:                " ";
 }
-footer > div:nth-child(3) > a:last-child:after
+footer > div:nth-child(2) > div:nth-child(2) > a:last-child:after
 {
     content:                "";
 }
@@ -171,30 +184,50 @@ footer > div:nth-child(3) > a:last-child:after
 {
     footer
     {
-        height:                 auto; /* 170px; */
-        background-color:       darkcyan;
-        flex-direction:         column;
-        justify-content:        center;
+        height:                 var(--footer-sm-height);
+        align-items:            stretch;
     }
     footer > div:nth-child(1)
     {
-        background-color:       pink;
-        order:                  2;
+        height:                 var(--footer-sm-height);
+        min-height:             var(--footer-sm-height);
+/*        background-color: salmon; */
+    }
+    footer > div:nth-child(1) > img
+    {
+        height:                 var(--footer-sm-height);
+        min-height:             var(--footer-sm-height);
     }
     footer > div:nth-child(2)
     {
-        background-color:       yellow;
-        order:                  3;
+        flex:                   1 1 auto;
+        flex-wrap:              nowrap;
+        flex-direction:         column;
+        justify-content:        space-between;
+        align-content:          stretch;
+        align-items:            stretch;
     }
-    footer > div:nth-child(3)
+    footer > div:nth-child(2) > div:nth-child(1)
     {
-        background-color:       green;
         order:                  1;
+        font-size:              0.6em;
+        flex:                   1 1 auto;
+        padding-top:            4px;
     }
-    footer > div:nth-child(3) > a
+    footer > div:nth-child(2) > div:nth-child(2)
+    {
+        order:                  0;
+        flex:                   1 1 auto;
+    }
+    footer > div:nth-child(2) > div:nth-child(2) > a
     {
         font-size:              1.0em;
+        margin-right:           0.2em;
+        margin-left:            0.3em;
     }
+
 }
+
+/* TODO: Media query for 499 px or smaller */
 
 /* EOF */
