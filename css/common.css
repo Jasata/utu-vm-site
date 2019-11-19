@@ -229,5 +229,27 @@ footer > div:nth-child(2) > div:nth-child(2) > a:last-child:after
 }
 
 /* TODO: Media query for 499 px or smaller */
+@media only screen and (max-width: 500px)
+{
+    .imenu
+    {
+        margin:                 0;
+        
+    }
+    footer > div:nth-child(1) > img
+    {
+        display:                none;
+    }
+    footer > div:nth-child(2) > div:nth-child(1)
+    {
+        display:                none;
+    }
+    footer > div:nth-child(2) > div:nth-child(2) > a
+    {
+        font-size:              0.9em;
+        margin-right:           0.2em;
+        margin-left:            0.3em;
+    }
 
+}
 /* EOF */

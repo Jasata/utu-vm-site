@@ -174,6 +174,22 @@ body
     }
 }
 
+@media only screen and (max-width: 500px)
+{
+    .col-sm-12
+    {
+        padding:                0;
+    }
+    .imenu
+    {
+        margin:                 0;
+        padding:                0;
+        border-radius:          0;
+        -webkit-box-shadow:     0;
+        -moz-box-shadow:        0;
+        box-shadow:             0;
+    }
+}
 
 /* vertical center with flexbox        */
 /* Used by index.html title */
