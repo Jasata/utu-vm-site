@@ -57,8 +57,74 @@ Frontend
  - (CDN) Awesome Fonts 4
  
 Backend
- - Python 3.7.x
+ - nginx
+ - Python 3.7.x (part of Debian10)
  - Flask & UWSGI
+ - SQLite3
+
+## Installation
+
+This short guide assumes that you will be installing the site code into a mini-webserver for development purposes. In that case, it is a convenience to have the files located in your home directory.
+
+**NOTE: Untested (to be verified)**
+
+Install required packages
+
+    # apt install -y nginx python3-dev python3-pip python3-flask sqlite uwsgi uwsgi-plugin-python3
+
+Clone the site and add `www-data` to group `pi` (note: user executes the third command):
+
+    # mkdir /var/www/utu-vm-site && chown pi.pi /var/www/utu-vm-site
+    # usermod -a -G pi www-data
+    $ git clone git@github.com:Jasata/utu-vm-site.git /var/www/utu-vm-site
+
+Replace `/etc/nginx/sites-available/default` with:
+
+    server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /var/www/utu-vm-site;
+        server_name _;
+        location / {
+            include uwsgi_params;
+            uwsgi_pass unix:/tmp/nginx.uwsgi.sock;
+        }
+    }
+
+Configure Flask, write `/etc/uwsgi`:
+
+    [uwsgi]
+    module = application:app
+    # Execute in directory...
+    chdir = /var/www/utu-vm-site
+    master = true
+    processes = 1
+    threads = 2
+
+    # Credentials that will execute Flask
+    uid = www-data
+    gid = www-data
+
+    # Since these components are operating on the same computer,
+    # a Unix socket is preferred because it is more secure and faster.
+    socket = /tmp/nginx.uwsgi.sock
+    chmod-socket = 664
+
+    # Clean up the socket when the process stops
+    vacuum = true
+
+    # This is needed because the Upstart init system and uWSGI have
+    # different ideas on what different process signals should mean.
+    # Setting this aligns the two system components, implementing
+    # the expected behavior:
+    die-on-term = true
+
+Cloning brought the application config file, and now we can reload Nginx:
+
+    # systemctl restart nginx
+
+**http://localhost should now serve the site index.**
 
 # vm.utu.fi - Site for Virtual Courses
 
@@ -86,4 +152,4 @@ TIERS Equipement to borrow
 Tools for workstation
   - Visual Studio Code with Remote - SSH extension
   - WinSCP (or does drag-n-drop via Visual Studio Code now work?)
-  
+
