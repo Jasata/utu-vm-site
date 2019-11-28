@@ -68,7 +68,15 @@ nav.site ol li a::after
     content:                '>';
     padding:                0 3px;
 }
-
+/* Override boostrap .container left margin */
+.container
+{
+    margin-left:            0px;
+}
+span#navbar-title
+{
+    margin-right:           10px;
+}
 
 
 /******************************************************************************
