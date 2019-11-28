@@ -67,12 +67,24 @@
                     <p>Getting started with virtual machines is straight forward and has very few steps - and you only need to do this once! These instructions should let you accomplish the required steps with ease and then proceed to download your first virtual machine.</p>
                     <h1 id="bios">Enable Virtualization from BIOS Settings</h1>
                     <p>All virtual machines run inside a program called <strong>hypervisor</strong>, which rely on a virtualization feature in your processor. Unfortunately this is not enabled by default.</p>
-                    <p>To <strong>enter BIOS</strong> you need to restart your PC and press the appropriate key (usually ESC, DEL, F1, F2 or F10) during the start-up, before your operating system begins to load. Once in your BIOS settings, first take a look at the system information page, as it might already </p>
+                    <p>To <strong>enter BIOS</strong> you need to restart your PC and press the appropriate key (usually ESC, DEL, F1, F2 or F10) during the start-up, before your operating system begins to load.</p>
+                    <p>Virtualization is called either <strong>VT-x</strong> or <strong>AMD-V</strong>.</p>
+                    <p>Once in your BIOS settings, first take a look at the system information page - some older PCs do not have a configuration for virtualization and simply list it in the first page as "supported". In such case, you don't need to do anything and can move to installing the hypervisor.</p>
+                    <img src="img/bios_vt-x_supported.png">
+                    <p>For the rest of us, the virtualization setting can often be found under ...</p>
                     <h1 id="install">Install Hypervisor</h1>
-                    <p></p>
+                    <p><strong>Which OS are you running?</strong> The operating system into which the hypervisor is installed into, is called <u>Host OS</u>, and the installation instructions differ slightly between Linux, MacOS and Windows.</p>
+                    <p>WE NEED SOME WAY TO DISPLAY ONLY RELEVANT CONTENT - maybe tabs? Jani will try to find something clean and simple...</p>
+                    <p><strong>Choose you hypervisor</strong> between Oracle's VirtualBox or VMWare's VMPlayer. (DO WE WANT TO RECOMMEND EITHER FOR CERTAIN OS'es? -> MacOS issues. How is Linux?)</p>
                     
-                    <h1 id="sec3">Profit</h1>
-                    <p>Nisi est sit amet facilisis magna etiam tempor. Blandit massa enim nec dui nunc. Habitant morbi tristique senectus et netus et malesuada fames. Nunc scelerisque viverra mauris in aliquam sem. Ut etiam sit amet nisl purus in. Blandit massa enim nec dui nunc mattis enim. Tellus rutrum tellus pellentesque eu tincidunt tortor aliquam nulla facilisi. Dapibus ultrices in iaculis nunc sed augue lacus viverra. Quam adipiscing vitae proin sagittis nisl rhoncus. Porttitor eget dolor morbi non arcu risus quis varius. Id porta nibh venenatis cras sed felis eget velit aliquet. Vulputate dignissim suspendisse in est ante. Fringilla urna porttitor rhoncus dolor purus non enim praesent.</p>
+                    <h1 id="addons">Install Add-Ons into the Hypervisor</h1>
+                    <p><stront>This step is necessary only for VirtualBox!</stront> Plain vanilla VirtualBox supports only USB 1.0, which is frankly speaking abysmally slow. In order to support USB 2.0, you need to download extension pack from Oracle's site (link) and install it.</p>
+                    <p>Linux: ???</p>
+                    <p>MacOS: ?!?!</p>
+                    <p>WINDOWS: Once the download has been completed, locate the extension pack and double-clik it. Follow the instructions of your hypervisor to complete.</p>
+
+                    <h1>All Done!</h1>
+                    <p>Next you should go to the <a href="download.html">download page</a> to download a VM image and to follow the instructions there.</p>
                 </article>
             </main>
         </div>
