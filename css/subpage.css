@@ -5,6 +5,7 @@
 :root
 {
     --navbar-padding:       80px;
+    --tab-corner-radius:    10px;
 }
 html
 {
@@ -96,7 +97,19 @@ main
     border-radius:          7px;
     padding:                1.0rem;
 }
+@media only screen and (max-width: 500px)
+{
+    main
+    {
+        margin:                 0;
+    }
+}
 
+article
+{
+    margin-top:             10px;
+    margin-bottom:          20px;
+}
 article > header
 {
     color:                  var(--utu-purple);
@@ -134,10 +147,10 @@ article > p
 {
     padding-bottom:         0px;
 }
-article > p:first-of-type
+article:first-of-type > p
 /* first section is the executive summary (aka. "abstract") */
 {
-    padding:                30px;
+    padding:                6px 30px 6px 30px;
     font-style:             italic;
 }
 article > h1,h2,h3,h4,h5,h6
@@ -147,7 +160,7 @@ article > h1,h2,h3,h4,h5,h6
 {
     padding-top:            90px;
     margin-top:             -90px;
-    padding-bottom:         20px;
+    padding-bottom:         6px;
 }
 
 /***********************************************************************
@@ -204,5 +217,99 @@ details[open] summary:after
     content:                "-";
 }
 
+
+/****************************************************************************/
+/* Tabs CSS
+*/
+.tabs
+{
+    display:                flex;
+    flex-wrap:              wrap;
+}
+.tabs label
+{
+    order:                  1;
+    display:                block;
+    padding:                0.7rem 2rem;
+    margin-right:           0.2rem;
+    margin-bottom:          0;
+    cursor:                 pointer;
+    background:             Silver;
+    font-weight:            bold;
+    transition:             background ease 0.4s;
+    border-radius:          var(--tab-corner-radius)
+                            var(--tab-corner-radius)
+                            0px
+                            0px;
+}
+.tabs .tab
+/* tab content */
+{
+    order:                  99;
+    flex-grow:              1;
+    width:                  100%;
+    display:                none;
+    padding:                0.8rem;
+    background:             var(--content-bg-color);
+/*    margin-bottom:          6px; */
+    /* lower edge effect */
+    border:                 2px solid var(--utu-purple);
+    border-radius:          0px
+                            var(--tab-corner-radius)
+                            var(--tab-corner-radius)
+                            var(--tab-corner-radius);
+}
+.tabs input[type="radio"]
+{
+    display:                none;
+}
+.tabs input[type="radio"]:checked + label
+{
+    color:                  White;
+    background:             var(--utu-purple);
+    border-radius:          var(--tab-corner-radius)
+                            var(--tab-corner-radius)
+                            0px
+                            0px;
+}
+.tabs input[type="radio"]:checked + label + .tab
+{
+    display:                block;
+}
+
+@media (max-width: 47em)
+{
+    .tabs .tab
+    /* tab content */
+    {
+        padding:                0.8rem;
+        /* lower edge effect */
+        border:                 0;
+        border-bottom:          var(--tab-corner-radius) solid var(--utu-purple);
+        border-radius:          0px
+                                0px
+                                var(--tab-corner-radius)
+                                var(--tab-corner-radius);
+    }
+    .tabs .tab,
+    .tabs label
+    {
+        order:                  initial;
+        border-radius:          var(--tab-corner-radius);
+    }
+    .tabs label
+    {
+        width:                  100%;
+        margin-right:           0;
+        margin-top:             0.2rem;
+    }
+    .tabs input[type="radio"]:checked + label
+    {
+        border-radius:          var(--tab-corner-radius)
+                                var(--tab-corner-radius)
+                                0px
+                                0px;
+    }
+}
 
  /* EOF */

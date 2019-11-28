@@ -57,57 +57,102 @@
     <div class="container-fluid">
         <div class="row" id="content-row">
             <main>
+
+
                 <nav class="site">
                     <ol>
                         <li><a href="index.html">UTU Virtual Machines</a></li>
                         <li>Help</li>
                     </ol>
                 </nav>
+
+                <!-- Executive summary -->
                 <article>
-                    <p>Please refer to the information provided here first. If it cannot help you to solvee your issue, contact us then via email. Thank You very much, and we are very sorry that you are experiencing difficulties using virtual machines.</p>
+                    <p>Please refer to the information provided here first. If it cannot help you to solve your issue, then contact us via email. Thank You very much, and we are very sorry that you are experiencing difficulties using virtual machines.</p>
+                </article>
+
+
+                <!-- ARTICLE FAQ -->
+                <article>
                     <h1 id="faq">Frequently Asked Questions</h1>
-                    <p>Pro tip: Try using your browser's search on this page!</p>
-                    <h3>Installing Hypervisor</h2>
-                    <details>
-                        <summary>How do I get into my BIOS?</summary>
-                        <p>Unfortunately, PC manufacturers are not following any generally accepted convention. You could try spamming all these keys during boot (right after powering your PC on):</p>
-                        <ul>
-                            <li>ESC</li>
-                            <li>DEL</li>
-                            <li>F1</li>
-                            <li>F2</li>
-                            <li>F10</li>
-                        </ul>
-                        <p>...or if none of those seem to do the trick, you should Google your maker and model to find the correct answer.</p>
-                    </details>
-                    <details>
-                        <summary>I cannot find my virtualization option from BIOS!</summary>
-                        <p>As with the keys used to enter BIOS, there are no commonly accepted conventions, but here are some that might help:</p>
-                        <ul>
-                            <li></li>
-                        </ul>
-                    </details>
-                    <h3>Getting VM Image to Run</h2>
-                    <details>
-                        <summary>VT-x is not available?</summary>
-                        You hypervisor complaining that VT-x is not available is by far most likely due to the feature not being enabled in your BIOS.<br>
-                        <img src="img/vt-x_not_available.png">
-                        Did you exit BIOS <strong>and saved</strong> your changes? Could you double-check that the setting really is now enabled?<br>
-                        
-                    </details>
-                    <p>stuff</p>
-                    <h3>Using the VM</h2>
-                    <p>Note that your teacher may have chosen to create a virtual machine entirely of his or her own, and that the answers provided here may not apply.</p>
-                    <p>help stuff</p>
+                    <div class="tabs">
+
+                        <input  type="radio"
+                                name="tabs"
+                                id="tabone"
+                                checked="checked">
+                        <label for="tabone">Installing Hypervisor</label>
+                        <div class="tab">
+                            <details>
+                                <summary>How do I get into my BIOS?</summary>
+                                <p>Unfortunately, PC manufacturers are not following any generally accepted convention. You could try spamming all these keys during boot (right after powering your PC on):</p>
+                                <ul>
+                                    <li>ESC</li>
+                                    <li>DEL</li>
+                                    <li>F1</li>
+                                    <li>F2</li>
+                                    <li>F10</li>
+                                </ul>
+                                <p>...or if none of those seem to do the trick, you should Google your maker and model to find the correct answer.</p>
+                            </details>
+                            <details>
+                                <summary>I cannot find my virtualization option from BIOS!</summary>
+                                <p>As with the keys used to enter BIOS, there are no commonly accepted conventions, but here are some that might help:</p>
+                                <ul>
+                                    <li>TBA</li>
+                                </ul>
+                            </details>
+                        </div><!-- end of class="tab" -->
+
+
+                        <input  type="radio"
+                                name="tabs"
+                                id="tabtwo">
+                        <label for="tabtwo">Getting VM Image to Run</label>
+                        <div class="tab">
+                            <details>
+                                <summary>VT-x is not available?</summary>
+                                You hypervisor complaining that VT-x is not available is by far most likely due to the feature not being enabled in your BIOS.<br>
+                                <img src="img/vt-x_not_available.png">
+                                Did you exit BIOS <strong>and saved</strong> your changes? Could you double-check that the setting really is now enabled?<br>
+                            </details>
+                        </div><!-- end of class="tab" -->
+
+
+                        <input  type="radio"
+                                name="tabs"
+                                id="tabthree">
+                        <label for="tabthree">Using the VM</label>
+                        <div class="tab">
+                            <p>Please Note that your teacher may have chosen to create a virtual machine entirely of his or her own design and that the answers provided here may not apply.</p>
+                            <p>TBA</p>
+                        </div><!-- end of class="tab" -->
+
+                    </div><!-- class="tabs" -->
+                </article>
+                <!-- ARTICLE FAQ ENDS -->
+
+
+
+
+                <!-- ARCILE DOCUMENTS -->
+                <article>
+
                     <h1 id="docs">Documents</h1>
                     <p>
                         <a href="#">doc 1</a><br>
                         <a href="#">doc 2</a><br>
                         <a href="#">doc 3</a>
                     </p>
+                </article>
+                <!-- ARCILE DOCUMENTS -->
+
+
+
+                <!-- ARTICLE CONTACT -->
+                <article>
                     <h1 id="contact">Contact Us</h1>
-                    <p>Your problem was not found or could not be solved with what was found in this page? That's no good!<br>
-                    It's time you send us an email and let us try to help you. When you do, please try to do the following:</p>
+                    <p>Your problem was not found or could not be solved with what was found in this page? That's no good! It's time you send us an email and let us try to help you. When you do, please try to do the following:</p>
                     <ul>
                         <li>Try to be very descriptive. Attaching screen captures or other images will help a lot!</li>
                         <li>If the issue is related to hypervisor, please also let us know your operating system, version, language plus of course which hypervisor and version are you having problems with.</li>
@@ -116,6 +161,11 @@
                     <p><strong>Support email address:</strong> <a href="mailto:vm-support@utu.fi">vm-support@utu.fi</a></p>
                     <p>Please allow up to 2-3 days for replies. Personnel helping you are available only 2 days per week.</p>
                 </article>
+                <!-- ARTICLE CONTACT ENDS -->
+
+
+
+
             </main>
         </div>
     </div>
