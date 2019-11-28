@@ -69,13 +69,14 @@ nav.site ol li a::after
     padding:                0 3px;
 }
 /* Override boostrap .container left margin */
-.container
+nav#navbar > div.container
 {
     margin-left:            0px;
 }
 span#navbar-title
 {
     margin-right:           10px;
+    font-weight:            bolder;
 }
 
 
@@ -118,7 +119,12 @@ article > h1
 article > h2
 {
     color:                  var(--utu-purple);
-    font-size:              1.5em;
+    font-size:              1.4em;
+}
+article > h3
+{
+    color:                  Black;
+    font-size:              1.0em;
 }
 article > a:visited
 {
@@ -126,12 +132,12 @@ article > a:visited
 }
 article > p
 {
-    padding-bottom:         30px;
+    padding-bottom:         0px;
 }
 article > p:first-of-type
 /* first section is the executive summary (aka. "abstract") */
 {
-    padding:                50px;
+    padding:                30px;
     font-style:             italic;
 }
 article > h1,h2,h3,h4,h5,h6
