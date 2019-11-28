@@ -127,7 +127,16 @@ body
     height:                 100%;
 }
 
-
+a:link
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:visited
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
 
 
 @media only screen and (max-width: 767px)

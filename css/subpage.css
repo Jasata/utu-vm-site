@@ -104,13 +104,17 @@ article > header
 }
 article > h1
 {
-    color:                  magenta;
+    color:                  var(--utu-purple-dark);
     font-size:              1.75em;
 }
 article > h2
 {
-    color:                  Red;
+    color:                  var(--utu-purple);
     font-size:              1.5em;
+}
+article > a:visited
+{
+    color:                  blue;
 }
 article > p
 {

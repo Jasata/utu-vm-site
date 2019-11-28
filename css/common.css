@@ -6,8 +6,10 @@
 :root
 {
     --utu-purple:           #8b5dcb;
+    --utu-purple-dark:      #644494;
     --page-bg-color:        #f2f2f2;
     --text-color:           Black;
+    --link-color:           var(--utu-purple);
     --content-bg-color:     White;
     --header-bg-color:      White;
     --header-height:        9.0vw;
@@ -40,12 +42,12 @@ body
 }
 a:link
 {
-    color:                  var(--text-color);
+    color:                  var(--link-color);
     text-decoration:        none;
 }
 a:visited
 {
-    color:                  var(--text-color);
+    color:                  var(--link-color);
     text-decoration:        none;
 }
 a:hover
