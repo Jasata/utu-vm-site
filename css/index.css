@@ -127,12 +127,12 @@ body
     height:                 100%;
 }
 
-a:link
+div.imenu > a:link
 {
     color:                  var(--text-color);
     text-decoration:        none;
 }
-a:visited
+div.imenu > a:visited
 {
     color:                  var(--text-color);
     text-decoration:        none;
