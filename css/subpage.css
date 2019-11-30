@@ -486,19 +486,24 @@ only screen and (max-width: 760px),
     table.proscons tr > td:first-child
     /* First cell becomes "header" */
     {
-        padding-left:           4px;
-        background-color:       var(--utu-purple-dark);
-        color:                  White;
-        font-weight:            bold;
+        padding-left:               4px;
+        background-color:           var(--utu-purple-dark);
+        color:                      White;
+        font-weight:                bold;
+    }
+    table.proscons tr
+    /* TR border becomes unnecessary when first cell is "header" */
+    {
+        border:                     none;
     }
     table.proscons td:before
     {
-        max-width:              20%;
-        width:                  60px;
+        max-width:                  20%;
+        width:                      50px;
     }
     table.proscons td
     {
-        padding-left:           60px;
+        padding-left:               60px;
     }
 }
 
