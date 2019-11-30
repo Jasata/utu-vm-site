@@ -3,39 +3,16 @@
  * Initial version
  * 30.11.2019 // Jani Tammi <jasata@utu.fi>
  *
- *      Variables from subpage.css (common styles)
+ *      Variables from common.css and subpage.css
  */
 
-
-/*
- * Parallel flex container with wrap
- */
-div.flextable-parallel
-/* parallel, until fit-no-more... */
-{
-    display:                    flex;
-    flex-wrap:                  wrap;
-    justify-content:            flex-start;
-    align-items:                baseline;
-}
-div.flextable-parallel > div
-/* All immidiate children are flex items */
-{
-    flex-grow:                  0;      /* do not grow      */
-    flex-shrink:                0;      /* do not shrink    */
-    flex-basis:                 45%;    /* width/height     */
-    padding:                    0px 20px 0px 10px;
-    margin:                     0 0 10px 0;
-    width:                      600px;
-    min-width:                  400px;
-}
 
 
 /*
  * Override-classes for table.responsive
  */
 
-/*** Features style ***********************************/
+/*** Features style *****************************************************/
 table.features th:nth-of-type(n+3),
 table.features tr > td:nth-of-type(n+3)
 /* 2 left most columns centered */
@@ -72,7 +49,7 @@ only screen and (max-width: 760px),
         background:                 var(--content-bg-color) !important;
     }
 }
-/*** proscons *****************************************/
+/*** proscons ***********************************************************/
 table.proscons > thead > tr > th:nth-of-type(n+2)
 {
     padding-left:               26px;
@@ -112,6 +89,39 @@ only screen and (max-width: 760px),
     table.proscons td
     {
         padding-left:               60px;
+    }
+}
+
+/*** OS and Hypervisor segment ******************************************/
+table.os-hypervisor
+{
+    margin-bottom:                  16px;
+}
+table.os-hypervisor td
+{
+    vertical-align:                 text-top;
+    width:                          50%;
+    border:                         none;
+}
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)
+{
+    table.os-hypervisor,
+    table.os-hypervisor thead,
+    table.os-hypervisor tbody,
+    table.os-hypervisor th,
+    table.os-hypervisor td,
+    table.os-hypervisor tr
+    /* Force table to not be like tables anymore */
+    {
+        display:                    block;
+        border:                     none;
+    }
+    table.os-hypervisor td
+    {
+        padding-left:               6px;
+        width:                      100%;
     }
 }
 
