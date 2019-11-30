@@ -1,0 +1,118 @@
+/*
+ * Styles specific to install.html
+ * Initial version
+ * 30.11.2019 // Jani Tammi <jasata@utu.fi>
+ *
+ *      Variables from subpage.css (common styles)
+ */
+
+
+/*
+ * Parallel flex container with wrap
+ */
+div.flextable-parallel
+/* parallel, until fit-no-more... */
+{
+    display:                    flex;
+    flex-wrap:                  wrap;
+    justify-content:            flex-start;
+    align-items:                baseline;
+}
+div.flextable-parallel > div
+/* All immidiate children are flex items */
+{
+    flex-grow:                  0;      /* do not grow      */
+    flex-shrink:                0;      /* do not shrink    */
+    flex-basis:                 45%;    /* width/height     */
+    padding:                    0px 20px 0px 10px;
+    margin:                     0 0 10px 0;
+    width:                      600px;
+    min-width:                  400px;
+}
+
+
+/*
+ * Override-classes for table.responsive
+ */
+
+/*** Features style ***********************************/
+table.features th:nth-of-type(n+3),
+table.features tr > td:nth-of-type(n+3)
+/* 2 left most columns centered */
+{
+    text-align:                 center;
+}
+table.features tr > td:first-child
+/* Hypervisor name shall not wrap */
+{
+    white-space:                nowrap;
+}
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)
+{
+    table.features th:nth-of-type(n+3),
+    table.features tr > td:nth-of-type(n+3)
+    /* TODO: Selector to all TD's ... */
+    {
+        text-align:                 left;
+    }
+    table.features tr > td:first-child
+    /* First cell becomes "header" */
+    {
+        padding-left:               4px;
+        background-color:           var(--utu-purple-dark);
+        color:                      White;
+        font-weight:                bold;
+    }
+    table.features tr
+    /* TR border becomes unnecessary when first cell is "header" */
+    {
+        border:                     none;
+        background:                 var(--content-bg-color) !important;
+    }
+}
+/*** proscons *****************************************/
+table.proscons > thead > tr > th:nth-of-type(n+2)
+{
+    padding-left:               26px;
+}
+table.proscons td
+{
+    vertical-align:             top;
+}
+table.proscons tr > td:first-child
+/* Hypervisor name shall not wrap */
+{
+    white-space:                nowrap;
+}
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)
+{
+    table.proscons tr > td:first-child
+    /* First cell becomes "header" */
+    {
+        padding-left:               4px;
+        background-color:           var(--utu-purple-dark);
+        color:                      White;
+        font-weight:                bold;
+    }
+    table.proscons tr
+    /* TR border becomes unnecessary when first cell is "header" */
+    {
+        border:                     none;
+        background:                 var(--content-bg-color) !important;
+    }
+    table.proscons td:before
+    {
+        max-width:                  20%;
+        width:                      50px;
+    }
+    table.proscons td
+    {
+        padding-left:               60px;
+    }
+}
+
+/* EOF */

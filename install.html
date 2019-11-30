@@ -21,6 +21,8 @@
             href="css/common.css">
     <link   rel="stylesheet"
             href="css/subpage.css">
+    <link   rel="stylesheet"
+            href="css/install.css">
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
@@ -71,7 +73,7 @@
                 </nav>
 
                 <article><!-- Executive Summary -->
-                    <p>This page gives you instructions on how to install a hypervisor into your personal computer.</p>
+                    <p>This page helps you to choose and install a hypervisor into your personal computer.</p>
                 </article>
 
                 <article>
@@ -79,48 +81,59 @@
                     <!-- <p>We support the three major operating systems and two most popular hypervisors.</p> -->
                     <div class="flextable-parallel">
                         <div>
-                            <strong>You will need one of:</strong>
-                            <ul>
-                                <li>Linux (versions?)</li>
-                                <li>MacOS (versions?)</li>
-                                <li>Windows 7 or newer (not Win10 S)</li>
-                            </ul>
+                            <strong>You can run it on:</strong>
+                            <details>
+                                <summary>Linux</summary>
+                                <ul>
+                                    <li>Debian X</li>
+                                    <li>Ubuntu Y</li>
+                                </ul>
+                            </details>
+                            <details>
+                                <summary>MacOS</summary>
+                                <ul>
+                                    <li>???</li>
+                                </ul>
+                            </details>
+                            <details>
+                                <summary>Windows</summary>
+                                <ul>
+                                    <li>Windows 7 Home, Pro, Enterprise or Education</li>
+                                    <li>Windows 8 Home, Pro, Enterprise or Education</li>
+                                    <li>Windows 10 Home, Pro, Enterprise or Education</li>
+                                    <li><strong>Windows 10 S is not supported</strong></li>
+                                </ul>
+                            </details>
                         </div>
                         <div>
                             <strong>You need to choose one of:</strong>
-                            <ul>
-                                <li><a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">VirtualBox 6.0.14 or newer</a> (Linux, MacOS, Windows)</li>
-                                <li><a target="_blank" href="https://www.vmware.com/products/fusion/fusion-evaluation.html">VMware Fusion</a> (MacOS)</li>
-                                <li><a target="_blank" href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">Vmware Workstation Player</a> (Linux, Windows)</li>
-                                <li><a target="_blank" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware Workstation Pro</a> (Linux, Windows)</li>
-                            </ul>
+                            <details>
+                                <summary>VirtualBox</summary>
+                                <p>Free hypervisor, developed by Oracle Corporation. Supports Linux, MacOS and Windows platforms.</p>
+                                <p><a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">VirtualBox Homepage</a></p>
+                                <p><a target="_blank" href="https://en.wikipedia.org/wiki/VirtualBox">Wikipedia</a></p>
+                            </details>
+                            <details>
+                                <summary>VMware Fusion</summary>
+                                <p>Licensed hypervisor developed by VMware for Intel based Macintosh computers.</p>
+                                <p><a target="_blank" href="https://www.vmware.com/products/fusion/fusion-evaluation.html">VMware Fusion Homepage</a></p>
+                            </details>
+                            <details>
+                                <summary>VMware Workstation Player</summary>
+                                <p>Limited use hypervisor developed by VMware. Free for personal use. Supports Linux and Windows platforms.</p>
+                                <p><a target="_blank" href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">Vmware Workstation Player Homepage</a></p>
+                                <p>Wikipedia</p>
+                            </details>
+                            <details>
+                                <summary>VMware Workstation Pro</summary>
+                                <p>tba. Support Linux and Windows platforms.</p>
+                                <p><a target="_blank" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware Workstation Pro Homepage</a></p>
+                                <p>Wikipedia</p>
+                            </details>
                         </div>
                     </div>
-                    <div class="flextable-parallel">
-                        <details>
-                            <summary>Linux Distributions and Versions</summary>
-                            <ul>
-                                <li>Debian X</li>
-                                <li>Ubuntu Y</li>
-                            </ul>
-                        </details>
-                        <details>
-                            <summary>MacOS Versions</summary>
-                            <ul>
-                                <li>???</li>
-                            </ul>
-                        </details>
-                        <details>
-                            <summary>Windows Versions</summary>
-                            <ul>
-                                <li>Windows 7 Home, Pro, Enterprise or Education</li>
-                                <li>Windows 8 Home, Pro, Enterprise or Education</li>
-                                <li>Windows 10 Home, Pro, Enterprise or Education (Windows 10 S is not supported)</li>
-                            </ul>
-                        </details>
-                    </div>
                     <h2>Hardware Requirements</h2>
-                    <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than these default requirements. Check from downloads page.</p>
+                    <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than the default requirements listed here. Exceptional course specific requirements are listed with each downloadable VM image.</p>
                     <p>
                         <ul>
                             <li>8 GB RAM (VM allocated 2 GB each)</li>
@@ -128,12 +141,14 @@
                             <li>16 GB free disk per VM</li>
                         </ul>
                     </p>
-                    <p>The virtual machines can be run on most available hypervisors, but support is provided for VMware hypervisors Fusion (macOS) Workstation Pro (Windows, Linux) and Workstation Player (Windows, Linux) as well as Oracle VirtualBox (Windows, Linux, MacOS). The first step to running your virtual machine is to obtain an installer for your hypervisor of choice.</p>
+                    <h2>I Want Something Else</h2>
+                    <p>Virtual machines can be run on most available hypervisors, but we provide support only for the ones listed in this page. You are of course free to use whatever hypervisor you feel most comfortable with - provided that you can import <a target="_blank" href="https://en.wikipedia.org/wiki/Open_Virtualization_Format">OVA (version 2)</a> images from the <a href="download.html">download page</a>.</p>
+                    <p>Finally, there is always the option that you ask for the course specific list of required software from your teacher and just install and configure them directly into your PC. If you choose that option, these pages cannot offer you anything useful.</p>
                 </article>
 
 
                 <article>
-                    <h1 id="choose"><i class="fa fa-search"></i>Choosing the Hypervisor</h1>
+                    <h1 id="choose"><i class="fa fa-search"></i>Choosing a Hypervisor</h1>
                     <p>The choice is yours, but the table below might help you pick one.</p>
                     <p>
                         <table class="responsive features">
@@ -147,13 +162,13 @@
                                 <tr>
                                     <td>VirtualBox</td>
                                     <td label="OS">ALL</td>
-                                    <td label="# Simultaneous VMs">Any <sup>(1</sup></td>
+                                    <td label="# Simultaneous VMs">Unlimited <sup>(1</sup></td>
                                     <td label="License">Free</td>
                                 </tr>
                                 <tr>
                                     <td>VMware Fusion</td>
                                     <td label="OS">MacOS</td>
-                                    <td label="# Simultaneous VMs">Any <sup>(1</sup></td>
+                                    <td label="# Simultaneous VMs">Unlimited <sup>(1</sup></td>
                                     <td label="License">Required <sup>(2</sup></td>
                                 </tr>
                                 <tr>
@@ -165,7 +180,7 @@
                                 <tr>
                                     <td>VMware Pro</td>
                                     <td label="OS">Linux, Windows</td>
-                                    <td label="# Simultaneous VMs">Any <sup>(1</sup></td>
+                                    <td label="# Simultaneous VMs">Unlimited <sup>(1</sup></td>
                                     <td label="License">Required <sup>(2</sup></td>
                                 </tr>
                             </tbody>
@@ -176,7 +191,7 @@
                         </ol>
                     </p>
                     <h2>Seriously, No Recommendation?</h2>
-                    <p>Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
+                    <p>Nope. Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
                     <p>
                         <table class="responsive proscons">
                             <thead>
@@ -208,7 +223,7 @@
                                     </td>
                                     <td label="Cons">
                                         <ul>
-                                            <li>Works only in MacOS</li>
+                                            <li>Works only in MacOS?</li>
                                         </ul>
                                     </td>
                                 </tr>
@@ -245,17 +260,15 @@
                             <li>Footnote #2.</li>
                         </ol>
                     </p>
-                    <h3>What is the difference and which hypervisor should I choose?</h3>
-                    <p>The choice is up to you! Oracle VirtualBox is open-source software, which means that it can be used for free. It is also multi-platform, so it can be used in Windows, Linux and MacOS.</p>
-                    <p>VMware offers licenced software, which can be used when a licence is bought or provided e.g. by a university. VMware Workstation Pro can be used in Windows or Linux, while Fusion is for MacOS.</p>
-                    <p>VMware also offers a free version, Workstation Player, for Windows and Linux users. It does not have some of the advanced functionalities of Workstation pro, like the ability to run several virtual machines simultaneously, but for running one VM it works fine.</p>
-
+                    <h3>Still not sure which one to choose?</h3>
+                    <p>If none of the pros and cons make choosing any easier, all we can suggest at this point is to flip a coin. Really, they all work for you - as long as your choice supports your OS. Alternatively, you could also talk to your friends who are taking the same course. It might make you feel more confident if you are using the same as your friends are. Or perhaps, during the first lecture, you could also ask if the teacher has any reason to favor one hypervisor over the others.</p>
                 </article>
 
 
 
                 <article>
-                    <h1 id="install"><i class="fa fa-wrench"></i>Installing a hypervisor on Windows</h1>
+                    <h1 id="install"><i class="fa fa-wrench"></i>Installing the Hypervisor</h1>
+                    <p>Please select relevant instructions from below.</p>
                     <h2>VMware Workstation Player & Pro (Windows)</h2>
                     <ol>
                         <li>Download the installer file from the links above. Make sure to download the Windows version.</li>
@@ -286,7 +299,13 @@
                             <li>Enter the license key or choose the trial option.</li>
                         </ol>
                     <p>Issues in downloading or installing VMware Fusion? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                </article>
 
+
+
+                <article>
+                    <h1>All Done?</h1>
+                    <p>Almost! Now you need to head to the <a href="download.html">download</a> page and get a VM image for your course.</p>
                 </article>
             </main>
         </div>
