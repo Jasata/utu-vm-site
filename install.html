@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- https://www.w3schools.com/icons/icons_reference.asp -->
+<head>
+
+    <meta   charset="utf-8">
+    <meta   name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta   name="description"
+            content="">
+    <meta   name="author"
+            content="">
+
+    <title>Turku university - Course Virtual Machines</title>
+
+    <link   href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
+            rel="stylesheet">
+    <link   rel="stylesheet"
+            href="css/bootstrap.min.css">
+    <link   rel="stylesheet"
+            href="css/common.css">
+    <link   rel="stylesheet"
+            href="css/subpage.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+</head>
+
+
+<body data-spy="scroll" data-target="#navbarContent" data-offset="70">
+
+    <nav class="navbar navbar-expand-md fixed-top navbar-light bg-white py-0">
+        <div class="container">
+            <a class="navbar-brand py-3" href=".">
+                <img id="navbar-logo" src="img/utu-torch-black.png">
+            </a><span id="navbar-title">Installing</span>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav navbar-nav">
+                    <a class="nav-link p-3" href="#requirements">Requirements</a>
+                    <a class="nav-link p-3" href="#choose">Choose</a>
+                    <a class="nav-link p-3" href="#install">Install</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+    <!-- PAGE CONTENT -->
+    <div class="container-fluid">
+        <div class="row" id="content-row">
+            <main>
+                <nav class="site">
+                    <ol>
+                        <li><a href="index.html">UTU Virtual Machines</a></li>
+                        <li>Install a hypervisor</li>
+                    </ol>
+                </nav>
+
+                <article><!-- Executive Summary -->
+                    <p>This page gives you instructions on how to install a hypervisor into your personal computer.</p>
+                </article>
+
+                <article>
+                    <h1 id="requirements">Requirements</h1>
+                    <!-- <p>We support the three major operating systems and two most popular hypervisors.</p> -->
+                    <div class="flextable-parallel">
+                        <div>
+                            You will need one of:
+                            <ul>
+                                <li>Linux (versions?)</li>
+                                <li>MacOS (versions?)</li>
+                                <li>Windows 7 or newer (not Win10 S)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            You need to choose one of:
+                            <ul>
+                                <li><a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">VirtualBox 6.0.14 or newer</a> (Linux, MacOS, Windows)</li>
+                                <li><a target="_blank" href="https://www.vmware.com/products/fusion/fusion-evaluation.html">VMware Fusion</a> (MacOS)</li>
+                                <li><a target="_blank" href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">Vmware Workstation Player</a> (Linux, Windows)</li>
+                                <li><a target="_blank" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware Workstation Pro</a> (Linux, Windows)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flextable-parallel">
+                        <details>
+                            <summary>Linux Distributions and Versions</summary>
+                            <ul>
+                                <li>Debian X</li>
+                                <li>Ubuntu Y</li>
+                            </ul>
+                        </details>
+                        <details>
+                            <summary>MacOS Versions</summary>
+                            <ul>
+                                <li>???</li>
+                            </ul>
+                        </details>
+                        <details>
+                            <summary>Windows Versions</summary>
+                            <ul>
+                                <li>Windows 7 Home, Pro, Enterprise or Education</li>
+                                <li>Windows 8 Home, Pro, Enterprise or Education</li>
+                                <li>Windows 10 Home, Pro, Enterprise or Education (Windows 10 S is not supported)</li>
+                            </ul>
+                        </details>
+                    </div>
+                    <h2>Hardware Requirements</h2>
+                    <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than these default requirements. Check from downloads page.</p>
+                    <p>
+                        <ul>
+                            <li>8 GB RAM (VM allocated 2 GB each)</li>
+                            <li>CPU with VT-x (we could not find any without it)</li>
+                            <li>16 GB free disk per VM</li>
+                        </ul>
+                    </p>
+                    <p>The virtual machines can be run on most available hypervisors, but support is provided for VMware hypervisors Fusion (macOS) Workstation Pro (Windows, Linux) and Workstation Player (Windows, Linux) as well as Oracle VirtualBox (Windows, Linux, MacOS). The first step to running your virtual machine is to obtain an installer for your hypervisor of choice.</p>
+                </article>
+
+
+                <article>
+                    <h1 id="choose">Choosing the Hypervisor</h1>
+                    <p>The choice is yours, but the table below might help you pick one.</p>
+                    <p>
+                        <table class="responsive features">
+                            <thead>
+                                <th>Hypervisor</th>
+                                <th>OS</th>
+                                <th># Simultaneous VMs</th>
+                                <th>License</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>VirtualBox</td>
+                                    <td label="OS">ALL</td>
+                                    <td label="# Simultaneous VMs">Any <sup>(1</sup></td>
+                                    <td label="License">Free</td>
+                                </tr>
+                                <tr>
+                                    <td>VMware Fusion</td>
+                                    <td label="OS">MacOS</td>
+                                    <td label="# Simultaneous VMs">Any <sup>(1</sup></td>
+                                    <td label="License">Required <sup>(2</sup></td>
+                                </tr>
+                                <tr>
+                                    <td>VMware Player</td>
+                                    <td label="OS">Linux, Windows</td>
+                                    <td label="# Simultaneous VMs">1</td>
+                                    <td label="License">Free for Personal Use</td>
+                                </tr>
+                                <tr>
+                                    <td>VMware Pro</td>
+                                    <td label="OS">Linux, Windows</td>
+                                    <td label="# Simultaneous VMs">Any <sup>(1</sup></td>
+                                    <td label="License">Required <sup>(2</sup></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ol>
+                            <li>The amount of system resources in your computer limit the practical number of simultaneous virtual machines.</li>
+                            <li>Students of Turku University are licensed to use this product, when participating in a course provided by Department of Future Technologies. Others need take care of the licensing by themselves.</li>
+                        </ol>
+                    </p>
+                    <h2>Seriously, No Recommendation?</h2>
+                    <p>Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
+                    <p>
+                            <table class="responsive proscons">
+                                <thead>
+                                    <th>Hypervisor</th>
+                                    <th>Pros</th>
+                                    <th>Cons</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>VirtualBox</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>Supports all OSes - you might have Mac and Windows, for example</li>
+                                                <li>No license concerns</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>Requires an extension for USB 2.0 (without it, USB 1.0 only) - but at least its free extension</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VMware Fusion</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>Works in MacOS</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>Works only in MacOS</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VMware Player</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>Exiting fullscreen always visible</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>Allows only 1 VM to run at any given time - but for studying, you may not need more.</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VMware Pro</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>(tba)</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>(tba)</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ol>
+                                <li>The amount of system resources in your computer limit the practical number of simultaneous virtual machines.</li>
+                                <li>Students of Turku University are licensed to use this product, when participating in a course provided by Department of Future Technologies. Others need take care of the licensing by themselves.</li>
+                            </ol>
+                        </p>
+                        <h3>What is the difference and which hypervisor should I choose?</h3>
+                    <p>The choice is up to you! Oracle VirtualBox is open-source software, which means that it can be used for free. It is also multi-platform, so it can be used in Windows, Linux and MacOS.</p>
+                    <p>VMware offers licenced software, which can be used when a licence is bought or provided e.g. by a university. VMware Workstation Pro can be used in Windows or Linux, while Fusion is for MacOS.</p>
+                    <p>VMware also offers a free version, Workstation Player, for Windows and Linux users. It does not have some of the advanced functionalities of Workstation pro, like the ability to run several virtual machines simultaneously, but for running one VM it works fine.</p>
+
+                </article>
+
+
+
+                <article>
+                    <h1 id="install">Installing a hypervisor on Windows</h1>
+                    <h2 id="windows-vmware">VMware Workstation Player & Pro (Windows)</h2>
+                    <ol>
+                        <li>Download the installer file from the links above. Make sure to download the Windows version.</li>
+                        <li>After the download has finished, open the VMware Workstation Pro or Player .exe file.</li>
+                        <li>Follow the installer prompts to complete the installation.</li>
+                    </ol>
+                    <p>Issues in downloading or installing VMware Workstation? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+
+
+                    <h2 id="windows-virtualbox">Oracle VirtualBox (Windows)</h2>
+                    <ol>
+                        <li>Download the installer from the VirtualBOx site.</li>
+                        <li>After the download has finished, double-click on the .exe file to start the installation.</li>
+                        <li>Your system might ask for installation permission several times during the process. Allow it to continue every time.</li>
+                        <li>Follow the installer prompts to complete the installation.</li>
+                    </ol>
+                    <p>Issues in downloading or installing Oracle VirtualBox? Visit their <a href="https://www.virtualbox.org/manual/ch02.html#installation_windows">manual</a> for further instructions.</p>
+
+                    <!-- macOS / fusion -->
+                    <h1 id="macos">Installing a hypervisor on macOS</h1>
+                    <h2 id="macos-vmware">VMware Fusion (macOS)</h2>
+                        <ol>
+                            <li>Download VMware Fusion Pro by clicking the download button on the site linked above. The VMware Fusion .dmg file is saved in your default download directory. </li>
+                            <li>After the download has finished, double click the downloaded file. A window opens.</li>
+                            <li>Double click on the VMware Fusion logo.</li>
+                            <li>Installing requires administrative privileges. Enter your user name and password when prompted.</li>
+                            <li>Wait for the initialization to complete and agree to the terms and conditions at the next prompt</li>
+                            <li>Enter the license key or choose the trial option.</li>
+                        </ol>
+                    <p>Issues in downloading or installing VMware Fusion? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                    
+                    <h1 id="linux">Linux instructions - coming soon!</h2>
+
+                    <h1 id="sec3">Profit</h1>
+                    <p>You are now ready to import your first virtual machine to your newly installed hypervisor.</p>
+
+                </article>
+            </main>
+        </div>
+    </div>
+    <!-- MAIN ENDS -->
+
+    <!-- If <footer> is nested inside "container-fluid" DIV, it screws up the layout. Close "conteiner-fluid", begin <footer> and start new boostrap layout within it. -->
+
+
+
+
+
+
+
+    <!-- FOOTER -------------------------------------------------------------->
+    <footer><!-- flex container -->
+        <div>
+            <img    class="footer-logo"
+            src="img/UTU_logo-white_EN_transparent.png">
+        </div>
+        <div><!-- flex container -->
+            <div>
+                © <a href="https://www.utu.fi">University of Turku</a>,
+                <a href="https://tech.utu.fi/en/">Department of Future  Technologies</a> 2019<br>
+                Brought to you by the <a href="https://gitlab.utu.fi/soft/ftdev/wikis/home">Course virtualization team</a> @ <a href="https://tech.utu.fi/fi/software-engineering/">SwDev laboratory</a>.
+            </div>
+            <div>
+                <a href="#">Documentation</a>
+                <a href="#">Statistics</a>
+                <a href="#">Support</a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>
