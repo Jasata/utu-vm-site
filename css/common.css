@@ -40,26 +40,7 @@ body
        go underneath it */
     padding-bottom:         calc(var(--footer-height) + 2.0rem);
 }
-a:link
-{
-    color:                  var(--link-color);
-    text-decoration:        none;
-}
-a:visited
-{
-    color:                  var(--link-color);
-    text-decoration:        none;
-}
-a:hover
-{
-    color:                  var(--text-color);
-    text-decoration:        none;
-}
-a:active
-{
-    color:                  var(--text-color);
-    text-decoration:        none;
-}
+
 /* Page basics END ***********************************************************/
 
 

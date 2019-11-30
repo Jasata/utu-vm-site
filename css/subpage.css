@@ -25,6 +25,29 @@ body
     /* Required by Bootstrap Scrollspy */
     position:               relative;
 }
+/* NOTE: Special article a:before {...} among 'article' selectors */
+a:link
+{
+    color:                  var(--link-color);
+    text-decoration:        none;
+}
+a:visited
+{
+    color:                  var(--link-color);
+    text-decoration:        none;
+}
+a:hover
+{
+    color:                  var(--text-color);
+    text-decoration:        underline dotted;
+}
+a:active
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+
+
 #navbar-logo
 /* ID for the UTU torch image */
 {
@@ -162,10 +185,6 @@ article > h3
     color:                  Black;
     font-size:              1.0em;
 }
-article > a:visited
-{
-    color:                  blue;
-}
 article > p
 {
     padding-bottom:         0px;
@@ -185,6 +204,16 @@ article > h1,h2,h3,h4,h5,h6
     padding-top:            90px;
     margin-top:             -90px;
     padding-bottom:         6px;
+}
+article a:before
+{
+    font-family:                FontAwesome;
+    content:                    "\f0c1";
+    display:                    inline-block;
+    padding-right:              3px;
+    vertical-align:             middle;
+    font-weight:                500;
+    color:                      var(--utu-purple);
 }
 
 /***********************************************************************
@@ -436,4 +465,31 @@ only screen and (max-width: 760px),
     }
 }
 
+
+/***********************************************************************
+ * important note box
+ */
+div.shoutbox
+{
+    border:                     1px solid #888;
+    border-radius:              7px;
+    padding:                    1.0rem;
+    -webkit-box-shadow:         0 10px 6px -6px #777;
+    -moz-box-shadow:            0 10px 6px -6px #777;
+    box-shadow:                 0 10px 6px -6px #777;
+    margin-bottom:              16px;
+    display:                    table;
+}
+div.shoutbox > *
+{
+    display:                    table-cell;
+    vertical-align:             middle;
+}
+div.shoutbox > i:first-child
+{
+    font-size:                  2rem;
+    color:                      var(--utu-purple);
+    vertical-align:             middle;
+    padding:                    0 16px 0 2px;
+}
 /* EOF */
