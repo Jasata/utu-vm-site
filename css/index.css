@@ -44,7 +44,8 @@ body
     margin:                 auto;
     margin-top:             5%;
     padding:                10px 25px;
-    box-shadow:             0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    box-shadow:             0 1px 3px rgba(0,0,0,0.12),
+                            0 1px 2px rgba(0,0,0,0.24);
     border-left:            10px solid var(--imenu-bg-color);
     -webkit-transition:     0.5s ease-out;
     -moz-transition:        0.5s ease-out;
@@ -54,7 +55,8 @@ body
 .imenu-item:hover
 {
     border-left:            10px solid var(--utu-purple);
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    box-shadow:             0 14px 28px rgba(0,0,0,0.25),
+                            0 10px 10px rgba(0,0,0,0.22);
 }
 .imenu:last-child
 {
@@ -99,7 +101,9 @@ body
 
 .header-title
 {
-    font-family:            'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family:            'Franklin Gothic Medium',
+                            'Arial Narrow',
+                            Arial, sans-serif;
     --y-scaler:             1.2;
     font-size:              3.6vw;
     font-weight:            700;
