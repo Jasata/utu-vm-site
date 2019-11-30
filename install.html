@@ -146,7 +146,7 @@
                     <p>
                         <ul>
                             <li>8 GB RAM (VM allocated 2 GB each)</li>
-                            <li>CPU with VT-x (we could not find any without it)</li>
+                            <li>CPU with VT-x (or choose VirtualBox)</li>
                             <li>16 GB free disk per VM</li>
                         </ul>
                     </p>
@@ -201,6 +201,7 @@
                     </p>
                     <h2>Seriously, No Recommendation?</h2>
                     <p>Nope. Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
+                    <!-- https://www.nakivo.com/blog/vmware-vs-virtual-box-comprehensive-comparison/ -->
                     <p>
                         <table class="responsive proscons">
                             <thead>
@@ -213,13 +214,15 @@
                                     <td>VirtualBox</td>
                                     <td label="Pros">
                                         <ul>
-                                            <li>Supports all OSes - you might have Mac and Windows, for example</li>
-                                            <li>No license concerns</li>
+                                            <li>Supports all OSes - you might have differnt kinds of devices, and using same in all of them can be nice.</li>
+                                            <li>No license concerns.</li>
+                                            <li>Only one to offer software virtualization - useful only if you have ancient CPU or no access to your BIOS.</li>
                                         </ul>
                                     </td>
                                     <td label="Cons">
                                         <ul>
-                                            <li>Requires an extension for USB 2.0 (without it, USB 1.0 only) - but at least its free extension</li>
+                                            <li>An extension pack needs to be installed for USB 2.0/3.0 (without it, USB 1.0 only) - but its free for personal and educational use, and you only need to install it once.</li>
+                                            <li>Video memory limited to 128 MB (VMware allows 2 GB).</li>
                                         </ul>
                                     </td>
                                 </tr>
@@ -246,6 +249,7 @@
                                     <td label="Cons">
                                         <ul>
                                             <li>Allows only 1 VM to run at any given time - but for studying, you may not need more.</li>
+                                            <li>No snapshots - you cannot roll back if you accidentally mess up the VM.</li>
                                         </ul>
                                     </td>
                                 </tr>
