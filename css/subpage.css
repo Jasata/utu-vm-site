@@ -88,7 +88,6 @@ span#navbar-title
 main
 {
     margin:                 1.0rem;
-    /* max-width:              727.5px; */
     width:                  100%;
     min-height:             320px;
     min-width:              var(--main-min-width);
@@ -378,7 +377,7 @@ table.responsive + ol
 {
     font-size:                  0.7em;
 }
-/* Responsiveness */
+/* Responsiveness by media query */
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)
@@ -496,8 +495,10 @@ only screen and (max-width: 760px),
     {
         max-width:              20%;
         width:                  60px;
-        background-color: chartreuse;
-        color: red;
+    }
+    table.proscons td
+    {
+        padding-left:           60px;
     }
 }
 
