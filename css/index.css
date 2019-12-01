@@ -4,8 +4,9 @@
 */
 :root
 {
-    --imenu-bg-color:        White; /* rgb(248, 248, 248); */
-    --imenu-title-color:     rgb(102, 102, 102);
+    --header-height:        9.0vw;
+    --imenu-bg-color:       White; /* rgb(248, 248, 248); */
+    --imenu-title-color:    rgb(102, 102, 102);
 }
 /*
 body
