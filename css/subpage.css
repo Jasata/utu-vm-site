@@ -221,15 +221,16 @@ article a:before
  *
  * DETAILS - SUMMARY  (HTML5 Widget)
  */
-details
-{
-    margin-left:            20px;
-}
-details > p
-{
-    padding-left:           20px;
-}
 details > summary
+/* Every details type and style, remove box */
+{
+    outline:                none;
+}
+details.showme
+{
+    margin-left:            0; /* 20px; */
+}
+details.showme > summary
 {
     /* Disable the annoying outline box over summary */
     outline:                none;
@@ -239,17 +240,17 @@ details > summary
 /*
  * Hide the ugly default triagle shape
  */
-details > summary::marker
+details.showme > summary::marker
 /* Standard way, but works in no-browser... */
 {
     display:                none;
 }
-details > summary:first-of-type
+details.showme > summary:first-of-type
 /* for Firefox... */
 {
     list-style-type:        none;
 }
-details > summary::-webkit-details-marker
+details.showme > summary::-webkit-details-marker
 /* for Chrome... */
 {
     display:                 none;
@@ -257,18 +258,28 @@ details > summary::-webkit-details-marker
 /*
  * Prefix with + / - signs
  */
-summary:after
+details.showme > summary:after
 {
-    content:                "+";
-    float:                  left;
-    font-weight:            bold;
-    padding:                0;
-    text-align:             center;
-    width:                  20px;
+    /*
+    fa fa-ellipsis-v	&#xf142; OK, REALLY confusing
+    fa fa-exclamation-circle	&#xf06a; OK, but confusing
+    fa fa-eye	        &#xf06e; OK
+    fa fa-puzzle-piece	&#xf12e; OK
+    fa fa-search-plus	&#xf00e; OK but ugly
+    fa fa-thumb-tack	&#xf08d; OK
+    fa fa-wpexplorer	&#xf2de; X
+    */
+    font-family:                FontAwesome;
+    content:                    "\f06e";
+    float:                      left;
+  /*  font-weight:                bold; */
+    padding:                    0;
+/*    text-align:                 center; */
+    width:                      22px;
 }
-details[open] summary:after
+details[open].showme > summary:after
 {
-    content:                "-";
+    content:                    "\f070";
 }
 
 
