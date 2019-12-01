@@ -125,4 +125,78 @@ only screen and (max-width: 760px),
     }
 }
 
+
+/*** DETAILS.install-os ********************************************/
+.install-os
+{
+    margin:                     0 0 15px 0;
+    padding:                    0;
+    width:                      100%;
+}
+.install-os > summary
+{
+    background-color:           var(--utu-purple);
+    font-size:                  2.0rem;
+    font-weight:                bold;
+    color:                      White;
+    height:                     35px;
+    overflow:                   hidden;
+}
+.install-os:nth-of-type(2) > summary { padding-left: 20px; }
+.install-os:nth-of-type(3) > summary { padding-left: 40px; }
+.install-os:nth-of-type(1):before
+{
+    font-family:                FontAwesome;
+    font-size:                  2.0rem;
+    content:                    "\f17c";
+    float:                      left;
+    font-weight:                bold;
+    padding:                    0 20px 0 0;
+    text-align:                 center;
+    width:                      20px;
+}
+.install-os:nth-of-type(2):before
+{
+    font-family:                FontAwesome;
+    font-size:                  2.0rem;
+    content:                    "\f179";
+    float:                      left;
+    font-weight:                bold;
+    padding:                    0 20px 0 0;
+    text-align:                 center;
+    width:                      20px;
+}
+.install-os:nth-of-type(3):before
+{
+    font-family:                FontAwesome;
+    font-size:                  2.0rem;
+    content:                    "\f17a";
+    float:                      left;
+    font-weight:                bold;
+    padding:                    0 20px 0 0;
+    text-align:                 center;
+    width:                      20px;
+}
+.install-os > details[open] > summary:after
+{
+    content:                    "-";
+}
+
+
+.hypervisor
+{
+    margin:                     10px 0 10px 0;
+    padding:                    0;
+    margin-left:                30px;
+    width:                      calc(100% - 35px);
+}
+.hypervisor > summary
+{
+    background-color:           Silver;
+    font-size:                  1.2rem;
+    font-weight:                bold;
+    color:                      White;
+    height:                     30px;
+}
+
 /* EOF */

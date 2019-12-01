@@ -82,7 +82,7 @@
                     <h1 id="requirements"><i class="fa fa-check-square-o"></i>Requirements</h1>
                     <div class="shoutbox">
                         <i class="fa fa-exclamation-triangle"></i>
-                        <div>You <u>must</u> have enabled virtualization (VT-x) from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details.</div>
+                        <div>You must have enabled virtualization (VT-x) from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details. If it is not possible, you need software virtualization. Choose VirtualBox, its the only one that has it.</div>
                     </div>
                     <table class="responsive os-hypervisor">
                         <tbody>
@@ -116,26 +116,27 @@
                                     <strong>You need to choose one of:</strong>
                                     <details>
                                         <summary>VirtualBox</summary>
-                                        <p>Free hypervisor, developed by Oracle Corporation. Supports Linux, MacOS and Windows platforms.</p>
-                                        <p><a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">VirtualBox Homepage</a></p>
-                                        <p><a target="_blank" href="https://en.wikipedia.org/wiki/VirtualBox">Wikipedia</a></p>
+                                        <p>Free hypervisor, developed by Oracle Corporation. Supports Linux, MacOS and Windows platforms.<br/>
+                                        <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">VirtualBox Homepage</a><br/>
+                                        <a target="_blank" href="https://en.wikipedia.org/wiki/VirtualBox">Wikipedia</a></p>
                                     </details>
                                     <details>
                                         <summary>VMware Fusion</summary>
-                                        <p>Licensed hypervisor developed by VMware for Intel based Macintosh computers.</p>
-                                        <p><a target="_blank" href="https://www.vmware.com/products/fusion/fusion-evaluation.html">VMware Fusion Homepage</a></p>
+                                        <p>Licensed hypervisor developed by VMware for Intel based Macintosh computers.<br/>
+                                        <a target="_blank" href="https://www.vmware.com/products/fusion/fusion-evaluation.html">VMware Fusion Homepage</a><br/>
+                                        <a target="_blank" href="https://en.wikipedia.org/wiki/VMware_Fusion">Wikpedia</a></p>
                                     </details>
                                     <details>
                                         <summary>VMware Workstation Player</summary>
-                                        <p>Limited use hypervisor developed by VMware. Free for personal use. Supports Linux and Windows platforms.</p>
-                                        <p><a target="_blank" href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">Vmware Workstation Player Homepage</a></p>
-                                        <p>Wikipedia</p>
+                                        <p>Limited use hypervisor developed by VMware. Free for personal use. Supports Linux and Windows platforms.<br/>
+                                        <a target="_blank" href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">Vmware Workstation Player Homepage</a><br/>
+                                        <a target="_blank" href="https://en.wikipedia.org/wiki/VMware_Workstation_Player">Wikipedia</a></p>
                                     </details>
                                     <details>
                                         <summary>VMware Workstation Pro</summary>
-                                        <p>tba. Support Linux and Windows platforms.</p>
-                                        <p><a target="_blank" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware Workstation Pro Homepage</a></p>
-                                        <p>Wikipedia</p>
+                                        <p>tba. Support Linux and Windows platforms.<br/>
+                                        <a target="_blank" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware Workstation Pro Homepage</a><br/>
+                                        <a target="_blank" href="https://en.wikipedia.org/wiki/VMware_Workstation">Wikipedia</a></p>
                                     </details>
                                 </td>
                             </tr>
@@ -282,36 +283,61 @@
                 <article>
                     <h1 id="install"><i class="fa fa-wrench"></i>Installing the Hypervisor</h1>
                     <p>Please select relevant instructions from below.</p>
-                    <h2>VMware Workstation Player & Pro (Windows)</h2>
-                    <ol>
-                        <li>Download the installer file from the links above. Make sure to download the Windows version.</li>
-                        <li>After the download has finished, open the VMware Workstation Pro or Player .exe file.</li>
-                        <li>Follow the installer prompts to complete the installation.</li>
-                    </ol>
-                    <p>Issues in downloading or installing VMware Workstation? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                    <details class="install-os">
+                        <summary>Linux</summary>
+                        <p><details class="hypervisor">
+                            <summary>VirtualBox</summary>
+                            VirtualBox instructions</p>
+                        </details>
+                        <details class="hypervisor">
+                            <summary>VMware Player & Pro</summary>
+                            VMware Player & Pro
+                        </details>
+                    </details>
+                    <details class="install-os">
+                        <summary>MacOS</summary>
+                        <details class="hypervisor">
+                            <summary>VirtualBox</summary>
+                            VirtualBox instructions
+                        </details>
+                        <details class="hypervisor">
+                            <summary>VMware Fusion</summary>
+                            <ol>
+                                <li>Download VMware Fusion Pro by clicking the download button on the site linked above. The VMware Fusion .dmg file is saved in your default download directory. </li>
+                                <li>After the download has finished, double click the downloaded file. A window opens.</li>
+                                <li>Double click on the VMware Fusion logo.</li>
+                                <li>Installing requires administrative privileges. Enter your user name and password when prompted.</li>
+                                <li>Wait for the initialization to complete and agree to the terms and conditions at the next prompt</li>
+                                <li>Enter the license key or choose the trial option.</li>
+                            </ol>
+                            <p>Issues in downloading or installing VMware Fusion? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                        </details>
+                    </details>
+                    <details class="install-os">
+                        <summary>Windows</summary>
+                        <details class="hypervisor">
+                            <summary>VirtualBox</summary>
+                            <ol>
+                                <li>Download the installer from the VirtualBOx site.</li>
+                                <li>After the download has finished, double-click on the .exe file to start the installation.</li>
+                                <li>Your system might ask for installation permission several times during the process. Allow it to continue every time.</li>
+                                <li>Follow the installer prompts to complete the installation.</li>
+                            </ol>
+                            <p>Issues in downloading or installing Oracle VirtualBox? Visit their <a href="https://www.virtualbox.org/manual/ch02.html#installation_windows">manual</a> for further instructions.</p>
+                        </details>
+                        <details class="hypervisor">
+                            <summary>VMware Player & Pro</summary>
+                            <ol>
+                                <li>Download the installer file from the links above. Make sure to download the Windows version.</li>
+                                <li>After the download has finished, open the VMware Workstation Pro or Player .exe file.</li>
+                                <li>Follow the installer prompts to complete the installation.</li>
+                            </ol>
+                            <p>Issues in downloading or installing VMware Workstation? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                            VMware Player & Pro
+                        </details>
+                    </details>
 
 
-                    <h2 id="windows-virtualbox">Oracle VirtualBox (Windows)</h2>
-                    <ol>
-                        <li>Download the installer from the VirtualBOx site.</li>
-                        <li>After the download has finished, double-click on the .exe file to start the installation.</li>
-                        <li>Your system might ask for installation permission several times during the process. Allow it to continue every time.</li>
-                        <li>Follow the installer prompts to complete the installation.</li>
-                    </ol>
-                    <p>Issues in downloading or installing Oracle VirtualBox? Visit their <a href="https://www.virtualbox.org/manual/ch02.html#installation_windows">manual</a> for further instructions.</p>
-
-                    <!-- macOS / fusion -->
-                    <h1 id="macos">Installing a hypervisor on macOS</h1>
-                    <h2 id="macos-vmware">VMware Fusion (macOS)</h2>
-                        <ol>
-                            <li>Download VMware Fusion Pro by clicking the download button on the site linked above. The VMware Fusion .dmg file is saved in your default download directory. </li>
-                            <li>After the download has finished, double click the downloaded file. A window opens.</li>
-                            <li>Double click on the VMware Fusion logo.</li>
-                            <li>Installing requires administrative privileges. Enter your user name and password when prompted.</li>
-                            <li>Wait for the initialization to complete and agree to the terms and conditions at the next prompt</li>
-                            <li>Enter the license key or choose the trial option.</li>
-                        </ol>
-                    <p>Issues in downloading or installing VMware Fusion? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
                 </article>
 
 

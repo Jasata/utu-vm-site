@@ -310,5 +310,10 @@ table td { border: 1px solid Red; border-collapse: collapse; }
         padding-right:          6px;
         padding-left:           6px;
     }
+}
 
+
+footer
+{
+    position:               relative !important;
 }

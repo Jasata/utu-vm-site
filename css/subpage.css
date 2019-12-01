@@ -223,11 +223,11 @@ article a:before
  */
 details
 {
-    margin-left:            30px;
+    margin-left:            20px;
 }
 details > p
 {
-    padding-left:           30px;
+    padding-left:           20px;
 }
 details > summary
 {

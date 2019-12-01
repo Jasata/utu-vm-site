@@ -172,7 +172,6 @@ footer > div:nth-child(2) > div:nth-child(2) > a:last-child:after
     {
         height:                 var(--footer-sm-height);
         min-height:             var(--footer-sm-height);
-/*        background-color: salmon; */
     }
     footer > div:nth-child(1) > img
     {
