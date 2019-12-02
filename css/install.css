@@ -174,7 +174,7 @@ only screen and (max-width: 760px),
     content:                    "\f179";
     float:                      left;
     font-weight:                normal;
-    padding:                    0 20px 0 0;
+    padding:                    6px 20px 0 0;
     text-align:                 center;
     width:                      20px;
 }
@@ -185,14 +185,15 @@ only screen and (max-width: 760px),
     content:                    "\f17a";
     float:                      left;
     font-weight:                normal;
-    padding:                    0 20px 0 0;
+    padding:                    6px 20px 0 0;
     text-align:                 center;
     width:                      20px;
 }
+/*
 .install-os > details[open] > summary:after
 {
     content:                    "";
-}
+}*/
 /*
  * Hide the ugly default triagle shape
  */
