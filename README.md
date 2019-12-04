@@ -7,62 +7,49 @@ Simple set of pages for university's course virtualization project.
  - **Simplicity** (in implementation, site structure, usage...).
  - Minimal dependencies (see "Third-party components").
  - Small scope (Only the essentials are "opened up" on asite. More detailed information will be provided by linking to GitLab/PDF documents).
- - **Two-step principle**. All actions (primary use cases) should be accomplished in no more than two clicks.
+ - **Two-step principle**. All actions (primary use cases) should be accomplished in no more than two clicks. One to choose the relevant subpage, another to open a folding information container (if necessary).
  
 Primary use cases (in order of importance)
  1. Student retrieves course-specific virtual machine image
  2. Student comes to learn how to set his or her personal system up to run virtual images
- 3. Student comes to resolve and issue and/or report it
+ 3. Student comes to resolve an issue and/or report it
  4. Lecturer uploads a new course-specifc virtual machine
  5. Lecturer comes to learn about this tool and its benefits
  6. Lecturer seeks technical documentation on how to create new virtual images
  7. Lecturer comes to seek assistance / help
 
-### Release Schedule
 
-Non-binding target to have release candidate 1 ready by the end of November 2019.
+## Server
 
-## Server Requirements
-
-### Virtual server instance from UTU-Shop
-
- - **Usage:** Opetusvälineet
- - **Domain:** https://vm.utu.fi
- - **Server name:**
- - **SSL:** YES
- - **Operating system:** Ubuntu server LTS
- - **Prod/Test/Dev:** Tuotanto
- - **Port openings:** HTTPS
- - **Backup level:** 2 viikkoa
- - **Admin account:** jasata
- - **Other admins:** jmjmak; samnuutt
- - **Additional information:** Install flask/uwsgi and python 3.7+
+Original idea about separate virtual server has been dropped in favor of expanding ftdev resources and reserving an additional DNS name for it (https://vm.utu.fi).
 
 ## Functional Specifications
 
- - Publishes a download list (in the downloads -page) of .OVA files located in Gitlab repository.
- - List to be published and additional information encoded in publish-in-vm.utu.fi.md (subject to change). This file is periodically retrieved and automatically parsed to regenerate the download list.
- - Download links point to vm.utu.fi for click counting and redirection.
+ - Publishes a download list (in the downloads -page) of available .OVA files.
+ - OVA metadata will be a combination of extracted XML from OVA and uploader specified information.
+ - Download statistics will be based on webserver log files, which will be generated into (some kind of) graph/report nightly and made available in separate statistics page.
 
- - Generates statistics daily and publises it in a separate page.
-
- - If feasible, sources documentationfor students from Gitlab. However, simplicity and readability takes precedence over automation. This is for students and primary goal is to serve them, not us.
- - Documentation for lecturers is redirected to Gitlab wiki.
+### Items That Need Technical Solutions
+ - Authentication (without actual identification). Perhaps Kerberos module relying on UTU authentication.
+ - Integration of distribution builder - as a separate Build Manager agent, providing a REST API interface.
+- Will the REST API to Build Manager be routed via nginx for Kerberos authentication?
 
 ## Third-party components
 
 Frontend
  - Bootstrap 4.3.1
  - JQuery 3.4.1
- - (CDN) Awesome Fonts 4
+ - Awesome Fonts 4.7.0
  
 Backend
  - nginx
- - Python 3.7.x (part of Debian10)
+ - Python 3.7.x (part of Debian 10)
  - Flask & UWSGI
  - SQLite3
 
-## Installation
+## Installation (Raspberry Pi)
+
+Initial backend development will take place in Raspberry Pi and once suitable releasable version is ready, ftdev installation is undertaken.
 
 This short guide assumes that you will be installing the site code into a mini-webserver for development purposes. In that case, it is a convenience to have the files located in your home directory.
 
@@ -151,5 +138,5 @@ TIERS Equipement to borrow
 
 Tools for workstation
   - Visual Studio Code with Remote - SSH extension
-  - WinSCP (or does drag-n-drop via Visual Studio Code now work?)
+  - WinSCP (VSC drag'n-drop works only towards remote!)
 
