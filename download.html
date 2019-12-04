@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- https://www.w3schools.com/icons/icons_reference.asp -->
+<head>
+
+    <meta   charset="utf-8">
+    <meta   name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta   name="description"
+            content="">
+    <meta   name="author"
+            content="">
+
+    <title>Turku university - Course Virtual Machines</title>
+
+    <!-- Font Awesome 4.7.0 -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/subpage.css">
+    <link rel="stylesheet" href="css/install.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+</head>
+
+
+<body data-spy="scroll" data-target="#navbarContent" data-offset="70">
+
+    <nav class="navbar navbar-expand-md fixed-top navbar-light bg-white py-0">
+        <div class="container">
+            <a class="navbar-brand py-3" href=".">
+                <img id="navbar-logo" src="img/utu-torch-black.png">
+            </a><span id="navbar-title">Download</span>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav navbar-nav">
+                    <a class="nav-link p-3" href="#vms">VM Images</a>
+                    <a class="nav-link p-3" Href="#usb">USB Images</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <script>
+        $('.navbar-nav a').on('click', function()
+        {
+            $('.navbar-collapse').collapse('hide');
+        });
+    </script>
+
+
+
+
+
+
+    <!-- PAGE CONTENT -->
+    <div class="container-fluid">
+        <div class="row" id="content-row">
+            <main>
+
+
+                <nav class="site">
+                    <ol>
+                        <li><a href="index.html">UTU Virtual Machines</a></li>
+                        <li>Download</li>
+                    </ol>
+                </nav>
+
+                <!-- Executive summary -->
+                <article style="display: none;"></article>
+
+
+                <!-- ARTICLE Download list -->
+                <article>
+                    <h1 id="vms"><i class="fa fa-hdd-o"></i>Virtual Machines</h1>
+
+                    <table class="responsive">
+                        <thead>
+                            <tr>
+                                <th>Purpose</th>
+                                <th>Version</th>
+                                <th>Size</th>
+                                <th>Checksum (SHA1)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Java (generic)</td>
+                                <td>356</td>
+                                <td>1996267520</td>
+                                <td>a889307a9da4bf4ff1e8bb1e77e0153ca4f0206f</td>
+                                <td><a href="downloads/utuvm-java-356.ova">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Java (generic)</td>
+                                <td>408</td>
+                                <td>2002370560</td>
+                                <td>ef4f0a9c7aa836ff4a1de4114881da0022ecb88a</td>
+                                <td><a href="downloads/utuvm-java-408.ova">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>C/C++/Web/Mobile/Data Science/Declarative</td>
+                                <td>356</td>
+                                <td>1504153600</td>
+                                <td>54fbf17296d90cbda41eaa8322fc10690fd16ee3</td>
+                                <td><a href="downloads/utuvm-minimega-356.ova">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>C/C++/Web/Mobile/Data Science/Declarative</td>
+                                <td>408</td>
+                                <td>1516615680</td>
+                                <td>fc887ab1cd106ab183a5aab3f4af173531068bde</td>
+                                <td><a href="downloads/utuvm-minimega-408.ova">Download</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p></p>
+                    <h2>How to Import</h2>
+                    <details class="install-os">
+                            <summary>Linux</summary>
+                            <details class="install-hypervisor">
+                                <summary>VirtualBox</summary>
+                                <ol>
+                                    <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Linux_Downloads">Linux specific download page</a>.</li>
+                                    <li>Follow the instructions therein to install.</li>
+                                    <li>Navigate to <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">generic download page</a> and download VirtualBox Extension Pack</li>
+                                    <li>TBA (install extension pack)</li>
+                                </ol>
+                            </details>
+                            <details class="install-hypervisor">
+                                <summary>VMware Player & Pro</summary>
+                                VMware Player & Pro
+                            </details>
+                        </details>
+                        <details class="install-os">
+                            <summary>MacOS</summary>
+                            <details class="install-hypervisor">
+                                <summary>VirtualBox</summary>
+                                <ol>
+                                    <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">download page</a>.</li>
+                                    <li>Download VirtualBox for OS X Hosts <strong>and</strong> VirtualBox Extension Pack.</li>
+                                    <li>Double-click VirtualBox package to install.</li>
+                                    <li>Double-click Extension Pack to install.</li>
+                                </ol>
+                            </details>
+                            <details class="install-hypervisor">
+                                <summary>VMware Fusion</summary>
+                                <ol>
+                                    <li>Download VMware Fusion Pro by clicking the download button on the site linked above. The VMware Fusion .dmg file is saved in your default download directory. </li>
+                                    <li>After the download has finished, double click the downloaded file. A window opens.</li>
+                                    <li>Double click on the VMware Fusion logo.</li>
+                                    <li>Installing requires administrative privileges. Enter your user name and password when prompted.</li>
+                                    <li>Wait for the initialization to complete and agree to the terms and conditions at the next prompt</li>
+                                    <li>Enter the license key or choose the trial option.</li>
+                                </ol>
+                                <p>Issues in downloading or installing VMware Fusion? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                            </details>
+                        </details>
+                        <details class="install-os">
+                            <summary>Windows</summary>
+                            <details class="install-hypervisor">
+                                <summary>VirtualBox</summary>
+                                <ol>
+                                    <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">download page</a>.</li>
+                                    <li>Download VirtualBox for Windows Hosts <strong>and</strong> VirtualBox Extension Pack.</li>
+                                    <li>Double-click VirtualBox package to install.</li>
+                                    <li>Double-click Extension Pack to install.</li>
+                                </ol>
+                                <p>Issues in downloading or installing Oracle VirtualBox? Visit their <a href="https://www.virtualbox.org/manual/ch02.html#installation_windows">manual</a> for further instructions.</p>
+                            </details>
+                            <details class="install-hypervisor">
+                                <summary>VMware Player & Pro</summary>
+                                <ol>
+                                    <li>Download the installer file from the links above. Make sure to download the Windows version.</li>
+                                    <li>After the download has finished, open the VMware Workstation Pro or Player .exe file.</li>
+                                    <li>Follow the installer prompts to complete the installation.</li>
+                                </ol>
+                                <p>Issues in downloading or installing VMware Workstation? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                            </details>
+                        </details>
+
+                </article>
+
+
+
+
+
+                <article>
+                    <h1 id="usb"><i class="	fa fa-usb"></i>USB Operating Systems</h1>
+                    <table class="responsive">
+                        <thead>
+                            <tr>
+                                <th>Purpose</th>
+                                <th>Version</th>
+                                <th>Size</th>
+                                <th>Checksum (SHA1)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Java (generic)</td>
+                                <td>356</td>
+                                <td>2216374659</td>
+                                <td>9088b7c1a30a5d2e8abb92697199045832c169e9</td>
+                                <td><a href="downloads/utuvm-usb-java-356.zip">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Java (generic)</td>
+                                <td>408</td>
+                                <td>2227312991</td>
+                                <td>15f69b088cee258c983ded4b3929b747b47a9d8a</td>
+                                <td><a href="downloads/utuvm-usb-java-408.zip">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>Java (generic)</td>
+                                <td>412</td>
+                                <td>2348158976</td>
+                                <td>b236dc44bd5ced29d128dcc7191b3d2930824d5c</td>
+                                <td><a href="downloads/utuvm-usb-java-412.img">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>C/C++/Web/Mobile/Data Science/Declarative</td>
+                                <td>356</td>
+                                <td>1726122925</td>
+                                <td>bf37bdb37e7b15ed21ec170baa086d2792bb66fd</td>
+                                <td><a href="downloads/utuvm-usb-minimega-356.zip">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td>C/C++/Web/Mobile/Data Science/Declarative</td>
+                                <td>408</td>
+                                <td>1743321017</td>
+                                <td>e35d3e02d8fc0383716a7a53cbb9d067eed819df</td>
+                                <td><a href="downloads/utuvm-usb-minimega-408.zip">Download</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p></p>
+                    <h2>How to Run</h2>
+                    <p>TBA : write to USB, reboot (smart boot disabled)</p>
+                    <details class="install-os">
+                        <summary>Linux</summary>
+                        <details class="install-hypervisor">
+                            <summary>VirtualBox</summary>
+                            <ol>
+                                <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Linux_Downloads">Linux specific download page</a>.</li>
+                                <li>Follow the instructions therein to install.</li>
+                                <li>Navigate to <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">generic download page</a> and download VirtualBox Extension Pack</li>
+                                <li>TBA (install extension pack)</li>
+                            </ol>
+                        </details>
+                        <details class="install-hypervisor">
+                            <summary>VMware Player & Pro</summary>
+                            VMware Player & Pro
+                        </details>
+                    </details>
+                    <details class="install-os">
+                        <summary>MacOS</summary>
+                        <details class="install-hypervisor">
+                            <summary>VirtualBox</summary>
+                            <ol>
+                                <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">download page</a>.</li>
+                                <li>Download VirtualBox for OS X Hosts <strong>and</strong> VirtualBox Extension Pack.</li>
+                                <li>Double-click VirtualBox package to install.</li>
+                                <li>Double-click Extension Pack to install.</li>
+                            </ol>
+                        </details>
+                        <details class="install-hypervisor">
+                            <summary>VMware Fusion</summary>
+                            <ol>
+                                <li>Download VMware Fusion Pro by clicking the download button on the site linked above. The VMware Fusion .dmg file is saved in your default download directory. </li>
+                                <li>After the download has finished, double click the downloaded file. A window opens.</li>
+                                <li>Double click on the VMware Fusion logo.</li>
+                                <li>Installing requires administrative privileges. Enter your user name and password when prompted.</li>
+                                <li>Wait for the initialization to complete and agree to the terms and conditions at the next prompt</li>
+                                <li>Enter the license key or choose the trial option.</li>
+                            </ol>
+                            <p>Issues in downloading or installing VMware Fusion? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                        </details>
+                    </details>
+                    <details class="install-os">
+                        <summary>Windows</summary>
+                        <details class="install-hypervisor">
+                            <summary>VirtualBox</summary>
+                            <ol>
+                                <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">download page</a>.</li>
+                                <li>Download VirtualBox for Windows Hosts <strong>and</strong> VirtualBox Extension Pack.</li>
+                                <li>Double-click VirtualBox package to install.</li>
+                                <li>Double-click Extension Pack to install.</li>
+                            </ol>
+                            <p>Issues in downloading or installing Oracle VirtualBox? Visit their <a href="https://www.virtualbox.org/manual/ch02.html#installation_windows">manual</a> for further instructions.</p>
+                        </details>
+                        <details class="install-hypervisor">
+                            <summary>VMware Player & Pro</summary>
+                            <ol>
+                                <li>Download the installer file from the links above. Make sure to download the Windows version.</li>
+                                <li>After the download has finished, open the VMware Workstation Pro or Player .exe file.</li>
+                                <li>Follow the installer prompts to complete the installation.</li>
+                            </ol>
+                            <p>Issues in downloading or installing VMware Workstation? Visit their <a href="https://kb.vmware.com/s/article/2014097">support site</a> for further instructions.</p>
+                        </details>
+                    </details>
+    
+                </article>
+
+
+
+
+
+
+
+            </main>
+        </div>
+    </div>
+    <!-- MAIN ENDS -->
+
+
+
+
+    <!-- If <footer> is nested inside "container-fluid" DIV, it screws up the layout. Close "conteiner-fluid", begin <footer> and start new boostrap layout within it. -->
+    <!-- FOOTER -------------------------------------------------------------->
+    <footer><!-- flex container -->
+        <div>
+            <img    class="footer-logo"
+            src="img/UTU_logo-white_EN_transparent.png">
+        </div>
+        <div><!-- flex container -->
+            <div>
+                © <a href="https://www.utu.fi">University of Turku</a>,
+                <a href="https://tech.utu.fi/en/">Department of Future  Technologies</a> 2019<br>
+                Brought to you by the <a href="https://gitlab.utu.fi/soft/ftdev/wikis/home">Course virtualization team</a> @ <a href="https://tech.utu.fi/fi/software-engineering/">SwDev laboratory</a>.
+            </div>
+            <div>
+                <a href="#">Documentation</a>
+                <a href="#">Statistics</a>
+                <a href="#">Support</a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>

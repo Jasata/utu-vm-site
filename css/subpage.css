@@ -206,16 +206,81 @@ article > h1,h2,h3,h4,h5,h6
     margin-top:             -90px;
     padding-bottom:         6px;
 }
-article a:before
+article a::before
 {
     font-family:                FontAwesome;
     content:                    "\f0c1";
     display:                    inline-block;
     padding-right:              3px;
-    vertical-align:             middle;
+    vertical-align:             top;
     font-weight:                500;
     color:                      var(--utu-purple);
 }
+article a[href$=".pdf"]::before
+{
+    font-family:                FontAwesome;
+    content:                    "\f1c1";
+    display:                    inline-block;
+    padding-right:              3px;
+    vertical-align:             top;
+    font-weight:                500;
+    color:                      var(--utu-purple);
+}
+article a[href$=".doc"]::before,
+article a[href$=".docx"]::before
+{
+    font-family:                FontAwesome;
+    content:                    "\f1c2";
+    display:                    inline-block;
+    padding-right:              3px;
+    vertical-align:             top;
+    font-weight:                500;
+    color:                      var(--utu-purple);
+}
+article a[href$=".zip"]::before
+{
+    font-family:                FontAwesome;
+    content:                    "\f1c6";
+    display:                    inline-block;
+    padding-right:              3px;
+    vertical-align:             top;
+    font-weight:                500;
+    color:                      var(--utu-purple);
+}
+article a[href$=".ova"]::before
+{
+    font-family:                FontAwesome;
+    content:                    "\f0a0";
+    display:                    inline-block;
+    padding-right:              3px;
+    vertical-align:             top;
+    font-weight:                500;
+    color:                      var(--utu-purple);
+}
+article a[href^="mailto:"]::before
+{
+    font-family:                FontAwesome;
+    content:                    "\f0e0";
+    display:                    inline-block;
+    padding-right:              3px;
+    vertical-align:             top;
+    font-weight:                500;
+    color:                      var(--utu-purple);
+}
+/*
+a[href^="/"]::before, a[href^=".."]::before
+/* internal relative link * /
+{
+    font-family:                FontAwesome;
+    content:                    "\f???";
+    display:                    inline-block;
+    padding-right:              3px;
+    vertical-align:             top;
+    font-weight:                500;
+    color:                      var(--utu-purple);
+}
+*/
+
 
 /***********************************************************************
  *
