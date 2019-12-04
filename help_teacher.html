@@ -50,6 +50,13 @@
             </div>
         </div>
     </nav>
+    <script>
+        $('.navbar-nav a').on('click', function()
+        {
+            $('.navbar-collapse').collapse('hide');
+        });
+    </script>
+
 
 
 
@@ -64,8 +71,12 @@
                         <li>Help for Lecturers</li>
                     </ol>
                 </nav>
+                <!-- EXECUTIVE SUMMARY -->
                 <article>
                     <p>This page aims to collect all useful information relevant to lecturers for creating their own course specific virtual machines. For any issues that are not found here, please contact us for personalized assistance.</p>
+                </article>
+
+                <article>
                     <h1 id="create">Creating the Virtual Machine image</h1>
                     <p>help stuff</p>
                     <h1 id="install">Installing Course Specific Software</h1>

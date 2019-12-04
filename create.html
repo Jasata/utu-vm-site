@@ -49,9 +49,15 @@
             </div>
         </div>
     </nav>
+    <script>
+        $('.navbar-nav a').on('click', function()
+        {
+            $('.navbar-collapse').collapse('hide');
+        });
+    </script>
 
 
-    
+
 
 
 
@@ -65,8 +71,13 @@
                         <li>How to Create a Virtual Machine</li>
                     </ol>
                 </nav>
+
+                <!-- EXECUTIVE SUMMARY -->
                 <article>
                     <p>This is the executive summary (or abstract) paragraph. This should be very very short and only highlight what this page is generally for.</p>
+                </article>
+
+                <article>
                     <p>Page should be divided into three sections.
                         <details>
                             <summary>Prerequisites and Limitations</summary>

@@ -12,7 +12,6 @@
     --link-color:           var(--utu-purple);
     --content-bg-color:     White;
     --header-bg-color:      White;
-    --header-height:        9.0vw;
     --footer-link-color:    var(--utu-purple);
     --footer-bg-color:      Black;
     --footer-height:        5.5vw;
@@ -30,7 +29,6 @@ body
 {
     background-color:       var(--page-bg-color);
 
-    position:               relative;
     margin:                 0;
     padding:                0;
     /* Allow footer to stay at the bottom by making the page
@@ -40,26 +38,7 @@ body
        go underneath it */
     padding-bottom:         calc(var(--footer-height) + 2.0rem);
 }
-a:link
-{
-    color:                  var(--link-color);
-    text-decoration:        none;
-}
-a:visited
-{
-    color:                  var(--link-color);
-    text-decoration:        none;
-}
-a:hover
-{
-    color:                  var(--text-color);
-    text-decoration:        none;
-}
-a:active
-{
-    color:                  var(--text-color);
-    text-decoration:        none;
-}
+
 /* Page basics END ***********************************************************/
 
 
@@ -193,7 +172,6 @@ footer > div:nth-child(2) > div:nth-child(2) > a:last-child:after
     {
         height:                 var(--footer-sm-height);
         min-height:             var(--footer-sm-height);
-/*        background-color: salmon; */
     }
     footer > div:nth-child(1) > img
     {
@@ -230,14 +208,8 @@ footer > div:nth-child(2) > div:nth-child(2) > a:last-child:after
 
 }
 
-/* TODO: Media query for 499 px or smaller */
 @media only screen and (max-width: 500px)
 {
-    .imenu
-    {
-        margin:                 0;
-        
-    }
     footer > div:nth-child(1) > img
     {
         display:                none;
@@ -252,6 +224,7 @@ footer > div:nth-child(2) > div:nth-child(2) > a:last-child:after
         margin-right:           0.2em;
         margin-left:            0.3em;
     }
-
 }
+
+
 /* EOF */

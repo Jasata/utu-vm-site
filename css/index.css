@@ -4,16 +4,104 @@
 */
 :root
 {
-    --imenu-bg-color:        White; /* rgb(248, 248, 248); */
-    --imenu-title-color:     rgb(102, 102, 102);
+    --header-height:        9.0vw;
+    --imenu-bg-color:       White; /* rgb(248, 248, 248); */
+    --imenu-title-color:    rgb(102, 102, 102);
 }
 /*
 body
 {
 }
 */
+a:link
+{
+    color:                  var(--link-color);
+    text-decoration:        none;
+}
+a:visited
+{
+    color:                  var(--link-color);
+    text-decoration:        none;
+}
+a:hover
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:active
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
 
-/* Index Menu */
+
+/*** HEADER ***************************************************/
+/**************************************************************/
+.header-row
+{
+    height:                 var(--header-height);
+    max-height:             var(--header-height);
+    min-height:             60px;
+    margin-bottom:          3.0vw;
+    background-color:       var(--header-bg-color);
+}
+.header-row:after
+{
+    content:                '';
+    width:                  100%;
+    height:                 10px;
+    left:                   0px;
+    bottom:                 0;
+    top:                    -10px;
+    margin:                 0;
+    z-index:                -1;
+    position:               relative; /* absolute; */
+    -moz-box-shadow:        0px 5px 6px
+                            rgba(0,0,0,.3); /* FF3.5+ */
+    -webkit-box-shadow:     0px 5px 6px
+                            rgba(0,0,0,.3); /* Saf3.0+, Chrome */
+    box-shadow:             0px 5px 6px
+                            rgba(0,0,0,.3); /* Opera 10.5, IE 9.0 */
+}
+.header-title
+{
+    font-family:            'Franklin Gothic Medium',
+                            'Arial Narrow',
+                            Arial, sans-serif;
+    --y-scaler:             1.2;
+    font-size:              3.6vw;
+    font-weight:            700;
+    text-transform:         uppercase;
+    transform:              scale(1, var(--y-scaler));
+    -webkit-transform:      scale(1, var(--y-scaler)); /* Safari and Chrome */
+    -moz-transform:         scale(1, var(--y-scaler)); /* Firefox */
+    -ms-transform:          scale(1, var(--y-scaler)); /* IE 9+ */
+    -o-transform:           scale(1, var(--y-scaler)); /* Opera */
+}
+.header-site-logo
+{
+    max-height:             100%;
+    max-width:              100%;
+    height:                 100%;
+}
+
+/* vertical center with flexbox        */
+/* Used by index.html title */
+.vflexbox {
+    display:                -webkit-box;
+    display:                -ms-flexbox;
+    display:                flex;
+    height:                 100%;
+    -webkit-box-align:      center;
+    -ms-flex-align:         center;
+    align-items:            center;
+    -webkit-box-pack:       center;
+    -ms-flex-pack:          center;
+    justify-content:        center;
+}
+
+/*** Index Menu ***********************************************/
+/**************************************************************/
 .imenu
 {
     padding:                10px;
@@ -44,7 +132,8 @@ body
     margin:                 auto;
     margin-top:             5%;
     padding:                10px 25px;
-    box-shadow:             0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    box-shadow:             0 1px 3px rgba(0,0,0,0.12),
+                            0 1px 2px rgba(0,0,0,0.24);
     border-left:            10px solid var(--imenu-bg-color);
     -webkit-transition:     0.5s ease-out;
     -moz-transition:        0.5s ease-out;
@@ -54,7 +143,8 @@ body
 .imenu-item:hover
 {
     border-left:            10px solid var(--utu-purple);
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    box-shadow:             0 14px 28px rgba(0,0,0,0.25),
+                            0 10px 10px rgba(0,0,0,0.22);
 }
 .imenu:last-child
 {
@@ -62,7 +152,7 @@ body
     padding-bottom:          2rem;
 }
 
-/* STUDENTS and LECTURERS titles for respective segments */
+/* STUDENTS and TEACHER titles for respective segments */
 .imenu-title
 {
     color:                  var(--imenu-title-color);
@@ -97,35 +187,6 @@ body
 }
 
 
-.header-title
-{
-    font-family:            'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    --y-scaler:             1.2;
-    font-size:              3.6vw;
-    font-weight:            700;
-    text-transform:         uppercase;
-    transform:              scale(1, var(--y-scaler));
-    -webkit-transform:      scale(1, var(--y-scaler)); /* Safari and Chrome */
-    -moz-transform:         scale(1, var(--y-scaler)); /* Firefox */
-    -ms-transform:          scale(1, var(--y-scaler)); /* IE 9+ */
-    -o-transform:           scale(1, var(--y-scaler)); /* Opera */
-}
-
-.header-row
-{
-    height:                 var(--header-height);
-    max-height:             var(--header-height);
-    min-height:             60px;
-    margin-bottom:          3.0vw;
-    background-color:       var(--header-bg-color);
-}
-
-.header-site-logo
-{
-    max-height:             100%;
-    max-width:              100%;
-    height:                 100%;
-}
 
 div.imenu > a:link
 {
@@ -200,19 +261,5 @@ div.imenu > a:visited
     }
 }
 
-/* vertical center with flexbox        */
-/* Used by index.html title */
-.vflexbox {
-    display:                -webkit-box;
-    display:                -ms-flexbox;
-    display:                flex;
-    height:                 100%;
-    -webkit-box-align:      center;
-    -ms-flex-align:         center;
-    align-items:            center;
-    -webkit-box-pack:       center;
-    -ms-flex-pack:          center;
-    justify-content:        center;
-}
 
 /* EOF */

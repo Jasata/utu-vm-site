@@ -1,0 +1,245 @@
+/*
+ * Styles specific to install.html
+ * Initial version
+ * 30.11.2019 // Jani Tammi <jasata@utu.fi>
+ *
+ *      Variables from common.css and subpage.css
+ */
+
+
+
+/*
+ * Override-classes for table.responsive
+ */
+
+/*** Features style *****************************************************/
+table.features th:nth-of-type(n+3),
+table.features tr > td:nth-of-type(n+3)
+/* 2 left most columns centered */
+{
+    text-align:                 center;
+}
+table.features tr > td:first-child
+/* Hypervisor name shall not wrap */
+{
+    white-space:                nowrap;
+}
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)
+{
+    table.features th:nth-of-type(n+3),
+    table.features tr > td:nth-of-type(n+3)
+    /* TODO: Selector to all TD's ... */
+    {
+        text-align:                 left;
+    }
+    table.features tr > td:first-child
+    /* First cell becomes "header" */
+    {
+        padding-left:               4px;
+        background-color:           var(--utu-purple-dark);
+        color:                      White;
+        font-weight:                bold;
+    }
+    table.features tr
+    /* TR border becomes unnecessary when first cell is "header" */
+    {
+        border:                     none;
+        background:                 var(--content-bg-color) !important;
+    }
+}
+/*** proscons ***********************************************************/
+table.proscons > thead > tr > th:nth-of-type(n+2)
+{
+    padding-left:               26px;
+}
+table.proscons td
+{
+    vertical-align:             top;
+}
+table.proscons tr > td:first-child
+/* Hypervisor name shall not wrap */
+{
+    white-space:                nowrap;
+}
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)
+{
+    table.proscons tr > td:first-child
+    /* First cell becomes "header" */
+    {
+        padding-left:               4px;
+        background-color:           var(--utu-purple-dark);
+        color:                      White;
+        font-weight:                bold;
+    }
+    table.proscons tr
+    /* TR border becomes unnecessary when first cell is "header" */
+    {
+        border:                     none;
+        background:                 var(--content-bg-color) !important;
+    }
+    table.proscons td:before
+    {
+        max-width:                  20%;
+        width:                      50px;
+    }
+    table.proscons td
+    {
+        padding-left:               60px;
+    }
+}
+
+/*** OS and Hypervisor segment ******************************************/
+table.os-hypervisor
+{
+    margin-bottom:                  16px;
+}
+table.os-hypervisor td
+{
+    vertical-align:                 text-top;
+    width:                          50%;
+    border:                         none;
+}
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)
+{
+    table.os-hypervisor,
+    table.os-hypervisor thead,
+    table.os-hypervisor tbody,
+    table.os-hypervisor th,
+    table.os-hypervisor td,
+    table.os-hypervisor tr
+    /* Force table to not be like tables anymore */
+    {
+        display:                    block;
+        border:                     none;
+    }
+    table.os-hypervisor td
+    {
+        padding-left:               6px;
+        width:                      100%;
+    }
+}
+
+
+/*** DETAILS.install-os ********************************************/
+.install-os
+{
+    margin:                     0 0 20px 0;
+    padding:                    0;
+    width:                      100%;
+}
+.install-os > summary
+{
+    outline:                    none;
+    background-color:           var(--utu-purple);
+    font-size:                  2.2rem;
+    font-weight:                bold;
+    color:                      White;
+    height:                     34px; /*auto; /* 35px; */
+    overflow:                   hidden;
+    text-shadow:                95vw -1.0rem rgba(255,255,255, 0.3);
+
+}
+.install-os > summary:hover
+{
+    text-shadow:                0 0 rgba(255,255,255, 1.0);
+    -webkit-transition:         0.6s ease-out;
+    -moz-transition:            0.6s ease-out;
+    -o-transition:              0.6s ease-out;
+    transition:                 0.6s ease-out;
+}
+.install-os:nth-of-type(1) > summary { padding-left: 10px; }
+.install-os:nth-of-type(2) > summary { padding-left: 30px; }
+.install-os:nth-of-type(3) > summary { padding-left: 50px; }
+.install-os:nth-of-type(1):before
+{
+    font-family:                FontAwesome;
+    font-size:                  2.0rem;
+    content:                    "\f17c";
+    float:                      left;
+    font-weight:                normal;
+    padding:                    6px 20px 0 0;
+    text-align:                 center;
+    width:                      20px;
+}
+.install-os:nth-of-type(2):before
+{
+    font-family:                FontAwesome;
+    font-size:                  2.0rem;
+    content:                    "\f179";
+    float:                      left;
+    font-weight:                normal;
+    padding:                    6px 20px 0 0;
+    text-align:                 center;
+    width:                      20px;
+}
+.install-os:nth-of-type(3):before
+{
+    font-family:                FontAwesome;
+    font-size:                  2.0rem;
+    content:                    "\f17a";
+    float:                      left;
+    font-weight:                normal;
+    padding:                    6px 20px 0 0;
+    text-align:                 center;
+    width:                      20px;
+}
+/*
+.install-os > details[open] > summary:after
+{
+    content:                    "";
+}*/
+/*
+ * Hide the ugly default triagle shape
+ */
+.install-os > summary::marker
+/* Standard way, but works in no-browser... */
+{
+    display:                    none;
+}
+.install-os > summary:first-of-type
+/* for Firefox... */
+{
+    list-style-type:            none;
+}
+.install-os > summary::-webkit-details-marker
+/* for Chrome... */
+{
+    display:                    none;
+}
+
+.hypervisor
+{
+    margin:                     10px 0 10px 10px;
+    padding:                    0;
+    margin-left:                30px;
+    width:                      calc(100% - 35px);
+}
+.hypervisor > summary
+{
+    outline:                    none;
+    background-color:           Silver;
+    font-size:                  1.2rem;
+    font-weight:                bold;
+    color:                      White;
+    height:                     30px;
+}
+.hypervisor > summary:hover
+{
+    background-color:           var(--utu-purple);
+    -webkit-transition:         0.6s ease-out;
+    -moz-transition:            0.6s ease-out;
+    -o-transition:              0.6s ease-out;
+    transition:                 0.6s ease-out;
+}
+.hypervisor > details[open] > summary
+{
+    background-color:           var(--utu-purple);
+}
+
+/* EOF */

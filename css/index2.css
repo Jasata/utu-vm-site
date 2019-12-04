@@ -1,0 +1,319 @@
+/*
+ * Styles for rewritten index page
+ * Use on top of 'common.css'
+ *
+ *  01.12.2019 // Jani Tammi <jasata@utu.fi>
+ */
+:root
+{
+    --header-height:            8.0vw;
+    --header-height-min:        60px; /* => @media 750px */
+    --header-title-size:        3.6vw;
+    --header-title-size-min:    27px; /* <= from 750px media trigger */
+    --header-shadow-height:     10px;
+    --imenu-bg-color:           White; /* rgb(248, 248, 248); */
+    --imenu-title-color:        rgb(102, 102, 102);
+}
+body
+/* Index page does not tolerate BODY padding. Do it in MAIN */
+{
+    padding:                    0 !important;
+}
+/* FOOTER gat sets its own A styles */
+a:link
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:visited
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:hover
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+a:active
+{
+    color:                  var(--text-color);
+    text-decoration:        none;
+}
+
+/*** HEADER ***************************************************/
+/**************************************************************/
+header
+{
+    position:               fixed;
+    top:                    0;
+    width:                  100%;
+    height:                 var(--header-height);
+    max-height:             var(--header-height);
+    margin-bottom:          3.0vw;
+    background-color:       var(--header-bg-color);
+    display:                flex;
+    flex-direction:         row;
+    flex-wrap:              nowrap;
+    justify-content:        space-between;
+    align-items:            center;
+    /* so-called "clearfix" hack to deal with content
+       that is taller than conteiner itself * /
+    overflow:               auto; /**/
+}
+header:after
+{
+    content:                '';
+    width:                  100%;
+    height:                 var(--header-shadow-height); /* 10px; */
+    left:                   0px;
+    bottom:                 0;
+    margin:                 0;
+    z-index:                -1;
+    position:               absolute;
+    -moz-box-shadow:        0px 5px 6px
+                            rgba(0,0,0,.3); /* FF3.5+ */
+    -webkit-box-shadow:     0px 5px 6px
+                            rgba(0,0,0,.3); /* Saf3.0+, Chrome */
+    box-shadow:             0px 5px 6px
+                            rgba(0,0,0,.3); /* Opera 10.5, IE 9.0 */
+}
+header > img
+{
+    height:                 100%;
+    flex-grow:              0;
+}
+header > img:nth-child(2)
+/* Smaller, without text, initially hidden */
+{
+    display:                none;
+}
+header > div
+{
+    flex-grow:              1;
+    /* Title text style */
+    font-family:            'Franklin Gothic Medium',
+                            'Arial Narrow',
+                            Arial, sans-serif;
+    font-size:              var(--header-title-size);
+    font-weight:            700;
+    text-transform:         uppercase;
+    --y-scaler:             1.2;
+    transform:              scale(1, var(--y-scaler));
+    -webkit-transform:      scale(1, var(--y-scaler)); /* Safari and Chrome */
+    -moz-transform:         scale(1, var(--y-scaler)); /* Firefox */
+    -ms-transform:          scale(1, var(--y-scaler)); /* IE 9+ */
+    -o-transform:           scale(1, var(--y-scaler)); /* Opera */
+    /* center text */
+    display:                -webkit-box;
+    display:                -ms-flexbox;
+    display:                flex;
+    -webkit-box-align:      center;
+    -ms-flex-align:         center;
+    align-items:            center;
+    -webkit-box-pack:       center;
+    -ms-flex-pack:          center;
+    justify-content:        center;
+}
+main
+/* Reserve space for the HEADER and FOOTER */
+{
+    padding-top:            calc(
+                                var(--header-height) +
+                                var(--header-shadow-height) +
+                                30px
+                            );
+    /* TODO: I don't think the below works... */
+    padding-bottom:         calc(
+                                var(--footer-height) +
+                                16 px
+                            );
+}
+
+@media only screen and (max-width: 750px)
+/* Fix header, don't shrink it any more */
+{
+    header
+    {
+        height:                 var(--header-height-min);
+        max-height:             var(--header-height-min);
+        min-height:             var(--header-height-min);
+    }
+    header > div
+    {
+        font-size:              var(--header-title-size-min);
+    }
+    body
+    /* freeze also main margin */
+    {
+        padding-top:             calc(
+                                    var(--header-height-min) +
+                                    var(--header-shadow-height) +
+                                    30px
+                                );
+    }
+}
+@media only screen and (max-width: 500px)
+{
+    /* Swap header logo image to a smaller one */
+    header > img:nth-child(1)
+    {
+        display:                none;
+    }
+    header > img:nth-child(2)
+    {
+        display:                block;
+    }
+    header > div
+    /* Sqeeze header title text some more */
+    {
+        font-size:              calc(var(--header-title-size-min) - 7px);
+    }
+}
+
+/*** MAIN *****************************************************/
+/**************************************************************/
+main
+{
+    width:                  100%;
+    display:                flex;
+    flex-direction:         row;
+    flex-wrap:              wrap;
+    justify-content:        center;
+    align-items:            flex-start;
+}
+article
+{
+    flex-grow:              1;
+    width:                  40vw;
+    min-width:              320px;
+    margin:                 3.0vw;
+    padding:                10px 10px 20px 10px;
+    border-radius:          10px;
+    background-color:       var(--imenu-bg-color);
+    -webkit-box-shadow:     0 10px 6px -6px #777;
+    -moz-box-shadow:        0 10px 6px -6px #777;
+    box-shadow:             0 10px 6px -6px #777;
+}
+article > div
+/* "Student" / "Teacher" texts in menu ARTICLE */
+{
+    color:                  var(--imenu-title-color);
+    font-family:            Verdana, Geneva, Tahoma, sans-serif;
+    font-size:              calc(15px + 1.4vw);
+    font-weight:            bolder;
+    text-transform:         uppercase;
+    text-shadow:            5.0rem 1.0rem rgb(245,245,245);
+    margin-left:            15px;
+    margin-right:           15px;
+    margin-bottom:          25px;
+}
+@media only screen and (max-width: 750px)
+{
+    article > div
+    /*  Title shall shrink no more
+        @media max-width (=750px) * font-size vw (=1.4vw/%) + base (=15px)
+        = 750 * 0.014 + 15 = 25.5 ~= 26px */
+    {
+        font-size:              26px;
+    }
+}
+@media only screen and (max-width: 500px)
+{
+    article > div
+    {
+        font-size:              18px;
+    }
+    article
+    {
+        border-radius:          0;
+        margin:                 0;
+    }
+}
+
+/*** imenu items ********************************************************/
+/*
+table { border: 1px solid Red; border-collapse: collapse; }
+table td { border: 1px solid Red; border-collapse: collapse; }
+*/
+.imenu-item
+{
+    font-size:              0.8rem;
+    font-weight:            bold;
+    border-radius:          5px;
+    background:             var(--imenu-bg-color);
+    width:                  100%;
+    margin:                 auto;
+    margin-top:             5%;
+    padding:                10px 25px 10px 8px;
+    box-shadow:             0 1px 3px rgba(0,0,0,0.12),
+                            0 1px 2px rgba(0,0,0,0.24);
+    border-left:            10px solid var(--imenu-bg-color);
+    -webkit-transition:     0.5s ease-out;
+    -moz-transition:        0.5s ease-out;
+    -o-transition:          0.5s ease-out;
+    transition:             0.5s ease-out;
+}
+.imenu-item:hover
+{
+    border-left:            10px solid var(--utu-purple);
+    box-shadow:             0 14px 28px rgba(0,0,0,0.25),
+                            0 10px 10px rgba(0,0,0,0.22);
+}
+.imenu-item i
+/* meni item icon */
+{
+    font-size:              4.5vw;
+    padding-top:            0.5vw;
+    padding-left:           0.2vw;
+    padding-right:          20px;
+}
+.imenu-item td[rowspan] + td
+/* menu item label - take as much room as possible */
+{
+    width:                  100%;
+    font-size:              calc(8px + 1.5vw);
+}
+.imenu-item tr:nth-of-type(2) > td
+/* Supplementing text under menu item label */
+{
+    font-size:              calc(6px + 0.8vw);
+    font-weight:            normal;
+}
+@media only screen and (max-width: 750px)
+{
+    .imenu-item td[rowspan] + td
+    {
+        font-size:              19px;   /* @750 * 1.5vw + 8px */
+    }
+    .imenu-item i
+    /* TODO: Recalculate!! */
+    {
+        font-size:              34px;
+        padding-top:            4px;
+        padding-left:           2px;
+    }
+    .imenu-item tr:nth-of-type(2) > td
+    {
+        font-size:              12px;
+    }
+}
+@media only screen and (max-width: 500px)
+{
+    .imenu-item td[rowspan] + td
+    {
+        font-size:              14px;   /* @750 * 1.5vw + 8px */
+    }
+    .imenu-item i
+    {
+        font-size:              28px;
+        padding-right:          6px;
+        padding-left:           6px;
+    }
+}
+
+
+footer
+{
+    position:               relative !important;
+}
