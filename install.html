@@ -14,7 +14,7 @@
     <title>Turku university - Course Virtual Machines</title>
 
     <!-- Font Awesome 4.7.? -->
-    <link   href="fonts/font-awesome.min.css"
+    <link   href="css/font-awesome.min.css"
             rel="stylesheet">
     <link   rel="stylesheet"
             href="css/bootstrap.min.css">
@@ -293,12 +293,17 @@
 
 
                 <article>
+                    <!-- this works here ... -->
+                    <span class="fa-stack fa-lg" style="background: Pink">
+                        <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                        <i class="fa fa-linux fa-stack-1x"></i>
+                    </span>
                     <h1 id="install"><i class="fa fa-wrench"></i>Installing the Hypervisor</h1>
                     <p>Please select relevant instructions from below.</p>
                     <details class="install-os">
-                        <summary><span class="fa-stack fa-lg">
+                        <summary><span class="fa-stack">
                                 <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
-                                <i class="fa fa-linux fa-stack-1x"></i>
+                                <i class="fa fa-linux fa-stack-1x" style="color: Black;"></i>
                               </span>Linux</summary>
                         <details class="hypervisor">
                             <summary>VirtualBox</summary>
