@@ -86,7 +86,7 @@
                     <h1 id="requirements"><i class="fa fa-check-square-o"></i>Requirements</h1>
                     <div class="shoutbox">
                         <i class="fa fa-exclamation-triangle"></i>
-                        <div>You must have enabled virtualization (VT-x) from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details. If it is not possible, you need software virtualization. Choose VirtualBox, its the only one that has it.</div>
+                        <div>You must have enabled virtualization (VT-x or AMD-v) from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details. If it is not possible, you need software virtualization. Choose VirtualBox, its the only one that has it.</div>
                     </div>
                     <table class="responsive os-hypervisor">
                         <tbody>
@@ -121,24 +121,28 @@
                                     <details>
                                         <summary>VirtualBox</summary>
                                         <p>Free hypervisor, developed by Oracle Corporation. Supports Linux, MacOS and Windows platforms.<br/>
+                                        Versions 6.0.10 or newer are supported.<br/>
                                         <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">VirtualBox Homepage</a><br/>
                                         <a target="_blank" href="https://en.wikipedia.org/wiki/VirtualBox">Wikipedia</a></p>
                                     </details>
                                     <details>
                                         <summary>VMware Fusion</summary>
                                         <p>Licensed hypervisor developed by VMware for Intel based Macintosh computers.<br/>
+                                        Versions 11.0 or newer are supported.<br/>
                                         <a target="_blank" href="https://www.vmware.com/products/fusion/fusion-evaluation.html">VMware Fusion Homepage</a><br/>
                                         <a target="_blank" href="https://en.wikipedia.org/wiki/VMware_Fusion">Wikpedia</a></p>
                                     </details>
                                     <details>
                                         <summary>VMware Workstation Player</summary>
-                                        <p>Limited use hypervisor developed by VMware. Free for personal use. Supports Linux and Windows platforms.<br/>
+                                        <p>Limited use version of the VMware Pro, developed by VMware. Free for non-commercial use. Supports Linux and Windows platforms.<br/>
+                                        Versions 15.1 or newer are supported.<br/>
                                         <a target="_blank" href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">Vmware Workstation Player Homepage</a><br/>
                                         <a target="_blank" href="https://en.wikipedia.org/wiki/VMware_Workstation_Player">Wikipedia</a></p>
                                     </details>
                                     <details>
                                         <summary>VMware Workstation Pro</summary>
-                                        <p>tba. Support Linux and Windows platforms.<br/>
+                                        <p>Licensed and full-featured version of the VMware Player. Supports Linux and Windows platforms.<br/>
+                                        Versions 15.1 or newer are supported.<br/>
                                         <a target="_blank" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware Workstation Pro Homepage</a><br/>
                                         <a target="_blank" href="https://en.wikipedia.org/wiki/VMware_Workstation">Wikipedia</a></p>
                                     </details>
@@ -150,8 +154,8 @@
                     <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than the default requirements listed here. Exceptional course specific requirements are listed with each downloadable VM image.</p>
                     <p>
                         <ul>
-                            <li>8 GB RAM (VM allocated 2 GB each)</li>
-                            <li>CPU with VT-x (or choose VirtualBox)</li>
+                            <li>8 GB RAM<br/><i>Each VM is allocated 2 GB</i></li>
+                            <li>CPU with VT-x or AMD-v capability<br/><i>Or choose VirtualBox</i></li>
                             <li>16 GB free disk per VM</li>
                         </ul>
                     </p>
@@ -170,7 +174,7 @@
                                 <th>Hypervisor</th>
                                 <th>OS</th>
                                 <th># Simultaneous VMs</th>
-                                <th>License</th>
+                                <th>License<br/><span style="font-size: 60%; margin-top: 4px;">(see below)</span></th>
                             </thead>
                             <tbody>
                                 <tr>
@@ -189,7 +193,7 @@
                                     <td>VMware Player</td>
                                     <td label="OS">Linux, Windows</td>
                                     <td label="# Simultaneous VMs">1</td>
-                                    <td label="License">Free for Personal Use</td>
+                                    <td label="License">Free for non-commercial Use</td>
                                 </tr>
                                 <tr>
                                     <td>VMware Pro</td>
@@ -201,9 +205,12 @@
                         </table>
                         <ol>
                             <li>The amount of system resources in your computer limit the practical number of simultaneous virtual machines.</li>
-                            <li>Students of Turku University are licensed to use this product, when participating in a course provided by Department of Future Technologies. Others need take care of the licensing by themselves.</li>
+                            <li>Students of Turku University are licensed to use this product, <i>when participating in a course provided by Department of Future Technologies</i>. Others need take care of the licensing by themselves.</li>
                         </ol>
                     </p>
+                    <h2>About Licenses</h2>
+                    <p>Turku University Department of Future Technologies (DFT) has acquired WMware licenses for all students <i>of Turku University</i>, who take part in <u>any course offered by DFT</u>. This license is valid for the duration of the course and does not allow other usage.</p>
+                    <p>If the above condition does not apply - the course is not offered by DFT or you wish to use virtualization for your own purposes - your free alternatives are either WMware Player (for non-commercial use) or VirtualBox (free for any use).</p>
                     <h2>Seriously, No Recommendation?</h2>
                     <p>Nope. Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
                     <!-- https://www.nakivo.com/blog/vmware-vs-virtual-box-comprehensive-comparison/ -->
@@ -221,12 +228,12 @@
                                         <ul>
                                             <li>Supports all OSes - you might have differnt kinds of devices, and using same in all of them can be nice.</li>
                                             <li>No license concerns.</li>
-                                            <li>Only one to offer software virtualization - useful only if you have ancient CPU or no access to your BIOS.</li>
+                                            <li>Only one to offer both hardware and software virtualization - can be useful if you have an ancient CPU or no access to your BIOS.</li>
                                         </ul>
                                     </td>
                                     <td label="Cons">
                                         <ul>
-                                            <li>An extension pack needs to be installed for USB 2.0/3.0 (without it, USB 1.0 only) - but its free for personal and educational use, and you only need to install it once.</li>
+                                            <li>An extension pack needs to be installed for USB 2.0/3.0 (without it, USB 1.0 only) - but its free for personal and educational use and you only need to install it once.</li>
                                             <li>Video memory limited to 128 MB (VMware allows 2 GB).</li>
                                         </ul>
                                     </td>
@@ -291,7 +298,12 @@
                         <summary>Linux</summary>
                         <details class="hypervisor">
                             <summary>VirtualBox</summary>
-                            VirtualBox instructions
+                            <ol>
+                                <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Linux_Downloads">Linux specific download page</a>.</li>
+                                <li>Follow the instructions therein to install.</li>
+                                <li>Navigate to <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">generic download page</a> and download VirtualBox Extension Pack</li>
+                                <li>TBA (install extension pack)</li>
+                            </ol>
                         </details>
                         <details class="hypervisor">
                             <summary>VMware Player & Pro</summary>
@@ -302,7 +314,12 @@
                         <summary>MacOS</summary>
                         <details class="hypervisor">
                             <summary>VirtualBox</summary>
-                            VirtualBox instructions
+                            <ol>
+                                <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">download page</a>.</li>
+                                <li>Download VirtualBox for OS X Hosts <strong>and</strong> VirtualBox Extension Pack.</li>
+                                <li>Double-click VirtualBox package to install.</li>
+                                <li>Double-click Extension Pack to install.</li>
+                            </ol>
                         </details>
                         <details class="hypervisor">
                             <summary>VMware Fusion</summary>
@@ -322,10 +339,10 @@
                         <details class="hypervisor">
                             <summary>VirtualBox</summary>
                             <ol>
-                                <li>Download the installer from the VirtualBOx site.</li>
-                                <li>After the download has finished, double-click on the .exe file to start the installation.</li>
-                                <li>Your system might ask for installation permission several times during the process. Allow it to continue every time.</li>
-                                <li>Follow the installer prompts to complete the installation.</li>
+                                <li>Navigate to the <a target="_blank" href="https://www.virtualbox.org/wiki/Downloads">download page</a>.</li>
+                                <li>Download VirtualBox for Windows Hosts <strong>and</strong> VirtualBox Extension Pack.</li>
+                                <li>Double-click VirtualBox package to install.</li>
+                                <li>Double-click Extension Pack to install.</li>
                             </ol>
                             <p>Issues in downloading or installing Oracle VirtualBox? Visit their <a href="https://www.virtualbox.org/manual/ch02.html#installation_windows">manual</a> for further instructions.</p>
                         </details>
