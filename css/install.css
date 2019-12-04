@@ -137,14 +137,13 @@ only screen and (max-width: 760px),
 {
     outline:                    none;
     padding-left:               50px;
-    font-size:                  2.0rem;
+    font-size:                  1.5rem;
     font-weight:                bold;
     color:                      White;
     height:                     48px;
     /* border-radius is 1/2 of height */
-    border-radius:              24px 0 0 24px; 
+    border-radius:              24px 0 0 24px;
     background-color:           var(--utu-purple);
-    /* background:                 rgb(2,0,36); */
     background:                 linear-gradient(
                                     130deg, 
                                     rgba(100,68,148,1) 30%,
@@ -159,18 +158,6 @@ only screen and (max-width: 760px),
     -moz-transition:            0.6s ease-out;
     -o-transition:              0.6s ease-out;
     transition:                 0.6s ease-out;
-}
-.install-os::before
-/* White circle background for OS logo */
-{
-    display:                    inline-block;
-    position:                   absolute;
-    /* top and left do not work, for some reason */
-    transform:                  translate(10%,-15%);
-    color:                      White;
-    font-family:                FontAwesome;
-    font-size:                  3.0rem;
-    content:                    "\f111";
 }
 /*
  * Hide the ugly default triagle shape
@@ -190,16 +177,30 @@ only screen and (max-width: 760px),
 {
     display:                    none;
 }
-
+/*
+ * First solution - does NOT work in FireFox
+ * /
+.install-os::before
+/* White circle background for OS logo * /
+{
+    display:                    inline-block;
+    position:                   absolute;
+    /* top and left do not work, for some reason * /
+    transform:                  translate(10%,-15%);
+    color:                      White;
+    font-family:                FontAwesome;
+    font-size:                  3.0rem;
+    content:                    "\f111";
+}
 .install-os:nth-of-type(1) > summary::before
 {
     display:                    inline-block;
     position:                   absolute;
     transform:                  translate(-145%, -2%);
-    float:                      left;
     z-index:                    20;
     color:                      var(--utu-purple-dark);
     font-family:                FontAwesome;
+    font-weight:                normal;
     font-size:                  32px;
     content:                    "\f17c";
 }
@@ -208,10 +209,10 @@ only screen and (max-width: 760px),
     display:                    inline-block;
     position:                   absolute;
     transform:                  translate(-155%, 0%);
-    float:                      left;
     z-index:                    20;
     color:                      var(--utu-purple-dark);
     font-family:                FontAwesome;
+    font-weight:                normal;
     font-size:                  32px;
     content:                    "\f179";
 }
@@ -220,15 +221,37 @@ only screen and (max-width: 760px),
     display:                    inline-block;
     position:                   absolute;
     transform:                  translate(-145%, 0%);
-    float:                      left;
     z-index:                    20;
     color:                      var(--utu-purple-dark);
     font-family:                FontAwesome;
+    font-weight:                normal;
     font-size:                  30px;
     content:                    "\f17a";
 }
+*/
+/*
+ * SECOND SOLUTION (attempt) -  steal FontAwesome CSS directives
+ *                              for character stacking
+ *                              and embed them into ::before
+ * TODO: attribute based content:
+ * <details os="linux">...
+ */
+.install-os::before
+{
+    display:                    inline-block;
+    position:                   absolute;
+    /* top and left do not work, for some reason */
+    transform:                  translate(10%,-15%);
+    color:                      Red;
+    font-family:                FontAwesome;
+    font-size:                  46px; /* trial-and-error */
+    content:                    "\f111"; /* white filled circle */
+}
 
 
+
+
+/*** HYPERVISOR *************************************************************/
 .hypervisor
 {
     margin:                     10px 0 10px 10px;
