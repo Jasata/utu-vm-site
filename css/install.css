@@ -137,7 +137,7 @@ only screen and (max-width: 760px),
 {
     outline:                    none;
     padding-left:               50px;
-    font-size:                  1.5rem;
+    font-size:                  30px;
     font-weight:                bold;
     color:                      White;
     height:                     48px;
@@ -147,9 +147,9 @@ only screen and (max-width: 760px),
     background:                 linear-gradient(
                                     130deg, 
                                     rgba(100,68,148,1) 30%,
-                                    rgba(139,93,203,1) 100%
+                                    rgb(149, 114, 199) 100%
                                 );
-    text-shadow:                95vw -1.0rem rgba(255,255,255, 0.3);
+    text-shadow:                95vw 0.0rem rgba(255,255,255, 0.3);
 }
 .install-os > summary:hover
 {
@@ -177,89 +177,80 @@ only screen and (max-width: 760px),
 {
     display:                    none;
 }
-/*
- * First solution - does NOT work in FireFox
- * /
-.install-os::before
-/* White circle background for OS logo * /
-{
-    display:                    inline-block;
-    position:                   absolute;
-    /* top and left do not work, for some reason * /
-    transform:                  translate(10%,-15%);
-    color:                      White;
-    font-family:                FontAwesome;
-    font-size:                  3.0rem;
-    content:                    "\f111";
-}
+/* OS Logos for <summary> tags */
 .install-os:nth-of-type(1) > summary::before
 {
     display:                    inline-block;
     position:                   absolute;
-    transform:                  translate(-145%, -2%);
-    z-index:                    20;
-    color:                      var(--utu-purple-dark);
+    transform:                  translate(-46px, 3px);
+    content:                    '\20\f17c';
+    /* Do not strip whitespace */
+    white-space:                pre;
     font-family:                FontAwesome;
     font-weight:                normal;
     font-size:                  32px;
-    content:                    "\f17c";
+    color:                      var(--utu-purple-dark);
+    /* background circle */
+    width:                      42px;
+    height:                     42px;
+    -moz-border-radius:         21px;
+    -webkit-border-radius:      21px;
+    border-radius:              21px;
+    background-color:           White;
 }
 .install-os:nth-of-type(2) > summary::before
 {
     display:                    inline-block;
     position:                   absolute;
-    transform:                  translate(-155%, 0%);
-    z-index:                    20;
-    color:                      var(--utu-purple-dark);
+    transform:                  translate(-46px, 3px);
+    content:                    '\20\f179';
+    /* Do not strip whitespace */
+    white-space:                pre;
     font-family:                FontAwesome;
     font-weight:                normal;
     font-size:                  32px;
-    content:                    "\f179";
+    color:                      var(--utu-purple-dark);
+    /* background circle */
+    width:                      42px;
+    height:                     42px;
+    -moz-border-radius:         21px;
+    -webkit-border-radius:      21px;
+    border-radius:              21px;
+    background-color:           White;
 }
 .install-os:nth-of-type(3) > summary::before
 {
     display:                    inline-block;
     position:                   absolute;
-    transform:                  translate(-145%, 0%);
-    z-index:                    20;
-    color:                      var(--utu-purple-dark);
+    transform:                  translate(-46px, 3px);
+    content:                    '\20\f17a';
+    /* Do not strip whitespace */
+    white-space:                pre;
     font-family:                FontAwesome;
     font-weight:                normal;
     font-size:                  30px;
-    content:                    "\f17a";
-}
-*/
-/*
- * SECOND SOLUTION (attempt) -  steal FontAwesome CSS directives
- *                              for character stacking
- *                              and embed them into ::before
- * TODO: attribute based content:
- * <details os="linux">...
- */
-.install-os::before
-{
-    display:                    inline-block;
-    position:                   absolute;
-    /* top and left do not work, for some reason */
-    transform:                  translate(10%,-15%);
-    color:                      Red;
-    font-family:                FontAwesome;
-    font-size:                  46px; /* trial-and-error */
-    content:                    "\f111"; /* white filled circle */
+    color:                      var(--utu-purple-dark);
+    /* background circle */
+    width:                      42px;
+    height:                     42px;
+    -moz-border-radius:         21px;
+    -webkit-border-radius:      21px;
+    border-radius:              21px;
+    background-color:           White;
 }
 
 
 
 
 /*** HYPERVISOR *************************************************************/
-.hypervisor
+.install-hypervisor
 {
     margin:                     10px 0 10px 10px;
     padding:                    0;
     margin-left:                30px;
     width:                      calc(100% - 35px);
 }
-.hypervisor > summary
+.install-hypervisor > summary
 {
     outline:                    none;
     background-color:           Silver;
@@ -268,7 +259,7 @@ only screen and (max-width: 760px),
     color:                      White;
     height:                     30px;
 }
-.hypervisor > summary:hover
+.install-hypervisor > summary:hover
 {
     background-color:           var(--utu-purple);
     -webkit-transition:         0.6s ease-out;
@@ -276,7 +267,7 @@ only screen and (max-width: 760px),
     -o-transition:              0.6s ease-out;
     transition:                 0.6s ease-out;
 }
-.hypervisor > details[open] > summary
+.install-hypervisor[open] > summary
 {
     background-color:           var(--utu-purple);
 }
