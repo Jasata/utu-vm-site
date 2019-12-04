@@ -42,6 +42,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="nav navbar-nav">
+                    <a class="nav-link p-3" href="#introduction">Introduction</a>
                     <a class="nav-link p-3" href="#bios">BIOS</a>
                     <a class="nav-link p-3" href="#install">Hypervisor</a>
                     <a class="nav-link p-3" href="#addons">Add-ons</a>
@@ -63,26 +64,67 @@
                         <li>Getting Started</li>
                     </ol>
                 </nav>
+                <!-- EXECUTIVE SUMMARY -->
                 <article>
-                    <p>Getting started with virtual machines is straight forward and has very few steps - and you only need to do this once! These instructions should let you accomplish the required steps with ease and then proceed to download your first virtual machine.</p>
+                    <p>Getting started with virtual machines is straightforward and has very few steps - and you only need to do this once! These instructions should let you accomplish the required steps with ease and then proceed to download your first virtual machine.</p>
+                </article>
+
+                <!-- MAIN CONTENT -->
+                <article>
+                    <h1 id="introduction">What is this virtual machine stuff?</h1>
+                    <p>A virtual machine is an emulation of a computer system. Like a physical computer it can run an operating system and be used just like any other computer - the difference is that the "hardware" it runs on is created by a specific program, a hypervisor. In essence, a virtual machine is a computer inside a computer.</p>
+                    <p>And how does this benefit you? Virtual machines can be created, saved and passed between users. Through this site you can download a virtual machine image that contains pre-installed software and features, saving you the trouble of installing and configuring everything needed on a course separately. Just a couple of steps first!</p>
                     <h1 id="bios">Enable Virtualization from BIOS Settings</h1>
                     <p>All virtual machines run inside a program called <strong>hypervisor</strong>, which rely on a virtualization feature in your processor. Unfortunately this is not enabled by default.</p>
                     <p>To <strong>enter BIOS</strong> you need to restart your PC and press the appropriate key (usually ESC, DEL, F1, F2 or F10) during the start-up, before your operating system begins to load.</p>
                     <p>Virtualization is called either <strong>VT-x</strong> or <strong>AMD-V</strong>.</p>
                     <p>Once in your BIOS settings, first take a look at the system information page - some older PCs do not have a configuration for virtualization and simply list it in the first page as "supported". In such case, you don't need to do anything and can move to installing the hypervisor.</p>
-                    <img src="img/bios_vt-x_supported.png">
-                    <p>For the rest of us, the virtualization setting can often be found under ...</p>
-                    <h1 id="install">Install Hypervisor</h1>
-                    <p><strong>Which OS are you running?</strong> The operating system into which the hypervisor is installed into, is called <u>Host OS</u>, and the installation instructions differ slightly between Linux, MacOS and Windows.</p>
-                    <p>WE NEED SOME WAY TO DISPLAY ONLY RELEVANT CONTENT - maybe tabs? Jani will try to find something clean and simple...</p>
-                    <p><strong>Choose you hypervisor</strong> between Oracle's VirtualBox or VMWare's VMPlayer. (DO WE WANT TO RECOMMEND EITHER FOR CERTAIN OS'es? -> MacOS issues. How is Linux?)</p>
-                    
-                    <h1 id="addons">Install Add-Ons into the Hypervisor</h1>
-                    <p><stront>This step is necessary only for VirtualBox!</stront> Plain vanilla VirtualBox supports only USB 1.0, which is frankly speaking abysmally slow. In order to support USB 2.0, you need to download extension pack from Oracle's site (link) and install it.</p>
-                    <p>Linux: ???</p>
-                    <p>MacOS: ?!?!</p>
-                    <p>WINDOWS: Once the download has been completed, locate the extension pack and double-clik it. Follow the instructions of your hypervisor to complete.</p>
 
+                    
+                    <p><details class="showme">
+                        <summary>Show me an example of what it looks like...</summary>
+                        <img src="img/bios_vt-x_supported.png">
+                    </details></p>
+
+                    <p>For the rest of us, the virtualization setting can often be found under a tab labeled 'Advanced', 'System Configuration' or 'Security'.
+                        Once you have spotted a promising title, navigate to the tab in question. While the tab is open, use up and down arrow keys to select the virtualization setting and press the enter key.
+                        Choose 'Enabled', press enter and save the changes you made - the instructions are displayed at the top or bottom of your BIOS screen.
+                    </p>                    
+                    <p><details class="showme">
+                        <summary>Show me an example of what it looks like...</summary> 
+
+                    </details></p>
+
+                    <h1 id="install">Install a Hypervisor</h1>
+                    <p><strong>Which OS are you running?</strong> The operating system into which the hypervisor is installed into, is called <u>Host OS</u>, and the installation instructions differ slightly between Linux, MacOS and Windows.</p>
+                    <p><strong>Choose your hypervisor</strong> between Oracle's VirtualBox or VMWare's VMPlayer.</p>
+                        <!-- (DO WE WANT TO RECOMMEND EITHER FOR CERTAIN OS'es? -> MacOS issues. How is Linux?)-->
+                    <p><strong>Download and install the hypervisor.</strong> Download links are provided underneath, but for more detailed installation instructions and additional help, head to our <a href="install.html">Install Hypervisor</a> section.</p>
+                    <ul>
+                        <li><a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox Homepage</a></li>
+                        <li><a href="https://www.vmware.com/products/fusion/fusion-evaluation.html">VMware Fusion Homepage</a></li>
+                        <li><a href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">VMware Workstation Player Homepage</a></li>
+                        <li><a href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware Workstation Pro Homepage</a></li>
+                    </ul>
+
+                    <h1 id="addons">Install Add-Ons into the Hypervisor</h1>
+                    <p><strong>This step is necessary only for VirtualBox!</strong> Plain vanilla VirtualBox supports only USB 1.0, which is frankly speaking abysmally slow. In order to support USB 2.0, you need to download extension pack from <a href="https://www.virtualbox.org/wiki/Downloads">Oracle's site</a> and install it.</p>
+                    
+                    <p><strong>Want to have more detailed instructions?</strong> Look no further:</p>
+                    <p>
+                    <details>
+                        <summary>Linux</summary>
+                    </details>
+                    <details>
+                        <summary>MacOS</summary>
+                        Once you have downloaded the extension pack, run VirtualBox. From the <i>Tools</i> button, open the <i>Preferences</i> menu and choose the <i>Extensions</i> tab. Click on the <i>add</i> icon on the right of the Extension Packages field, browse to and choose the extension file pack you downloaded.
+                         Confirm to start the install and follow the installer's instructions.
+                    </details>
+                    <details>
+                        <summary>Windows</summary>
+                        Once the download has been completed, locate the extension pack and double-click on it. Follow the instructions of your hypervisor to complete.
+                    </details>
+                    </p>
                     <h1>All Done!</h1>
                     <p>Next you should go to the <a href="download.html">download page</a> to download a VM image and to follow the instructions there.</p>
                 </article>
