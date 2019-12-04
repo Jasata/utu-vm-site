@@ -164,7 +164,7 @@ only screen and (max-width: 760px),
 /* White circle background for OS logo */
 {
     display:                    inline-block;
-    position:                   absolute; /* static (*), relative, absolute, sticky */
+    position:                   absolute;
     /* top and left do not work, for some reason */
     transform:                  translate(10%,-15%);
     color:                      White;
