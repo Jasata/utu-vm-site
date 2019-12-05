@@ -84,7 +84,13 @@ a:active
     max-width:              100%;
     height:                 100%;
 }
-
+.header-site-logo2
+{
+    max-height:             100%;
+    max-width:              100%;
+    height:                 100%;
+    display:                none;
+}
 /* vertical center with flexbox        */
 /* Used by index.html title */
 .vflexbox {
@@ -173,10 +179,10 @@ a:active
     font-size:              1.3vw;
     font-weight:            normal;
     white-space:            nowrap;
-    /* ellipses not supported in your browser? I don't give a flying ... */
     text-overflow:          ellipsis;
     overflow:               hidden;
-    width: 100%;
+    width:                  100%;
+    position:               absolute;
 }
 .imenu-icon
 {
@@ -246,6 +252,18 @@ div.imenu > a:visited
 
 @media only screen and (max-width: 500px)
 {
+    .header-title
+    {
+        font-size:              1.0rem;
+    }
+    .header-site-logo
+    {
+        display:                none;
+    }
+    .header-site-logo2
+    {
+        display:                block;
+    }
     .col-sm-12
     {
         padding:                0;
