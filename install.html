@@ -94,10 +94,27 @@
                                     <strong>You can run it on:</strong>
                                     <details>
                                         <summary>Linux</summary>
-                                        <ul>
-                                            <li>Debian X</li>
-                                            <li>Ubuntu Y</li>
-                                        </ul>
+                                        <p>
+                                            <u>Virtualbox:</u>
+                                            <ul>
+                                                <li>Ubuntu 16.04, 14.04 LTS or 18.10</li>
+                                                <li>Debian 9</li>
+                                                <li>Oracle Linux 6 or 7</li>
+                                                <li>Redhat 6 or 7</li>
+                                                <li>Fedora 28 or 29</li>
+                                                <li>SUSE Linux Enterprise Server 12 ja 15</li>
+                                                <li>openSUSE</li>
+                                            </ul>
+                                            <u>VMvare Player or Pro:</u>
+                                            <ul>
+                                                <li>Ubuntu 15.04+</li>
+                                                <li>Red Hat Enterprise 6+</li>
+                                                <li>CentOS 7.0+</li>
+                                                <li>Oracle Linux 7.0+</li>
+                                                <li>openSUSE Leap 42.2+</li>
+                                                <li>Suse Linux 13+</li>
+                                            </ul>
+                                        </p>
                                     </details>
                                     <details>
                                         <summary>MacOS</summary>
@@ -110,10 +127,12 @@
                                         <summary>Windows</summary>
                                         <ul>
                                             <li>Windows 7 Home, Pro, Enterprise or Education</li>
-                                            <li>Windows 8 Home, Pro, Enterprise or Education</li>
+                                            <li>Windows 8 / 8.1 Home, Pro, Enterprise or Education</li>
                                             <li>Windows 10 Home, Pro, Enterprise or Education</li>
                                             <li><strong>Windows 10 S is not supported</strong></li>
+                                            <li>windows 2008 Server R2 or newer</li>
                                         </ul>
+                                        <p>Hypervisors for Windows have almost identical host OS support. You can consider this list valid for both VirtualBox and VMware Player/Pro.</p>
                                     </details>
                                 </td>
                                 <td>
@@ -154,31 +173,37 @@
                     <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than the default requirements listed here. Exceptional course specific requirements are listed with each downloadable VM image.</p>
                     <p>
                         <ul>
-                            <li>8 GB RAM (4 GB absolute minimum)<br/><i>Each VM is allocated 2 GB</i></li>
-                            <li>64-bit x86 CPU with VT-x or AMD-v capability<br/><i>Or choose VirtualBox for software virtualization</i></li>
+                            <li>4 GB RAM <i>(2 GB allocated for a VM)</i></li>
+                            <li>64-bit x86 CPU with VT-x or AMD-v capability</li>
                             <li>16 GB free disk per VM</li>
                         </ul>
                     </p>
                     <p>
                         <details class="showme">
                             <summary>Show me the requirement details</summary>
-                            <h3>Linux</h3>
-                            <p>TBA</p>
-                            <h3>MacOS</h3>
-                            <p>
-                                <strong>VirtualBox:</strong> MacOS 11.12 or newer and a system based on any <u>Intel</u> 64-bit CPU.<br/>
-                                <strong>VMware Fusion:</strong> MacOS 11.11 or newer. Any system based on CPU that has been released after 2011.
-                            </p>
-                            <h3>Windows</h3>
-                            <p>
-                                tba
-                            </p>
+                            <h3>Processors</h3>
+                            <p>All 64-bit x86 Intel and AMD processors that have been released after 2011, except:</p>
+                            <ul>
+                                <li><u>Intel Atom</u> processors based on the 2011 “Bonnell” micro-architecture (e.g. Atom Z670/Z650; Atom N570)</li>
+                                <li><u>Intel Atom</u> processors based on the 2012 “Saltwell” micro-architecture (e.g. Atom S1200, Atom D2700/D2500, Atom N2800/N2600)</li>
+                                <li><u>AMD processors</u> based on the “Llano” and “Bobcat” micro-architectures (e.g. code-named “Hondo”, “Ontario”, “Zacate”, “Llano”)</li>
+                            </ul>
+                            <p>To our knowledge, you cannot buy a new x86 PC any more that would not have virtualization support. Just don't buy those ARM based PCs and you should be fine. On the other hand, if you already have an old PC, you can't lose anything except little of your time to just try installing a hypervisor.</p>
+                            <h3>RAM</h3>
+                            <p>Standard virtual machines we use, are allocated 2 GB memory each. If you are running MacOS or Windows, you definitely want to have at least 2 GB for your host OS. You could get away with just 1 GB RAM left for your Linux host OS, but we'll make the 4 GB RAM as the absolute minimum. Recommended memory is 8 GB RAM, to use web browser and some other applications while the virual machine is running.</p>
+                            <h3>Disk Space</h3>
+                            <p>We quote you a value of 16 GB for each virtual machine so that you would not run out of disk space. The true disk consumption is much less, as each virtual machine comes with dynamically expanding virtual harddrives - they only need as much disk space as they contain actual data. Most of them need as little as 4 GB after being imported to your hypervisor.</p>
+                            <p>Unless your PC is full games, we don't expect disk space to be an issue.</p>
+                            <h3>Non-standard Course Virtuals</h3>
+                            <p>Some courses might require more resources than our standard allocates. If so, your teacher will inform you of those, and you can also find non-standard resource requirements listed with the downloadable images.</p>
                         </details>
                     </p>
                     <h2>I Want Something Else</h2>
+                    <div class="three-columns">
                     <p>Virtual machines can be run on most available hypervisors, but we provide support only for the ones listed in this page. You are of course free to use whatever hypervisor you feel most comfortable with - provided that you can import <a target="_blank" href="https://en.wikipedia.org/wiki/Open_Virtualization_Format">OVA (version 2)</a> images from the <a href="download.html">download page</a>.</p>
                     <p><strong>Secondly</strong>, you can try using an USB drive based solution and boot your machine into it whenevr you start with the course studies. You can find the USB images from the <a href="download.html#usb">download page</a> along with the instructions on how to write them into your USB drive.</p>
                     <p><strong>Finally</strong>, there is always the option that you ask for the course specific list of required software from your teacher and just install and configure them directly into your PC. If you choose that option, these pages cannot offer you anything useful.</p>
+                    </div>
                 </article>
 
 
@@ -226,8 +251,8 @@
                         </ol>
                     </p>
                     <h2>About Licenses</h2>
-                    <p>Turku University Department of Future Technologies (DFT) has acquired WMware licenses for all students <i>of Turku University</i>, who take part in <u>any course offered by DFT</u>. This license is valid for the duration of the course and does not allow other usage.</p>
-                    <p>If the above condition does not apply - the course is not offered by DFT or you wish to use virtualization for your own purposes - your free alternatives are either WMware Player (for non-commercial use) or VirtualBox (free for any use).</p>
+                    <p>Turku University Department of Future Technologies (DFT) has acquired VMware licenses for all students <i>of Turku University</i>, who take part in <u>any course offered by DFT</u>. This license is valid for the duration of the course and does not allow other usage.</p>
+                    <p>If the above condition does not apply - the course is not offered by DFT or you wish to use virtualization for your own purposes - your free alternatives are either VMware Player (for non-commercial use) or VirtualBox (free for any use).</p>
                     <h2>Seriously, No Recommendation?</h2>
                     <p>Nope. Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
                     <!-- https://www.nakivo.com/blog/vmware-vs-virtual-box-comprehensive-comparison/ -->

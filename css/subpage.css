@@ -294,6 +294,14 @@ details.showme
     border-right:           none;
     margin-bottom:          8px;
 }
+details.showme > *:not(summary)
+{
+    margin-left:            1em;
+}
+details.showme > p
+{
+    margin-left:            2em;
+}
 details.showme > summary
 {
     /* Disable the annoying outline box over summary */
@@ -323,10 +331,9 @@ details.showme > summary::-webkit-details-marker
  * Prefix with + / - signs
  */
 details.showme > summary:after
-/* An eye icon*/
+/* An eye icon */
 {
     font-family:                FontAwesome;
-    font-size:                  1.1rem;
     content:                    "\f06e";
     float:                      left;
     padding:                    0;
@@ -560,5 +567,24 @@ div.shoutbox > i:first-child
     color:                      var(--utu-purple);
     vertical-align:             middle;
     padding:                    0 16px 0 2px;
+}
+
+
+
+/***********************************************************************
+ * CSS Grid for columns
+ */
+@supports (display: grid)
+{
+    .three-columns
+    {
+        margin:                     0;
+        display:                    grid;
+        grid-template-columns:      repeat(
+                                        auto-fit,
+                                        minmax(300px, 1fr)
+                                    );
+        grid-gap:                   1rem;
+    }
 }
 /* EOF */
