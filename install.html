@@ -76,10 +76,7 @@
                     <p>This page helps you to choose and install a hypervisor into your personal computer. <strong>Note</strong> that if you rather run you course specific machine from a USB, you can skip this and proceed to <a href="download.html#usb">download page</a>.</p>
                 </article>
 
-                <details class="showme">
-                    <summary>Show me what it looks like...</summary>
-                    and this is the bulk...  blah blah
-                </details>
+
 
                 <article>
                     <h1 id="requirements"><i class="fa fa-check-square-o"></i>Requirements</h1>
@@ -268,15 +265,15 @@
                                     <td>VirtualBox</td>
                                     <td label="Pros">
                                         <ul>
-                                            <li>Supports all OSes - you might have differnt kinds of devices, and using same in all of them can be nice.</li>
+                                            <li>Supports all OSes - you might have different kinds of devices, and using same in all of them can be nice.</li>
                                             <li>No license concerns.</li>
-                                            <li>Only one to offer both hardware and software virtualization - can be useful if you have an ancient CPU or no access to your BIOS.</li>
                                         </ul>
                                     </td>
                                     <td label="Cons">
                                         <ul>
                                             <li>An extension pack needs to be installed for USB 2.0/3.0 (without it, USB 1.0 only) - but its free for personal and educational use and you only need to install it once.</li>
-                                            <li>Video memory limited to 128 MB (VMware allows 2 GB).</li>
+                                            <li>Video memory limited to 128 MB (VMware allows 2 GB).<sup>(1</sup></li>
+                                            <li>MacOS support can be sketchy.<sup>(2</sup></li>
                                         </ul>
                                     </td>
                                 </tr>
@@ -284,12 +281,12 @@
                                     <td>VMware Fusion</td>
                                     <td label="Pros">
                                         <ul>
-                                            <li>Specifically made for MacOS, so supports MacOS better than other hypervisors.</li>
+                                            <li>Specifically made for MacOS. Given the MacOS issues VirtualBox has/had, this is more reliable option for Apple users.</li>
                                         </ul>
                                     </td>
                                     <td label="Cons">
                                         <ul>
-                                            <li>Works only in MacOS.</li>
+                                            <li>Licensing<sup>(3</sup></li>
                                         </ul>
                                     </td>
                                 </tr>
@@ -297,7 +294,7 @@
                                     <td>VMware Player</td>
                                     <td label="Pros">
                                         <ul>
-                                            <li>Simple and intuitive graphical interface, the most user-friendly to inexperienced users.</li>
+                                            <li>Simple and intuitive graphical interface, the most user-friendly for inexperienced users.</li>
                                         </ul>
                                     </td>
                                     <td label="Cons">
@@ -316,15 +313,16 @@
                                     </td>
                                     <td label="Cons">
                                         <ul>
-                                            <li>(tba)</li>
+                                            <li>Licensing<sup>(3</sup></li>
                                         </ul>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                         <ol>
-                            <li>Footnote #1.</li>
-                            <li>Footnote #2.</li>
+                            <li>This should not matter at all, unless a course for 3D graphics appears from somewhere.</li>
+                            <li>For example, with MacOS 10.15 VirtualBox had the tendency to crash until it was fixed by release 6.0.14.</li>
+                            <li>Unless you are attending a course offerend by Department of Future Technologies, you need to acquire a valid license.</li>
                         </ol>
                     </p>
                     <h3>Still not sure which one to choose?</h3>
