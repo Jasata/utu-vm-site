@@ -179,12 +179,12 @@ article h1[id] > i
 article > h2
 {
     color:                  var(--utu-purple);
-    font-size:              1.4em;
+    font-size:              1.4rem;
 }
-article > h3
+article  h3
 {
     color:                  Black;
-    font-size:              1.0em;
+    font-size:              1.1rem !important; /* Boostrap is messing */
 }
 article > p
 {
@@ -197,7 +197,7 @@ article:first-of-type > p
     padding:                6px 30px 6px 30px;
     font-style:             italic;
 }
-article > h1,h2,h3,h4,h5,h6
+article > h1 /* ,h2,h3,h4,h5,h6 - just the <h1> for now */
 /* This sad hack exists because boostrap navbar does not have a configuration
    item for scrolling offset. The data-offset ONLY adjust when the follow
    highlight swaps to next navbar item... */
@@ -284,16 +284,15 @@ a[href^="/"]::before, a[href^=".."]::before
 
 /***********************************************************************
  *
- * DETAILS - SUMMARY  (HTML5 Widget)
+ * SHOWME (<details><summary> - HTML5 Widget)
  */
-details > summary
-/* Every details type and style, remove box */
-{
-    outline:                none;
-}
 details.showme
 {
-    margin-left:            0; /* 20px; */
+    margin:                 0;
+    border:                 1px solid Silver;
+    border-top:             none;
+    border-right:           none;
+    margin-bottom:          8px;
 }
 details.showme > summary
 {
@@ -324,23 +323,16 @@ details.showme > summary::-webkit-details-marker
  * Prefix with + / - signs
  */
 details.showme > summary:after
+/* An eye icon*/
 {
-    /*
-    fa fa-ellipsis-v	&#xf142; OK, REALLY confusing
-    fa fa-exclamation-circle	&#xf06a; OK, but confusing
-    fa fa-eye	        &#xf06e; OK
-    fa fa-puzzle-piece	&#xf12e; OK
-    fa fa-search-plus	&#xf00e; OK but ugly
-    fa fa-thumb-tack	&#xf08d; OK
-    fa fa-wpexplorer	&#xf2de; X
-    */
     font-family:                FontAwesome;
+    font-size:                  1.1rem;
     content:                    "\f06e";
     float:                      left;
-  /*  font-weight:                bold; */
     padding:                    0;
-/*    text-align:                 center; */
-    width:                      22px;
+    text-align:                 center;
+    transform:                  translate(0, -1px);
+    width:                      24px;
 }
 details[open].showme > summary:after
 {

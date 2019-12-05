@@ -62,6 +62,8 @@
     <div class="container-fluid">
         <div class="row" id="content-row">
             <main>
+
+
                 <nav class="site">
                     <ol>
                         <li><a href="index.html">UTU Virtual Machines</a></li>
@@ -71,7 +73,7 @@
 
 
                 <article><!-- Executive Summary -->
-                    <p>This page helps you to choose and install a hypervisor into your personal computer.</p>
+                    <p>This page helps you to choose and install a hypervisor into your personal computer. <strong>Note</strong> that if you rather run you course specific machine from a USB, you can skip this and proceed to <a href="download.html#usb">download page</a>.</p>
                 </article>
 
                 <details class="showme">
@@ -83,7 +85,7 @@
                     <h1 id="requirements"><i class="fa fa-check-square-o"></i>Requirements</h1>
                     <div class="shoutbox">
                         <i class="fa fa-exclamation-triangle"></i>
-                        <div>You must have enabled virtualization (VT-x or AMD-v) from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details. If it is not possible, you need software virtualization. Choose VirtualBox, its the only one that has it.</div>
+                        <div>You must have enabled virtualization (VT-x or AMD-v) from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details.</div>
                     </div>
                     <table class="responsive os-hypervisor">
                         <tbody>
@@ -100,7 +102,8 @@
                                     <details>
                                         <summary>MacOS</summary>
                                         <ul>
-                                            <li>???</li>
+                                            <li>VirtualBox: MacOS 10.12 or newer</li>
+                                            <li>VMware Fusion: MacOS 10.11 or newer</li>
                                         </ul>
                                     </details>
                                     <details>
@@ -131,7 +134,7 @@
                                     </details>
                                     <details>
                                         <summary>VMware Workstation Player</summary>
-                                        <p>Limited use version of the VMware Pro, developed by VMware. Free for non-commercial use. Supports Linux and Windows platforms.<br/>
+                                        <p>Limited-use version of the VMware Pro, developed by VMware. Free for non-commercial use. Supports Linux and Windows platforms.<br/>
                                         Versions 15.1 or newer are supported.<br/>
                                         <a target="_blank" href="https://my.vmware.com/en/web/vmware/free#desktop_end_user_computing/vmware_workstation_player/15_0">Vmware Workstation Player Homepage</a><br/>
                                         <a target="_blank" href="https://en.wikipedia.org/wiki/VMware_Workstation_Player">Wikipedia</a></p>
@@ -151,14 +154,31 @@
                     <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than the default requirements listed here. Exceptional course specific requirements are listed with each downloadable VM image.</p>
                     <p>
                         <ul>
-                            <li>8 GB RAM<br/><i>Each VM is allocated 2 GB</i></li>
-                            <li>CPU with VT-x or AMD-v capability<br/><i>Or choose VirtualBox</i></li>
+                            <li>8 GB RAM (4 GB absolute minimum)<br/><i>Each VM is allocated 2 GB</i></li>
+                            <li>64-bit x86 CPU with VT-x or AMD-v capability<br/><i>Or choose VirtualBox for software virtualization</i></li>
                             <li>16 GB free disk per VM</li>
                         </ul>
                     </p>
+                    <p>
+                        <details class="showme">
+                            <summary>Show me the requirement details</summary>
+                            <h3>Linux</h3>
+                            <p>TBA</p>
+                            <h3>MacOS</h3>
+                            <p>
+                                <strong>VirtualBox:</strong> MacOS 11.12 or newer and a system based on any <u>Intel</u> 64-bit CPU.<br/>
+                                <strong>VMware Fusion:</strong> MacOS 11.11 or newer. Any system based on CPU that has been released after 2011.
+                            </p>
+                            <h3>Windows</h3>
+                            <p>
+                                tba
+                            </p>
+                        </details>
+                    </p>
                     <h2>I Want Something Else</h2>
                     <p>Virtual machines can be run on most available hypervisors, but we provide support only for the ones listed in this page. You are of course free to use whatever hypervisor you feel most comfortable with - provided that you can import <a target="_blank" href="https://en.wikipedia.org/wiki/Open_Virtualization_Format">OVA (version 2)</a> images from the <a href="download.html">download page</a>.</p>
-                    <p>Finally, there is always the option that you ask for the course specific list of required software from your teacher and just install and configure them directly into your PC. If you choose that option, these pages cannot offer you anything useful.</p>
+                    <p><strong>Secondly</strong>, you can try using an USB drive based solution and boot your machine into it whenevr you start with the course studies. You can find the USB images from the <a href="download.html#usb">download page</a> along with the instructions on how to write them into your USB drive.</p>
+                    <p><strong>Finally</strong>, there is always the option that you ask for the course specific list of required software from your teacher and just install and configure them directly into your PC. If you choose that option, these pages cannot offer you anything useful.</p>
                 </article>
 
 

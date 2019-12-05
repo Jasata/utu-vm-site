@@ -38,6 +38,11 @@ body
        go underneath it */
     padding-bottom:         calc(var(--footer-height) + 2.0rem);
 }
+details > summary
+/* Every details type and style, remove the ouline box */
+{
+    outline:                none;
+}
 
 /* Page basics END ***********************************************************/
 
