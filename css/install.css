@@ -133,6 +133,10 @@ only screen and (max-width: 760px),
     padding:                    0;
     width:                      100%;
 }
+.install-os > p
+{
+    margin-left:                30px;
+}
 .install-os > summary
 {
     outline:                    none;
