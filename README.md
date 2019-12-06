@@ -69,6 +69,11 @@ Enter `~/.ssh/id_rsa.pub` into your GitHub account before you proceed in cloning
 
     $ git clone git@github.com:Jasata/utu-vm-site.git /var/www/utu-vm-site
 
+However, these might work without GitHub account (to-be-tested):
+
+    $ git clone git://github.com/jasata/utu-vm-site.git
+    $ git clone https://github.com/jasata/utu-vm-site
+
 Replace `/etc/nginx/sites-available/default` with:
 
     server {
