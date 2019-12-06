@@ -88,6 +88,38 @@ Replace `/etc/nginx/sites-available/default` with:
         }
     }
 
+**Rasbian/Debian uwsgi**
+
+[Source](https://www.linode.com/docs/web-servers/nginx/use-uwsgi-to-deploy-python-apps-with-nginx-on-ubuntu-12-04/)
+
+`uwsgi` is not a `systemd` service, but is run by `init` (`/etc/init.d/uwsgi`). Application are confgured in `/etc/uwsgi/apps-available/` files, softlinked to `etc/uwsgi/apps-enabled/`. Application files are in XML:
+
+`/etc/uwsgi/apps-available/utu-vm-site.xml`:
+```xml
+<uwsgi>
+    <plugin>python</plugin>
+    <socket>/run/uwsgi/app/utu-vm-site/utu-vm-site.socket</socket>
+    <pythonpath>/srv/www/utu-vm-site/</pythonpath>
+    <app mountpoint="/">
+
+        <script>wsgi_configuration_module</script>
+
+    </app>
+    <master/>
+    <processes>4</processes>
+    <harakiri>60</harakiri>
+    <reload-mercy>8</reload-mercy>
+    <cpu-affinity>1</cpu-affinity>
+    <stats>/tmp/stats.socket</stats>
+    <max-requests>2000</max-requests>
+    <limit-as>512</limit-as>
+    <reload-on-as>256</reload-on-as>
+    <reload-on-rss>192</reload-on-rss>
+    <no-orphans/>
+    <vacuum/>
+</uwsgi>
+```
+
 Configure Flask, write `/etc/uwsgi`:
 
     [uwsgi]
