@@ -1,0 +1,70 @@
+/*
+ * download.css - Jani Tammi <jasata@utu.fi>
+ */
+:root
+{
+    --unused:                       White;
+}
+
+/*** DataTables **************************************************************
+ *
+ *  Site specific CSS for DataTables
+ */
+.downloads
+{
+    width:                          100% !important;
+}
+.downloads > thead
+{
+    background-color:               var(--utu-purple);
+    color:                          White;
+}
+.downloads td
+{
+    border-bottom:                  1px solid #ccc;
+}
+/* Details Control for custom child -rows * /
+.details-control
+{
+    font-family:                    FontAwesome;
+    content:                        "\f0c1";
+    display:                        inline-block;
+    padding-right:                  3px;
+    vertical-align:                 top;
+    font-weight:                    500;
+    color:                          var(--utu-purple);
+}
+COMMENTED until default responsive details/child is disabled */
+
+
+
+/*** DETAILS - Hypervisor specific steps **************************************
+ *
+ *  Expanding element (<details>) for hypervisor specifics
+ */
+.tab > details
+{
+    margin-bottom:                  10px;
+}
+.tab > details > summary
+{
+    outline:                        none;
+    padding-left:                   6px;
+    background-color:               Silver;
+    font-size:                      1.2rem;
+    font-weight:                    bold;
+    color:                          White;
+}
+.tab > details > summary:hover
+{
+    background-color:               var(--utu-purple);
+    -webkit-transition:             0.6s ease-out;
+    -moz-transition:                0.6s ease-out;
+    -o-transition:                  0.6s ease-out;
+    transition:                     0.6s ease-out;
+}
+.tab > details[open] > summary
+{
+    background-color:               var(--utu-purple);
+}
+

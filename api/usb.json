@@ -1,0 +1,46 @@
+{
+    "data": [
+        {
+            "course": "Java (generic)",
+            "version": "356",
+            "size": "2216374659",
+            "sha1": "9088b7c1a30a5d2e8abb92697199045832c169e9",
+            "filename": "utuvm-java-356.zip"
+        },
+        {
+            "course": "Java (generic)",
+            "version": "408",
+            "size": "2227312991",
+            "sha1": "15f69b088cee258c983ded4b3929b747b47a9d8a",
+            "filename": "utuvm-java-408.zip"
+        },
+        {
+            "course": "Java (generic)",
+            "version": "412",
+            "size": "2348158976",
+            "sha1": "b236dc44bd5ced29d128dcc7191b3d2930824d5c",
+            "filename": "utuvm-java-412.img"
+        },
+        {
+            "course": "C/C++/Web/Mobile/Data Science/Declarative",
+            "version": "356",
+            "size": "1726122925",
+            "sha1": "bf37bdb37e7b15ed21ec170baa086d2792bb66fd",
+            "filename": "utuvm-minimega-356.zip"
+        },
+        {
+            "course": "C/C++/Web/Mobile/Data Science/Declarative",
+            "version": "408",
+            "size": "1743321017",
+            "sha1": "e35d3e02d8fc0383716a7a53cbb9d067eed819df",
+            "filename": "utuvm-minimega-408.zip"
+        },
+        {
+            "course": "DTEK2041 Embedded Systems Programming",
+            "version": "2019-12-06",
+            "size": "917",
+            "sha1": "deadbeef",
+            "filename": "dtek2041-2019-12-06.zip"
+        }
+    ]
+}
