@@ -106,7 +106,7 @@ In Debian/Rasbian, `uwsgi` is not a `systemd` service, but is run by `init` (`/e
 plugins = python3
 module = application:app
 # Execute in directory...
-chdir = /var/www/utu-vm-site
+chdir = /var/www/utu-vm-site/api
 master = true
 processes = 1
 threads = 2
