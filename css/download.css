@@ -23,20 +23,45 @@
 {
     border-bottom:                  1px solid #ccc;
 }
-/* Details Control for custom child -rows * /
-.details-control
+/* This cheeky little fuck drops out of my enclosing <p> element!! */
+#vm_table_wrapper, #usb_table_wrapper
+/* ...so, this is how we do this now... */
 {
-    font-family:                    FontAwesome;
-    content:                        "\f0c1";
-    display:                        inline-block;
-    padding-right:                  3px;
-    vertical-align:                 top;
-    font-weight:                    500;
-    color:                          var(--utu-purple);
+    margin-bottom:                  20px;
 }
-COMMENTED until default responsive details/child is disabled */
 
+/*** Override Child Row Button style *****************************************/
+table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child:before
+{
+    top:                            12px;
+    left:                           4px;
+    height:                         14px;
+    width:                          14px;
+    display:                        block;
+    position:                       absolute;
+    color:                          var(--utu-purple-dark);
+    font-family:                    FontAwesome;
+    font-size:                      1.4em;
+    content:                         "\f0da";
 
+    border:                         none;
+    border-radius:                  0;
+    box-shadow:                     none;
+    box-sizing:                     content-box;
+    text-align:                     center;
+    text-indent:                    0 !important;
+    line-height:                    14px;
+    background-color:               inherit;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child:before {
+    content:                        "\f0d7";
+    background-color:               inherit;
+}
+
+/* _length .. _filter / UNSATISFACTORY SOLUTION - length "jumps" out of line * /
+#vm_table_length {float:left;}
+#vm_table_filter {float:right;}
+/* */
 
 /*** DETAILS - Hypervisor specific steps **************************************
  *

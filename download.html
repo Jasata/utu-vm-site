@@ -48,9 +48,7 @@
 
 
     <script type="text/javascript">
-        /* OPTION: Details always-open
-           https://datatables.net/extensions/responsive/examples/display-types/immediateShow.html
-        */
+
         function formatBytes(bytes, decimals = 2)
         /* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
         {
@@ -70,150 +68,87 @@
         {
             return '<a href="downloads/' + rowObj.filename + '">' + data + '</a>';
         }
-        function childRow(rowObj)
-        {
-            console.log('childRow()');
-            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width: 100%;">' +
-                '<tr>' +
-                    '<td>File name:</td>' +
-                    '<td>'+rowObj.filename+'</td>' +
-                '</tr>' +
-                '<tr>' +
-                    '<td>SHA1 checksum:</td>'+
-                    '<td>'+rowObj.sha1+'</td>' +
-                '</tr>' +
-                '<tr>' +
-                    '<td>Extra info:</td>'  +
-                    '<td>And any further details here...</td>' +
-                '</tr>' +
-            '</table>';
-        }
         $(document).ready(function() {
+
             /******************************************************************
              * VM Image DataTable
              */
             var vm_table = $('#vm_table').DataTable( {
-                responsive: {
-                    details: false
-                },
+                responsive: true,
                 'ajax':     'api/vm.json',
                 'dataSrc':  'data',
                 'columns':  [
-                    {
-                        "className":        'details-control',
-                        "orderable":        false,
-                        "data":             null,
-                        "defaultContent":   '',
-                        "width":            '10px'
-                    },
                     {'data': 'course'},
                     {'data': 'version'},
                     {'data': 'size'},
-                    {'data': 'filename'}
-                    /* Remaining JSON items are read, just not displayed */
+                    {'data': 'filename'},
+                    {'data': 'sha1'}
                 ],
                 "columnDefs": [
-                    /*{
-                        "targets": 0,
-                        "width": "20px"
-                    },*/
                     {
-                        "targets": 1,
+                        "targets": 0,
                         "render": function(data, type, row, meta) {
                             return createLink(data, row);
                         }
                     },
                     {
-                        "targets": 3,
+                        "targets": 2,
                         "render": function(data, type, row, meta) {
                             return formatBytes(data, 2);
                         }
-                    },
+                    } /*,
                     {
-                        /* hide filename -column = still searchable */
-                        "targets": 4,
+                        // hide filename -column = still searchable
+                        "targets": 3,
                         "visible": false
-                    }
+                    } */
                 ]
             });
 
-            // Add event listener for opening and closing details
-            $('#vm_table tbody').on('click', 'td.details-control', function () {
-                var tr = $(this).closest('tr');
-                var row = vm_table.row(tr);
- 
-               if (row.child.isShown()) {
-                    // This row is already open - close it
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    // Open this row
-                    row.child(childRow(row.data())).show();
-                    tr.addClass('shown');
-                }
-            } );
-
-
             /******************************************************************
-             * VM Image DataTable
+             * USB Image DataTable
              */
             var usb_table = $('#usb_table').DataTable( {
-                responsive: {
-                    details: false
-                },
+                responsive: true,
                 'ajax':     'api/usb.json',
                 'dataSrc':  'data',
                 'columns':  [
-                    {
-                        "className":        'details-control',
-                        "orderable":        false,
-                        "data":             null,
-                        "defaultContent":   '',
-                        "width":            '10px'
-                    },
                     {'data': 'course'},
                     {'data': 'version'},
                     {'data': 'size'},
-                    {'data': 'filename'}
-                    /* Remaining JSON items are read, just not displayed */
+                    {'data': 'filename'},
+                    {'data': 'sha1'}
                 ],
                 "columnDefs": [
                     {
-                        "targets": 1,
+                        "targets": 0,
                         "render": function(data, type, row, meta) {
                             return createLink(data, row);
                         }
                     },
                     {
-                        "targets": 3,
+                        "targets": 2,
                         "render": function(data, type, row, meta) {
                             return formatBytes(data, 2);
                         }
-                    },
+                    } /*,
                     {
-                        /* hide filename -column = still searchable */
-                        "targets": 4,
+                        // hide filename -column = still searchable
+                        "targets": 3,
                         "visible": false
-                    }
+                    } */
                 ]
             } );
 
-            // Add event listener for opening and closing details
-            $('#usb_table tbody').on('click', 'td.details-control', function () {
-                var tr = $(this).closest('tr');
-                var row = usb_table.row(tr);
-
-            if (row.child.isShown()) {
-                    // This row is already open - close it
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    // Open this row
-                    row.child(childRow(row.data())).show();
-                    tr.addClass('shown');
-                }
-            } );
         } );
+
+        /*
+         * Close collapsed scroll-spy/nav-bar on click
+         */
+        $('.navbar-nav a').on('click', function()
+        {
+            $('.navbar-collapse').collapse('hide');
+        });
     </script>
 
 </head>
@@ -240,15 +175,6 @@
             </div>
         </div>
     </nav>
-    <script>
-        $('.navbar-nav a').on('click', function()
-        {
-            $('.navbar-collapse').collapse('hide');
-        });
-    </script>
-
-
-
 
 
 
@@ -275,14 +201,15 @@
                 <article>
                     <h1 id="vms"><i class="fa fa-hdd-o"></i>Virtual Machines</h1>
                     <!-- DataTables -->
+                    <!-- https://datatables.net/extensions/responsive/examples/column-control/classes.html-->
                     <table  id="vm_table"
-                            class="table table-striped dt-responsive nowrap dataTable dtr-inline downloads">
+                            class="dataTable table-striped nowrap downloads">
                         <thead>
-                            <th></th>
-                            <th>Course</th>
-                            <th>Version</th>
-                            <th>Size</th>
-                            <th>Filename</th>
+                            <th class="all">Course</th>
+                            <th class="min-phone-l">Version</th>
+                            <th class="min-phone-l">Size</th>
+                            <th class="none">Filename</th>
+                            <th class="none">SHA1</th>
                         </thead>
                     </table>
                     <h2>How to Import</h2>
@@ -361,17 +288,15 @@
                     <h1 id="usb"><i class="	fa fa-usb"></i>USB Operating Systems</h1>
                     <!-- DataTables -->
                     <table  id="usb_table"
-                            class="table table-striped dt-responsive nowrap dataTable dtr-inline downloads"
-                            style="width:100%">
+                            class="dataTable table-striped nowrap downloads">
                         <thead>
-                            <th></th>
-                            <th>Course</th>
-                            <th>Version</th>
-                            <th>Size</th>
-                            <th>Filename</th>
+                            <th class="all">Course</th>
+                            <th class="min-phone-l">Version</th>
+                            <th class="min-phone-l">Size</th>
+                            <th class="none">Filename</th>
+                            <th class="none">SHA1</th>
                         </thead>
                     </table>
-                    <p></p>
                     <h2>How to Run</h2>
                     <div class="shoutbox">
                         <i class="fa fa-exclamation-triangle"></i>
