@@ -57,7 +57,7 @@ This short guide assumes that you will be installing the site code into a mini-w
 
 Install required packages
 
-    # apt install -y nginx python3-dev python3-pip python3-flask sqlite uwsgi uwsgi-plugin-python3
+    # apt install -y nginx python3-dev python3-pip python3-flask sqlite uwsgi uwsgi-plugin-python3 git
 
 Clone the site and add `www-data` to group `pi` (note: user executes the third command):
 
