@@ -63,6 +63,12 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before
 #vm_table_filter {float:right;}
 /* */
 
+/*** Column -specific styles *************************************************/
+.column-course
+{
+    font-weight:                    500;
+}
+
 /*** DETAILS - Hypervisor specific steps **************************************
  *
  *  Expanding element (<details>) for hypervisor specifics

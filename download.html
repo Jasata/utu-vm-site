@@ -89,13 +89,19 @@
                         "targets": 0,
                         "render": function(data, type, row, meta) {
                             return createLink(data, row);
-                        }
+                        },
+                        "className": "column-course"
+                    },
+                    {
+                        "targets": 1,
+                        "className": "text-center"
                     },
                     {
                         "targets": 2,
                         "render": function(data, type, row, meta) {
                             return formatBytes(data, 2);
-                        }
+                        },
+                        "className": "text-center"
                     } /*,
                     {
                         // hide filename -column = still searchable
@@ -124,13 +130,19 @@
                         "targets": 0,
                         "render": function(data, type, row, meta) {
                             return createLink(data, row);
-                        }
+                        },
+                        "className": "column-course"
+                    },
+                    {
+                        "targets": 1,
+                        "className": "text-center"
                     },
                     {
                         "targets": 2,
                         "render": function(data, type, row, meta) {
                             return formatBytes(data, 2);
-                        }
+                        },
+                        "className": "text-center"
                     } /*,
                     {
                         // hide filename -column = still searchable
@@ -169,8 +181,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="nav navbar-nav">
-                    <a class="nav-link p-3" href="#vms">VM Images</a>
-                    <a class="nav-link p-3" Href="#usb">USB Images</a>
+                    <a class="nav-link p-3" href="#vms">Virtual Machine Images</a>
+                    <a class="nav-link p-3" Href="#usb">USB Disk Images</a>
                 </ul>
             </div>
         </div>
