@@ -82,9 +82,15 @@ Replace `/etc/nginx/sites-available/default` with:
 
         root /var/www/utu-vm-site;
         server_name _;
+
         location / {
+                root /var/www/utu-vm-site/;
+                index index.html;
+        }
+
+        location /api {
             include uwsgi_params;
-            uwsgi_pass unix:/tmp/nginx.uwsgi.sock;
+            uwsgi_pass unix:/run/uwsgi/app/utu-vm-site/utu-vm-site.socket;
         }
     }
 
@@ -92,61 +98,46 @@ Replace `/etc/nginx/sites-available/default` with:
 
 [Source](https://www.linode.com/docs/web-servers/nginx/use-uwsgi-to-deploy-python-apps-with-nginx-on-ubuntu-12-04/)
 
-`uwsgi` is not a `systemd` service, but is run by `init` (`/etc/init.d/uwsgi`). Application are confgured in `/etc/uwsgi/apps-available/` files, softlinked to `etc/uwsgi/apps-enabled/`. Application files are in XML:
+In Debian/Rasbian, `uwsgi` is not a `systemd` service, but is run by `init` (`/etc/init.d/uwsgi`). Application are confgured in `/etc/uwsgi/apps-available/` files, softlinked to `etc/uwsgi/apps-enabled/`. Application files come in various formats, but I prefer INI:
 
-`/etc/uwsgi/apps-available/utu-vm-site.xml`:
-```xml
-<uwsgi>
-    <plugin>python</plugin>
-    <socket>/run/uwsgi/app/utu-vm-site/utu-vm-site.socket</socket>
-    <pythonpath>/srv/www/utu-vm-site/</pythonpath>
-    <app mountpoint="/">
+`/etc/uwsgi/apps-available/utu-vm-site.ini`:
+```ini
+[uwsgi]
+plugins = python3
+module = application:app
+# Execute in directory...
+chdir = /var/www/utu-vm-site
+master = true
+processes = 1
+threads = 2
 
-        <script>wsgi_configuration_module</script>
+# Credentials that will execute Flask
+uid = www-data
+gid = www-data
 
-    </app>
-    <master/>
-    <processes>4</processes>
-    <harakiri>60</harakiri>
-    <reload-mercy>8</reload-mercy>
-    <cpu-affinity>1</cpu-affinity>
-    <stats>/tmp/stats.socket</stats>
-    <max-requests>2000</max-requests>
-    <limit-as>512</limit-as>
-    <reload-on-as>256</reload-on-as>
-    <reload-on-rss>192</reload-on-rss>
-    <no-orphans/>
-    <vacuum/>
-</uwsgi>
+# Since these components are operating on the same computer,
+# a Unix socket is preferred because it is more secure and faster.
+socket = /tmp/nginx.uwsgi.sock
+chmod-socket = 664
+
+# Clean up the socket when the process stops
+vacuum = true
+
+# This is needed because the Upstart init system and uWSGI have
+# different ideas on what different process signals should mean.
+# Setting this aligns the two system components, implementing
+# the expected behavior:
+die-on-term = true
 ```
 
-Configure Flask, write `/etc/uwsgi`:
+**IMPORTANT:** Configuration has changed since I last used `uwsgi`:
 
-    [uwsgi]
-    module = application:app
-    # Execute in directory...
-    chdir = /var/www/utu-vm-site
-    master = true
-    processes = 1
-    threads = 2
+  - .INI key-value `plugin = python3` is new and vital. `uwsgi` no longer automatically invoke Python.<br>
+    Valid plugins can be listed by `ls /usr/lib/uwsgi/plugins/` ("<name>_plugin.so").
+  - "To route requests to a specific plugin, the webserver needs to pass a magic number known as a modifier to the uWSGI instances. By default this number is set to 0, which is mapped to Python." [Source](https://uwsgi-docs.readthedocs.io/en/latest/ThingsToKnow.html)<br>
+     In nginx configuration, this would look like: `uwsgi_modifier1 0;` within the `location { ... }`, but it is unnecessary because it defaults to Python (value: 0).
 
-    # Credentials that will execute Flask
-    uid = www-data
-    gid = www-data
-
-    # Since these components are operating on the same computer,
-    # a Unix socket is preferred because it is more secure and faster.
-    socket = /tmp/nginx.uwsgi.sock
-    chmod-socket = 664
-
-    # Clean up the socket when the process stops
-    vacuum = true
-
-    # This is needed because the Upstart init system and uWSGI have
-    # different ideas on what different process signals should mean.
-    # Setting this aligns the two system components, implementing
-    # the expected behavior:
-    die-on-term = true
+Or in other words, http server provides uwsgi with magic number that defines what service will be required (for example, `uwsgi_modifier1 9;` would route the request to Bash script plugin), and uwsgi application configuration files now have to tell which plugin they use (the `plugin = ` key-value).
 
 Cloning brought the application config file, and now we can reload Nginx:
 
