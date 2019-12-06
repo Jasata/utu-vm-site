@@ -63,6 +63,10 @@ Clone the site and add `www-data` to group `pi` (note: user executes the third c
 
     # mkdir /var/www/utu-vm-site && chown pi.pi /var/www/utu-vm-site
     # usermod -a -G pi www-data
+    $ ssh-keygen -t rsa
+
+Enter `~/.ssh/id_rsa.pub` into your GitHub account before you proceed in cloning (gives permission denied otherwise).
+
     $ git clone git@github.com:Jasata/utu-vm-site.git /var/www/utu-vm-site
 
 Replace `/etc/nginx/sites-available/default` with:
