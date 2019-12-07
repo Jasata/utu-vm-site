@@ -139,6 +139,11 @@ die-on-term = true
 
 Or in other words, http server provides uwsgi with magic number that defines what service will be required (for example, `uwsgi_modifier1 9;` would route the request to Bash script plugin), and uwsgi application configuration files now have to tell which plugin they use (the `plugin = ` key-value).
 
+**Relevant logs**
+
+  - `/var/log/nginx/error.log` and `/var/log/nginx/access.log` (obviously)
+  - `/var/log/uwsgi/app/utu-vm-site.log` (`logto = ` directive in .INI doesn't seem to have any effect...)
+
 Cloning brought the application config file, and now we can reload Nginx:
 
     # systemctl restart nginx
