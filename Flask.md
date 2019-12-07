@@ -31,7 +31,7 @@ In development usage however, it just makes things a little bit more convenient.
 
     # mkdir /var/www/vm.utu.fi && chown pi.pi /var/www/vm.utu.fi
     # usermod -a -G pi www-data
-    $ git clone https://github.com/jasata/utu-vm-site vm.utu.fi
+    $ git clone https://github.com/jasata/utu-vm-site /var/www/vm.utu.fi
 
 ### Configure Nginx
 
@@ -75,7 +75,7 @@ plugins = python3
 module = application
 callable = app
 # Execute in directory...
-chdir = /var/www/utu-vm-site/api
+chdir = /var/www/vm.utu.fi/api
 
 # Execution parameters
 master = true
