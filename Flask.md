@@ -103,6 +103,10 @@ vacuum = true
 die-on-term = true
 ```
 
+Link as enabled app:
+
+    # ln -s /etc/uwsgi/apps-available/vm.utu.fi.ini /etc/uwsgi/apps-enabled/vm.utu.fi.ini
+
 **IMPORTANT:** `uwsgi` configuration has changed since the last time I used it:
 
   - .INI key-value `plugins = python3` is new and vital. `uwsgi` no longer automatically invoke Python.<br>
@@ -116,6 +120,33 @@ die-on-term = true
 Or in other words, http server provides `uwsgi` with magic number that defines what service will be required
 (for example, `uwsgi_modifier1 9;` would route the request to Bash script plugin), and uwsgi application
 configuration files now have to tell which plugin they use (the `plugin = ` key-value).
+
+## Create Test Application
+
+Later this will not be necessary, when the proper application is created.
+
+`/var/www/vm.utu.fi/api/application.py`:
+```python
+import syslog
+from flask import Flask, escape, request
+
+syslog.syslog("Flask Test Application invoked!")
+app = Flask(__name__)
+
+@app.route('/hello')
+def hello():
+    name = request.args.get("name", "World")
+    return f'Hello, {escape(name)}!'
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return f"You want path: '{path}'"
+
+if __name__ == "__main__":
+    app.run()
+
+```
 
 ## Restart Services and Test
 
@@ -157,17 +188,5 @@ from flask import Flask, escape, request
 syslog.syslog("Flask Test Application invoked!")
 app = Flask(__name__)
 
-@app.route('/hello')
-def hello():
-    name = request.args.get("name", "World")
-    return f'Hello, {escape(name)}!'
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return f"You want path: '{path}'"
-
-if __name__ == "__main__":
-    app.run()
-
+...
 ```
