@@ -58,9 +58,8 @@ In development usage however, it just makes things a little bit more convenient.
 
 Next, remove default site linkage and link the above as enabled site:
 
-    # cd /etc/nginx/sites-enabled
-    # rm default
-    # ln -s ../sites-available/vm.utu.fi
+    # rm /etc/nginx/sites-enabled/default
+    # ln -s /etc/nginx/sites-available/vm.utu.fi /etc/nginx/sites-enabled/vm.utu.fi
 
 ### Configure uWSGI
 
