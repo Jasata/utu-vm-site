@@ -72,12 +72,18 @@ Application files come in various formats, but I prefer INI:
 ```ini
 [uwsgi]
 plugins = python3
-module = application:app
+module = application
+callable = app
 # Execute in directory...
-chdir = /var/www/vm.utu.fi/api
+chdir = /var/www/utu-vm-site/api
+
+# Execution parameters
 master = true
 processes = 1
-threads = 2
+threads = 4
+
+# Logging (cmdline logging directive overrides this, unfortunately)
+logto=/var/log/uwsgi/uwsgi.log
 
 # Credentials that will execute Flask
 uid = www-data
