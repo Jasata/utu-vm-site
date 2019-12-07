@@ -1,0 +1,16 @@
+# Turku University (2019) Department of Future Technologies
+# Course Virtualization / Website
+# Flask Application Version Number
+#
+# APPVERSION - Jani Tammi <jasata@utu.fi>
+#
+#   0.1.0   2019.12.07  Initial version.
+#
+# This file may contain ONLY one single non-comment line.
+# That row is expected to contain a semantic version string "x.y.z".
+# See (https://semver.org/) for details-
+# The version identifies the Flask Application version.
+#
+# 
+
+0.1.0

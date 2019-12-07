@@ -35,25 +35,22 @@ In development usage however, it just makes things a little bit more convenient.
 
 ### Configure Nginx
 
+This configuration will handle ALL HTTP requests via Flask.
+
 `/etc/nginx/sites-available/vm.utu.fi`:
 ```config
-    server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-        root /var/www/vm.utu.fi;
-        server_name _;
-
-        location / {
-                root /var/www/vm.utu.fi/;
-                index index.html;
-        }
-
-        location /api {
-            include uwsgi_params;
-            uwsgi_pass unix:/run/uwsgi/vm.utu.fi.socket;
-        }
+    root /var/www/vm.utu.fi;
+    server_name _;
+ 
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/run/uwsgi/vm.utu.fi.socket;
     }
+}
 ```
 
 Next, remove default site linkage and link the above as enabled site:
@@ -74,7 +71,7 @@ plugins = python3
 module = application
 callable = app
 # Execute in directory...
-chdir = /var/www/vm.utu.fi/api
+chdir = /var/www/vm.utu.fi/
 
 # Execution parameters
 master = true
@@ -123,7 +120,7 @@ configuration files now have to tell which plugin they use (the `plugin = ` key-
 
 ## Create Test Application
 
-Later this will not be necessary, when the proper application is created.
+This little script should allow you to test most ways for problems. To be documented later...
 
 `/var/www/vm.utu.fi/api/application.py`:
 ```python
