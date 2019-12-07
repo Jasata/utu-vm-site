@@ -49,6 +49,13 @@
 
     <script type="text/javascript">
 
+        function timestamp2str(timestamp)
+        {
+            // convert to milliseconds and
+            // then create a new Date object
+            dateObj = new Date(timestamp * 1000);
+            return dateObj.toISOString().slice(0, 10);
+        }
         function formatBytes(bytes, decimals = 2)
         /* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
         {
@@ -75,14 +82,21 @@
              */
             var vm_table = $('#vm_table').DataTable( {
                 responsive: true,
-                'ajax':     'api/vm.json',
+                'ajax':     'api/vm',
                 'dataSrc':  'data',
                 'columns':  [
                     {'data': 'course'},
                     {'data': 'version'},
                     {'data': 'size'},
                     {'data': 'filename'},
-                    {'data': 'sha1'}
+                    {'data': 'sha1'},
+                    {'data': 'description'},
+                    {'data': 'courses'},
+                    {'data': 'ram'},
+                    {'data': 'cores'},
+                    {'data': 'disk'},
+                    {'data': 'dtap'},
+                    {'data': 'created'}
                 ],
                 "columnDefs": [
                     {
@@ -102,6 +116,12 @@
                             return formatBytes(data, 2);
                         },
                         "className": "text-center"
+                    },
+                    {
+                        "targets": 11,
+                        "render": function(data, type, row, meta) {
+                            return timestamp2str(data);
+                        }
                     } /*,
                     {
                         // hide filename -column = still searchable
@@ -116,14 +136,21 @@
              */
             var usb_table = $('#usb_table').DataTable( {
                 responsive: true,
-                'ajax':     'api/usb.json',
+                'ajax':     'api/usb',
                 'dataSrc':  'data',
                 'columns':  [
                     {'data': 'course'},
                     {'data': 'version'},
                     {'data': 'size'},
                     {'data': 'filename'},
-                    {'data': 'sha1'}
+                    {'data': 'sha1'},
+                    {'data': 'description'},
+                    {'data': 'courses'},
+                    {'data': 'ram'},
+                    {'data': 'cores'},
+                    {'data': 'disk'},
+                    {'data': 'dtap'},
+                    {'data': 'created'}
                 ],
                 "columnDefs": [
                     {
@@ -143,12 +170,13 @@
                             return formatBytes(data, 2);
                         },
                         "className": "text-center"
-                    } /*,
+                    },
                     {
-                        // hide filename -column = still searchable
-                        "targets": 3,
-                        "visible": false
-                    } */
+                        "targets": 11,
+                        "render": function(data, type, row, meta) {
+                            return timestamp2str(data);
+                        }
+                    }
                 ]
             } );
 
@@ -222,6 +250,13 @@
                             <th class="min-phone-l">Size</th>
                             <th class="none">Filename</th>
                             <th class="none">SHA1</th>
+                            <th class="none">Description</th>
+                            <th class="none">Courses</th>
+                            <th class="none">RAM</th>
+                            <th class="none">Cores</th>
+                            <th class="none">Disk</th>
+                            <th class="none">Status</th>
+                            <th class="none">Created</th>
                         </thead>
                     </table>
                     <h2>How to Import</h2>
@@ -307,6 +342,13 @@
                             <th class="min-phone-l">Size</th>
                             <th class="none">Filename</th>
                             <th class="none">SHA1</th>
+                            <th class="none">Description</th>
+                            <th class="none">Courses</th>
+                            <th class="none">RAM</th>
+                            <th class="none">Cores</th>
+                            <th class="none">Disk</th>
+                            <th class="none">Status</th>
+                            <th class="none">Created</th>
                         </thead>
                     </table>
                     <h2>How to Run</h2>
