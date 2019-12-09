@@ -1,6 +1,7 @@
 # University of Turku - Course Virtualization
 
-Simple set of pages for university's course virtualization project.
+Simple set of pages for university's course virtualization project.<br />
+View static version of this project at [github.io](https://jasata.github.io/utu-vm-site/html/).
 
 ### Design Goals
 
