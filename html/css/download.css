@@ -1,0 +1,101 @@
+/*
+ * download.css - Jani Tammi <jasata@utu.fi>
+ */
+:root
+{
+    --unused:                       White;
+}
+
+/*** DataTables **************************************************************
+ *
+ *  Site specific CSS for DataTables
+ */
+.downloads
+{
+    width:                          100% !important;
+}
+.downloads > thead
+{
+    background-color:               var(--utu-purple);
+    color:                          White;
+}
+.downloads td
+{
+    border-bottom:                  1px solid #ccc;
+}
+/* This cheeky little fuck drops out of my enclosing <p> element!! */
+#vm_table_wrapper, #usb_table_wrapper
+/* ...so, this is how we do this now... */
+{
+    margin-bottom:                  20px;
+}
+
+/*** Override Child Row Button style *****************************************/
+table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child:before
+{
+    top:                            12px;
+    left:                           4px;
+    height:                         14px;
+    width:                          14px;
+    display:                        block;
+    position:                       absolute;
+    color:                          var(--utu-purple-dark);
+    font-family:                    FontAwesome;
+    font-size:                      1.4em;
+    content:                         "\f0da";
+
+    border:                         none;
+    border-radius:                  0;
+    box-shadow:                     none;
+    box-sizing:                     content-box;
+    text-align:                     center;
+    text-indent:                    0 !important;
+    line-height:                    14px;
+    background-color:               inherit;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child:before {
+    content:                        "\f0d7";
+    background-color:               inherit;
+}
+
+/* _length .. _filter / UNSATISFACTORY SOLUTION - length "jumps" out of line * /
+#vm_table_length {float:left;}
+#vm_table_filter {float:right;}
+/* */
+
+/*** Column -specific styles *************************************************/
+.column-course
+{
+    font-weight:                    500;
+}
+
+/*** DETAILS - Hypervisor specific steps **************************************
+ *
+ *  Expanding element (<details>) for hypervisor specifics
+ */
+.tab > details
+{
+    margin-bottom:                  10px;
+}
+.tab > details > summary
+{
+    outline:                        none;
+    padding-left:                   6px;
+    background-color:               Silver;
+    font-size:                      1.2rem;
+    font-weight:                    bold;
+    color:                          White;
+}
+.tab > details > summary:hover
+{
+    background-color:               var(--utu-purple);
+    -webkit-transition:             0.6s ease-out;
+    -moz-transition:                0.6s ease-out;
+    -o-transition:                  0.6s ease-out;
+    transition:                     0.6s ease-out;
+}
+.tab > details[open] > summary
+{
+    background-color:               var(--utu-purple);
+}
+

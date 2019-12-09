@@ -63,20 +63,20 @@ a:active
 }
 .navbar:after
 {
-        content:                '';
-        width:                  100%;
-        height:                 10px;
-        left:                   0px;
-        bottom:                 0;
-        margin:                 0;
-        z-index:                -1;
-        position:               absolute;
-        -moz-box-shadow:        0px 5px 6px
-                                rgba(0,0,0,.3); /* FF3.5+ */
-        -webkit-box-shadow:     0px 5px 6px
-                                rgba(0,0,0,.3); /* Saf3.0+, Chrome */
-        box-shadow:             0px 5px 6px
-                                rgba(0,0,0,.3); /* Opera 10.5, IE 9.0 */
+    content:                '';
+    width:                  100%;
+    height:                 10px;
+    left:                   0px;
+    bottom:                 0;
+    margin:                 0;
+    z-index:                -1;
+    position:               absolute;
+    -moz-box-shadow:        0px 5px 6px
+                            rgba(0,0,0,.3); /* FF3.5+ */
+    -webkit-box-shadow:     0px 5px 6px
+                            rgba(0,0,0,.3); /* Saf3.0+, Chrome */
+    box-shadow:             0px 5px 6px
+                            rgba(0,0,0,.3); /* Opera 10.5, IE 9.0 */
 }
 
 /******************************************************************************
@@ -149,7 +149,7 @@ main
 article
 {
     margin-top:             10px;
-    margin-bottom:          20px;
+    margin-bottom:          40px;
     max-width:              1280px;
 }
 article > header
@@ -170,6 +170,7 @@ article > h1
 {
     color:                  var(--utu-purple-dark);
     font-size:              1.75em;
+    margin-bottom:          20px;
 }
 article h1[id] > i
 /* Font Awesome icon in ID'd H1 headers */
@@ -180,11 +181,13 @@ article > h2
 {
     color:                  var(--utu-purple);
     font-size:              1.4rem;
+    margin-bottom:          10px;
 }
 article  h3
 {
     color:                  Black;
     font-size:              1.1rem !important; /* Boostrap is messing */
+    margin-bottom:          8px;
 }
 article > p
 {
@@ -206,12 +209,12 @@ article > h1 /* ,h2,h3,h4,h5,h6 - just the <h1> for now */
     margin-top:             -90px;
     padding-bottom:         6px;
 }
-article a::before
+article a[href]::before
 {
     font-family:                FontAwesome;
     content:                    "\f0c1";
     display:                    inline-block;
-    padding-right:              3px;
+    padding-right:              5px;
     vertical-align:             top;
     font-weight:                500;
     color:                      var(--utu-purple);
@@ -221,7 +224,7 @@ article a[href$=".pdf"]::before
     font-family:                FontAwesome;
     content:                    "\f1c1";
     display:                    inline-block;
-    padding-right:              3px;
+    padding-right:              5px;
     vertical-align:             top;
     font-weight:                500;
     color:                      var(--utu-purple);
@@ -232,7 +235,7 @@ article a[href$=".docx"]::before
     font-family:                FontAwesome;
     content:                    "\f1c2";
     display:                    inline-block;
-    padding-right:              3px;
+    padding-right:              5px;
     vertical-align:             top;
     font-weight:                500;
     color:                      var(--utu-purple);
@@ -242,7 +245,7 @@ article a[href$=".zip"]::before
     font-family:                FontAwesome;
     content:                    "\f1c6";
     display:                    inline-block;
-    padding-right:              3px;
+    padding-right:              5px;
     vertical-align:             top;
     font-weight:                500;
     color:                      var(--utu-purple);
@@ -250,9 +253,10 @@ article a[href$=".zip"]::before
 article a[href$=".ova"]::before
 {
     font-family:                FontAwesome;
-    content:                    "\f0a0";
+    font-size:                  1.1em;
+    content:                    "\f019"; /* "\f0a0"; */
     display:                    inline-block;
-    padding-right:              3px;
+    padding-right:              5px;
     vertical-align:             top;
     font-weight:                500;
     color:                      var(--utu-purple);
@@ -262,7 +266,7 @@ article a[href^="mailto:"]::before
     font-family:                FontAwesome;
     content:                    "\f0e0";
     display:                    inline-block;
-    padding-right:              3px;
+    padding-right:              5px;
     vertical-align:             top;
     font-weight:                500;
     color:                      var(--utu-purple);
@@ -381,13 +385,15 @@ details[open].showme > summary:after
     display:                none;
     padding:                0.8rem;
     background:             var(--content-bg-color);
-/*    margin-bottom:          6px; */
-    /* lower edge effect */
-    border:                 2px solid var(--utu-purple);
-    border-radius:          0px
-                            var(--tab-corner-radius)
-                            var(--tab-corner-radius)
-                            var(--tab-corner-radius);
+    border-top:             1px solid Silver;
+    box-shadow:             0 2px 6px rgba(0,0,0,0.12),
+                            0 3px 6px rgba(0,0,0,0.24);
+}
+.tabs .tab:first-child
+{
+    color: Red;
+    margin-left: 10px;
+    font-size: 3.0em;
 }
 .tabs input[type="radio"]
 {

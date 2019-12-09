@@ -1,0 +1,15 @@
+# Turku University (2019) Department of Future Technologies
+# Course Virtualization / Website
+# REST API Version Number
+#
+# APIVERSION - Jani Tammi <jasata@utu.fi>
+#
+#   0.1.0   2019.12.07  Initial version.
+#
+# This file may contain ONLY one single non-comment line.
+# That row can have only one integer number, which represents
+# the version number of the REST JSON API.
+#
+# 
+
+1

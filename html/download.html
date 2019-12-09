@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- https://www.w3schools.com/icons/icons_reference.asp -->
+<head>
+
+    <meta   charset="utf-8">
+    <meta   name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta   name="description"
+            content="">
+    <meta   name="author"
+            content="">
+
+    <title>Turku university - Course Virtual Machines</title>
+
+    <!-- Vendor -->
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/font-awesome.min.css">
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/bootstrap.min.css">
+    <script type="text/javascript"
+            charset="utf8"
+            src="js/jquery.min.js">
+    </script>
+    <script type="text/javascript"
+            charset="utf8"
+            src="js/bootstrap.min.js">
+    </script>
+    <link   rel="stylesheet"
+            type="text/css"
+            href="DataTables/datatables.css">
+    <script type="text/javascript"
+            charset="utf8"
+            src="DataTables/datatables.js">
+    </script>
+    <!-- Site Specific -->
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/common.css">
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/subpage.css">
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/download.css">
+
+
+    <script type="text/javascript">
+
+        function timestamp2str(timestamp)
+        {
+            // convert to milliseconds and
+            // then create a new Date object
+            dateObj = new Date(timestamp * 1000);
+            return dateObj.toISOString().slice(0, 10);
+        }
+        function formatBytes(bytes, decimals = 2)
+        /* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
+        {
+            if (bytes === 0) return '0 Bytes';
+
+            const k = 1024;
+            var dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+            // No decimals for Bytes
+            if (i == 0) dm = 0;
+            return (bytes / Math.pow(k, i)).toFixed(dm) + ' ' + sizes[i];
+        }
+        function createLink(data, rowObj)
+        {
+            return '<a href="downloads/' + rowObj.filename + '">' + data + '</a>';
+        }
+        $(document).ready(function() {
+
+            /******************************************************************
+             * VM Image DataTable
+             */
+            var vm_table = $('#vm_table').DataTable( {
+                responsive: true,
+                'ajax':     'api/vm',
+                'dataSrc':  'data',
+                'columns':  [
+                    {'data': 'label'},
+                    {'data': 'version'},
+                    {'data': 'size'},
+                    {'data': 'name'},
+                    {'data': 'sha1'},
+                    {'data': 'description'},
+                    {'data': 'courses'},
+                    {'data': 'ram'},
+                    {'data': 'cores'},
+                    {'data': 'disk'},
+                    {'data': 'dtap'},
+                    {'data': 'created'}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "render": function(data, type, row, meta) {
+                            return createLink(data, row);
+                        },
+                        "className": "column-course"
+                    },
+                    {
+                        "targets": 1,
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 2,
+                        "render": function(data, type, row, meta) {
+                            return formatBytes(data, 2);
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 11,
+                        "render": function(data, type, row, meta) {
+                            return timestamp2str(data);
+                        }
+                    } /*,
+                    {
+                        // hide filename -column = still searchable
+                        "targets": 3,
+                        "visible": false
+                    } */
+                ]
+            });
+
+            /******************************************************************
+             * USB Image DataTable
+             */
+            var usb_table = $('#usb_table').DataTable( {
+                responsive: true,
+                'ajax':     'api/usb',
+                'dataSrc':  'data',
+                'columns':  [
+                    {'data': 'label'},
+                    {'data': 'version'},
+                    {'data': 'size'},
+                    {'data': 'name'},
+                    {'data': 'sha1'},
+                    {'data': 'description'},
+                    {'data': 'courses'},
+                    {'data': 'ram'},
+                    {'data': 'cores'},
+                    {'data': 'disk'},
+                    {'data': 'dtap'},
+                    {'data': 'created'}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "render": function(data, type, row, meta) {
+                            return createLink(data, row);
+                        },
+                        "className": "column-course"
+                    },
+                    {
+                        "targets": 1,
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 2,
+                        "render": function(data, type, row, meta) {
+                            return formatBytes(data, 2);
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "targets": 11,
+                        "render": function(data, type, row, meta) {
+                            return timestamp2str(data);
+                        }
+                    }
+                ]
+            } );
+
+        } );
+
+        /*
+         * Close collapsed scroll-spy/nav-bar on click
+         */
+        $('.navbar-nav a').on('click', function()
+        {
+            $('.navbar-collapse').collapse('hide');
+        });
+    </script>
+
+</head>
+
+
+<body data-spy="scroll" data-target="#navbarContent" data-offset="70">
+
+    <nav class="navbar navbar-expand-md fixed-top navbar-light bg-white py-0">
+        <div class="container">
+            <a class="navbar-brand py-3" href=".">
+                <img id="navbar-logo" src="img/utu-torch-black.png">
+            </a><span id="navbar-title">Download</span>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav navbar-nav">
+                    <a class="nav-link p-3" href="#vms">Virtual Machine Images</a>
+                    <a class="nav-link p-3" Href="#usb">USB Disk Images</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <!-- PAGE CONTENT -->
+    <div class="container-fluid">
+        <div class="row" id="content-row">
+            <main>
+
+
+                <nav class="site">
+                    <ol>
+                        <li><a href="index.html">UTU Virtual Machines</a></li>
+                        <li>Download</li>
+                    </ol>
+                </nav>
+
+
+                <!-- Executive summary -->
+                <article style="display: none;"></article>
+
+
+
+                <!-- ARTICLE Download list -->
+                <article>
+                    <h1 id="vms"><i class="fa fa-hdd-o"></i>Virtual Machines</h1>
+                    <!-- DataTables -->
+                    <!-- https://datatables.net/extensions/responsive/examples/column-control/classes.html-->
+                    <table  id="vm_table"
+                            class="dataTable table-striped nowrap downloads">
+                        <thead>
+                            <th class="all">Label</th>
+                            <th class="min-phone-l">Version</th>
+                            <th class="min-phone-l">Size</th>
+                            <th class="none">Filename</th>
+                            <th class="none">SHA1</th>
+                            <th class="none">Description</th>
+                            <th class="none">Courses</th>
+                            <th class="none">RAM</th>
+                            <th class="none">Cores</th>
+                            <th class="none">Disk</th>
+                            <th class="none">Status</th>
+                            <th class="none">Created</th>
+                        </thead>
+                    </table>
+                    <h2>How to Import</h2>
+                    <div class="tabs">
+
+                        <input  type="radio"
+                                name="tabs"
+                                id="tabone"
+                                checked="checked">
+                        <label for="tabone">Linux</label>
+                        <div class="tab">
+                            <details>
+                                <summary>VirtualBox</summary>
+                                <ol>
+                                    <li>tba</li>
+                                </ol>
+                            </details>
+                            <details>
+                                <summary>VMware Player & Pro</summary>
+                                <ol>
+                                    <li>tba</li>
+                                </ol>
+                            </details>
+                        </div>
+
+                        <input  type="radio"
+                                name="tabs"
+                                id="tabtwo">
+                        <label for="tabtwo">MacOS</label>
+                        <div class="tab">
+                            <details>
+                                <summary>VirtualBox</summary>
+                                <ol>
+                                    <li>Double-click downloaded .OVA file.</li>
+                                    <li>Click "import".</li>
+                                </ol>
+                            </details>
+                            <details>
+                                <summary>VMware Fusion</summary>
+                                <ol>
+                                    <li>Double-click downloaded .OVA file.</li>
+                                    <li>Click "Continue".</li>
+                                    <li>Enter where to save virtual machine and click "Save".</li>
+                                    <li>Click "Finish".</li>
+                                    <li>Click "Upgrade".</li>
+                                </ol>
+                            </details>
+                        </div>
+
+                        <input  type="radio"
+                                name="tabs"
+                                id="tabthree">
+                        <label for="tabthree">Windows</label>
+                        <div class="tab">
+                            <details class="install-hypervisor">
+                                <summary>VirtualBox</summary>
+                                <ol>
+                                    <li>Double-click the downloaded .OVA file.</li>
+                                </ol>
+                            </details>
+                            <details class="install-hypervisor">
+                                <summary>VMware Player & Pro</summary>
+                                <ol>
+                                    <li>tba.</li>
+                                </ol>
+                            </details>
+                        </div>
+
+                    </div><!-- class="tabs" -->
+
+                </article>
+
+
+
+                <article>
+                    <h1 id="usb"><i class="	fa fa-usb"></i>USB Operating Systems</h1>
+                    <!-- DataTables -->
+                    <table  id="usb_table"
+                            class="dataTable table-striped nowrap downloads">
+                        <thead>
+                            <th class="all">Label</th>
+                            <th class="min-phone-l">Version</th>
+                            <th class="min-phone-l">Size</th>
+                            <th class="none">Filename</th>
+                            <th class="none">SHA1</th>
+                            <th class="none">Description</th>
+                            <th class="none">Courses</th>
+                            <th class="none">RAM</th>
+                            <th class="none">Cores</th>
+                            <th class="none">Disk</th>
+                            <th class="none">Status</th>
+                            <th class="none">Created</th>
+                        </thead>
+                    </table>
+                    <h2>How to Run</h2>
+                    <div class="shoutbox">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <div>You must have <i>Smart Boot</i> disabled from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details.</div>
+                    </div>
+                    <p>TBA (write to USB, using different OS'es)</p>
+                    <!-- Conflicts with the previous one. New solution needed 
+                    <div class="tabs">
+
+                            <input  type="radio"
+                                    name="tabs"
+                                    id="tabone"
+                                    checked="checked">
+                            <label for="tabone">Linux</label>
+                            <div class="tab">
+                                <ol>
+                                    <li>Use dd to write the downloaded image into your USB disk.</li>
+                                    <li>Reboot</li>
+                                </ol>
+                            </div>
+    
+                            <input  type="radio"
+                                    name="tabs"
+                                    id="tabtwo">
+                            <label for="tabtwo">MacOS</label>
+                            <div class="tab">
+                                <ol>
+                                    <li>Writing USB TBA</li>
+                                    <li>Reboot</li>
+                                    <li>While startup sound is playing, press ALT key down.</li>
+                                    <li>When a USB device icon appears, select it. System will now boot with the USB disk.</li>
+                                </ol>
+                            </div>
+    
+                            <input  type="radio"
+                                    name="tabs"
+                                    id="tabthree">
+                            <label for="tabthree">Windows</label>
+                            <div class="tab">
+                                <ol>
+                                    <li>tba.</li>
+                                </ol>
+                            </div>
+    
+                        </div><!-- class="tabs" -->
+                </article>
+
+
+
+            </main>
+        </div>
+    </div>
+    <!-- MAIN ENDS -->
+
+
+
+
+    <!-- If <footer> is nested inside "container-fluid" DIV, it screws up the layout. Close "conteiner-fluid", begin <footer> and start new boostrap layout within it. -->
+    <!-- FOOTER -------------------------------------------------------------->
+    <footer><!-- flex container -->
+        <div>
+            <img    class="footer-logo"
+            src="img/UTU_logo-white_EN_transparent.png">
+        </div>
+        <div><!-- flex container -->
+            <div>
+                © <a href="https://www.utu.fi">University of Turku</a>,
+                <a href="https://tech.utu.fi/en/">Department of Future  Technologies</a> 2019<br>
+                Brought to you by the <a href="https://gitlab.utu.fi/soft/ftdev/wikis/home">Course virtualization team</a> @ <a href="https://tech.utu.fi/fi/software-engineering/">SwDev laboratory</a>.
+            </div>
+            <div>
+                <a href="documentation.html">Documentation</a>
+                <a href="#">Statistics</a>
+                <a href="#">Support</a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>
