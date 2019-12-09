@@ -28,6 +28,12 @@
             charset="utf8"
             src="js/bootstrap.min.js">
     </script>
+    <link   rel='stylesheet'
+            type="text/css"
+            href='css/jquery.cardtabs.css'>
+    <script type='text/javascript'
+            charset="utf8"
+            src='js/jquery.cardtabs.js'></script>
     <link   rel="stylesheet"
             type="text/css"
             href="DataTables/datatables.css">
@@ -76,6 +82,13 @@
             return '<a href="downloads/' + rowObj.filename + '">' + data + '</a>';
         }
         $(document).ready(function() {
+
+            /******************************************************************
+            /* CardTab building
+             */
+            $('.tabgroup-vm').cardTabs({theme: 'utu'});
+            $('.tabgroup-usb').cardTabs({theme: 'utu'});
+
 
             /******************************************************************
              * VM Image DataTable
@@ -260,14 +273,10 @@
                         </thead>
                     </table>
                     <h2>How to Import</h2>
-                    <div class="tabs">
+                    <div class="tabgroup-vm">
 
-                        <input  type="radio"
-                                name="tabs"
-                                id="tabone"
-                                checked="checked">
-                        <label for="tabone">Linux</label>
-                        <div class="tab">
+
+                        <div data-tab="Linux">
                             <details>
                                 <summary>VirtualBox</summary>
                                 <ol>
@@ -282,11 +291,8 @@
                             </details>
                         </div>
 
-                        <input  type="radio"
-                                name="tabs"
-                                id="tabtwo">
-                        <label for="tabtwo">MacOS</label>
-                        <div class="tab">
+
+                        <div data-tab="MacOS">
                             <details>
                                 <summary>VirtualBox</summary>
                                 <ol>
@@ -306,11 +312,8 @@
                             </details>
                         </div>
 
-                        <input  type="radio"
-                                name="tabs"
-                                id="tabthree">
-                        <label for="tabthree">Windows</label>
-                        <div class="tab">
+
+                        <div data-tab="Windows">
                             <details class="install-hypervisor">
                                 <summary>VirtualBox</summary>
                                 <ol>
@@ -328,8 +331,8 @@
                             </details>
                         </div>
 
-                    </div><!-- class="tabs" -->
 
+                    </div><!-- div class="tabgroup-vm" -->
                 </article>
 
 
@@ -359,46 +362,35 @@
                         <i class="fa fa-exclamation-triangle"></i>
                         <div>You must have <i>Smart Boot</i> disabled from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details.</div>
                     </div>
-                    <p>TBA (write to USB, using different OS'es)</p>
-                    <!-- Conflicts with the previous one. New solution needed 
-                    <div class="tabs">
+                    <div class="tabgroup-usb">
 
-                            <input  type="radio"
-                                    name="tabs"
-                                    id="tabone"
-                                    checked="checked">
-                            <label for="tabone">Linux</label>
-                            <div class="tab">
-                                <ol>
-                                    <li>Use dd to write the downloaded image into your USB disk.</li>
-                                    <li>Reboot</li>
-                                </ol>
-                            </div>
-    
-                            <input  type="radio"
-                                    name="tabs"
-                                    id="tabtwo">
-                            <label for="tabtwo">MacOS</label>
-                            <div class="tab">
-                                <ol>
-                                    <li>Writing USB TBA</li>
-                                    <li>Reboot</li>
-                                    <li>While startup sound is playing, press ALT key down.</li>
-                                    <li>When a USB device icon appears, select it. System will now boot with the USB disk.</li>
-                                </ol>
-                            </div>
-    
-                            <input  type="radio"
-                                    name="tabs"
-                                    id="tabthree">
-                            <label for="tabthree">Windows</label>
-                            <div class="tab">
-                                <ol>
-                                    <li>tba.</li>
-                                </ol>
-                            </div>
-    
-                        </div><!-- class="tabs" -->
+
+                        <div data-tab="Linux">
+                            <ol>
+                                <li>Use dd to write the downloaded image into your USB disk.</li>
+                                <li>Reboot</li>
+                            </ol>
+                        </div>
+
+
+                        <div data-tab="MacOS">
+                            <ol>
+                                <li>Writing USB TBA</li>
+                                <li>Reboot</li>
+                                <li>While startup sound is playing, press ALT key down.</li>
+                                <li>When a USB device icon appears, select it. System will now boot with the USB disk.</li>
+                            </ol>
+                        </div>
+
+
+                        <div data-tab="Windows">
+                            <ol>
+                                <li>tba.</li>
+                            </ol>
+                        </div>
+
+
+                    </div><!-- div class="tabgroup-usb" -->
                 </article>
 
 

@@ -4,12 +4,16 @@
 */
 :root
 {
-    --navbar-padding:       80px;
-    --tab-corner-radius:    10px;
+    --navbar-padding:                   80px;
+    --tab-corner-radius:                10px;
+    --cardtabs-active-color:            var(--utu-purple-dark, Black);
+    --cardtabs-inactive-color:          #e2e2e2;
+    --cardtabs-border-color:            #e5e5e5;
+    --cardtabs-background-color:        White;
 }
 html
 {
-    scroll-behavior:        smooth;
+    scroll-behavior:                    smooth;
 }
 
 /********************************************************************
@@ -593,4 +597,55 @@ div.shoutbox > i:first-child
         grid-gap:                   1rem;
     }
 }
+
+
+
+/*** CardTabs / UTU Style **************************************************/ 
+/***************************************************************************/ 
+/*
+Expects variables:
+    --cardtabs-active-color:            Top of the active tab control
+    --cardtabs-inactive-color:          inactive tab color
+    --cardtabs-border-color:            The thin border around content
+    --cardtabs-background-color:        Content background color
+*/
+div.card-tabs-bar.utu
+/* The thin line under tabs, above content */
+{
+    border-bottom:                      1px solid
+                                        var(--cardtabs-border-color, #e5e5e5);
+}
+div.card-tabs-bar.utu a
+{
+    padding:                            15px;
+    border-radius:                      0px;
+    margin:                             0;
+    padding-bottom:                     10px;
+    margin-bottom:                      -2px;
+    font-size:                          17px;
+}
+div.card-tabs-bar.utu a
+/* constitutes as "inactive", because the class below sets "active" */
+{
+    background-color:                   var(--cardtabs-inactive-color, #e2e2e2);
+}
+div.card-tabs-bar.utu a::before
+{
+    content:                            none;
+}
+div.card-tabs-bar.utu a.active
+{
+    background-color:                   var(--cardtabs-background-color, White);
+    border-top:                         4px solid
+                                        var(--cardtabs-active-color, Black);
+}
+div.card-tabs-stack.utu div[data-tab]
+{
+    padding:                            10px;
+    background-color:                   var(--cardtabs-background-color, White);
+    border:                             1px solid
+                                        var(--cardtabs-border-color, #e5e5e5);
+    border-top:                         none;
+}
+
 /* EOF */

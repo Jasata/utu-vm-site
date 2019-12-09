@@ -1,0 +1,1 @@
+../vendor/CardTabs/js/jquery.cardtabs.js

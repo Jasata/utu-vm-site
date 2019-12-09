@@ -73,11 +73,11 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before
  *
  *  Expanding element (<details>) for hypervisor specifics
  */
-.tab > details
+div[data-tab] > details
 {
     margin-bottom:                  10px;
 }
-.tab > details > summary
+div[data-tab] > details > summary
 {
     outline:                        none;
     padding-left:                   6px;
@@ -86,7 +86,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before
     font-weight:                    bold;
     color:                          White;
 }
-.tab > details > summary:hover
+div[data-tab] > details > summary:hover
 {
     background-color:               var(--utu-purple);
     -webkit-transition:             0.6s ease-out;
@@ -94,7 +94,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before
     -o-transition:                  0.6s ease-out;
     transition:                     0.6s ease-out;
 }
-.tab > details[open] > summary
+div[data-tab] > details[open] > summary
 {
     background-color:               var(--utu-purple);
 }
