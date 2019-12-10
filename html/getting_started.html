@@ -71,7 +71,7 @@
 
                 <!-- MAIN CONTENT -->
                 <article>
-                    <h1 id="introduction">What is this virtual machine stuff?</h1>
+                    <h1 id="introduction"><i class="fa fa-meh-o"></i>What is this virtual machine stuff?</h1>
                     <p>A <strong>virtual machine (VM)</strong> is an emulation of a computer system. Like a physical computer it can run an operating system and be used just like any other computer - the difference is that the "hardware" it runs on is created by a specific program, a <strong>hypervisor</strong>. In essence, a virtual machine is a computer inside a computer.</p>
                     <p>The computer running the hypervisor is usually referred to as <strong>host</strong> while the virtual machine is called <strong>guest</strong>.</p>
                     <p>
@@ -93,7 +93,11 @@
                         </details>
                     </p>
                     <p>To get started, you first need to check that virtualization is enabled on yor computer.</p>
-                    <h1 id="bios">Enable Virtualization from BIOS Settings</h1>
+                </article>
+
+
+                <article>
+                    <h1 id="bios"><i class="fa fa-edit"></i>Enable Virtualization from BIOS Settings</h1>
                     <p>All virtual machines run inside a program called <strong>hypervisor</strong>, which rely on a virtualization feature in your processor. Unfortunately this is not enabled by default.</p>
                     <p>To <strong>enter BIOS</strong> you need to restart your PC and press the appropriate key (usually ESC, DEL, F1, F2 or F10) during the start-up, before your operating system begins to load.</p>
                     <p>Virtualization is called either <strong>VT-x</strong> or <strong>AMD-V</strong>.</p>
@@ -114,7 +118,9 @@
                         <img src="img/bios_example.png">
 
                     </details></p>
+                </article>
 
+                <article>
                     <h1 id="install">Install a Hypervisor</h1>
                     <p><strong>Which OS are you running?</strong> The operating system into which the hypervisor is installed into, is called <u>Host OS</u>, and the installation instructions differ slightly between Linux, MacOS and Windows.</p>
                     <p><strong>Choose your hypervisor</strong> between Oracle's VirtualBox or VMWare's VMPlayer.</p>
