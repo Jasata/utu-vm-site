@@ -38,44 +38,15 @@ Original idea about separate virtual server has been dropped in favor of expandi
 ## Third-party components
 
 Frontend
- - Bootstrap 4.3.1
- - JQuery 3.4.1
- - Awesome Fonts 4.7.0
+ - [Bootstrap 4.3.1](https://getbootstrap.com/docs/4.3/getting-started/introduction/)
+ - [JQuery 3.4.1](https://jquery.com/download/)
+ - [Font Awesome 4.7.0](https://fontawesome.com/v4.7.0/) (because that is the last free version)
+ - [Datatables 1.10.20](https://datatables.net/)
+ - [CardTabs 1.0](https://github.com/blekerfeld/CardTabs)
  
 Backend
- - nginx
- - Python 3.7.x (part of Debian 10)
+ - Nginx
+ - Python 3.7.3 (part of Debian 10)
  - Flask & UWSGI
  - SQLite3
-
-## Installation (Raspberry Pi)
-
-See [Flask document](Flask.md) for details.
-
-# vm.utu.fi - Site for Virtual Courses
-
-## Development environment for Tuisku
-
-TIERS Equipement to borrow
-  - Raspberry Pi 3 B+
-  - SanDisk Ultra 16GB A1 class uSD
-  - 220V PSU / 5 V, 3A wallwart
-  - USB Type-A to microUSB power cable 40 cm
-  - RJ45 Ether cable 1m
-  
- System creation
-  - 2019-09-26-raspbian-buster-lite.img
-  - `apt update && apt upgrade`
-  - `apt install git nginx python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools`
-  - Configure `/etc/nginx/sites-available/default` to point to `/home/pi/utu-vm-site` (with uwsgi)
-  - Configure UWSGI
-  - Enable service (may not be necessary anymore with modern UWSGI package - FIND OUT!)
-  - **change to local user `pi`**
-  - Add workstation (Windows) public SSH key to `~/.ssh/authorized_keys`
-  - Congifure Git `git config --global user.name "NAME NAME"` and `git config --global user.email "email@utu.fi"`
-  - `cd && git clone git@github.com:Jasata/utu-vm-site.git` (creates the `/home/pi/utu-vm-site`)
-
-Tools for workstation
-  - Visual Studio Code with Remote - SSH extension
-  - WinSCP (VSC drag'n-drop works only towards remote!)
 
