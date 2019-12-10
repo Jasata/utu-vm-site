@@ -181,7 +181,7 @@ a:active
     white-space:            nowrap;
     text-overflow:          ellipsis;
     overflow:               hidden;
-    width:                  100%;
+/*    width:                  100%; NOT bound to parent, somehow!?! */
     position:               absolute;
 }
 .imenu-icon
