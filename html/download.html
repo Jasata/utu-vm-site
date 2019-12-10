@@ -280,13 +280,19 @@
                             <details>
                                 <summary>VirtualBox</summary>
                                 <ol>
-                                    <li>tba</li>
+                                    <li>Run VirtualBox.</li>
+                                    <li>In VirtualBox's <i>File</i> menu, select <i>Import Appliance</i>.</li>
+                                    <li>In the Appliance Import Wizard that opens, click <i>choose</i>.</li>
+                                    <li>Browse to the VM image file you want to import and click <i>Open</i>.</li>
+                                    <li>You can see the VM configurations. Click <i>Import</i> to finish.</li>
                                 </ol>
                             </details>
                             <details>
                                 <summary>VMware Player & Pro</summary>
                                 <ol>
-                                    <li>tba</li>
+                                    <li>Run VMware Workstation.</li>
+                                    <li>Click <i>Open a Virtual machine</i>.</li>
+                                    <li>Browse to and open the VM you want to import.</li>
                                 </ol>
                             </details>
                         </div>
@@ -325,7 +331,7 @@
                                 <ol>
                                     <li>Double-click the downloaded .OVA file.</li>
                                     <li>A window opens where you can change the name of the VM and decide where it is saved, or accept the defaults.</li>
-                                    <li>Click <i>import</i> to finish.</li>
+                                    <li>Click <i>Import</i> to finish.</li>
                                 </ol>
                                 You can also import the VM via the <i>Open a virtual machine</i> button while at the VMware home screen.
                             </details>
@@ -384,9 +390,15 @@
 
 
                         <div data-tab="Windows">
+                            <strong>Writing the image to your USB disk</strong>. To write the downloaded image into your USB disk you need to download <a href="https://www.alexpage.de/usb-image-tool/">USB Image Tool</a>.
                             <ol>
-                                <li>tba.</li>
+                                <li>Run USB Image Tool.</li>
+                                <li>On the left, select your USB device.</li>
+                                <li>Click the button with a green arrow labeled <i>Restore</i> and browse to the image you want to write on the USB disk. Note that the image is an .iso file - while browsing for the file, select <i>All files (*.*)</i> instead of suggested <i>Image files (*.img; *.ima)</i> to view it.</li>
+                                <li>USBIT ask if you want to restore selected image. Click <i>Yes</i>.</li>
+                                <li>Wait for the green progress bar to finish. After that, your USB device ready for use.</li>
                             </ol>
+                            <img src="img/usbversion_usbit.png">
                         </div>
 
 
