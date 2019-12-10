@@ -41,8 +41,9 @@ Frontend
  - [Bootstrap 4.3.1](https://getbootstrap.com/docs/4.3/getting-started/introduction/)
  - [JQuery 3.4.1](https://jquery.com/download/)
  - [Font Awesome 4.7.0](https://fontawesome.com/v4.7.0/) (because that is the last free version)
- - [Datatables 1.10.20](https://datatables.net/)
- - [CardTabs 1.0](https://github.com/blekerfeld/CardTabs)
+ - [Datatables 1.10.20](https://datatables.net/) for download page tables
+ - [CardTabs 1.0](https://github.com/blekerfeld/CardTabs) for tabulated content
+ - [Flow.js v.2.13.2](https://github.com/flowjs/flow.js/) for HTML5 File API transfers
  
 Backend
  - Nginx
