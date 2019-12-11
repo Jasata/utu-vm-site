@@ -35,9 +35,11 @@ Original idea about separate virtual server has been dropped in favor of expandi
  - Download statistics will be based on webserver log files, which will be generated into (some kind of) graph/report nightly and made available in separate statistics page.
 
 ### Items That Need Technical Solutions
+
  - Authentication (without actual identification). Perhaps Kerberos module relying on UTU authentication.
  - Integration of distribution builder - as a separate Build Manager agent, providing a REST API interface.
-- Will the REST API to Build Manager be routed via nginx for Kerberos authentication?
+ - Will the REST API to Build Manager be routed via nginx for Kerberos authentication?
+ - HTML5 File API based Flow.js needs server side implementation in Python, since nothing even remotely acceptable exists.
 
 ## Third-party components
 
