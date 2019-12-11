@@ -51,7 +51,17 @@ a:active
     text-decoration:        none;
 }
 
-
+a.navbar-brand::before
+/* the "<<" before UTU logo */
+{
+    font-family:                FontAwesome;
+    font-size:                  30px;
+    content:                    "\f100";
+    display:                    inline-block;
+    padding-right:              5px;
+    vertical-align:             top;
+    font-weight:                500;
+}
 #navbar-logo
 /* ID for the UTU torch image */
 {
