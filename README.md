@@ -1,16 +1,20 @@
 # University of Turku - Course Virtualization
 
-Simple set of pages for university's course virtualization project.<br />
-View static version of this project at [github.io](https://jasata.github.io/utu-vm-site/html/).
+A website for university's Course Virtualization project. Serves both students (get hypervisor installed and download course specific virtual machine images) and teachers (learn how virtual machines could help running a course, instructions on how to create an virtual machine image, how to get help doing it, uloading and publishing made images).
 
-### Design Goals
+**See also:**
+
+  * [Static version](https://jasata.github.io/utu-vm-site/html/) of this project at github.io.
+  * [Wiki pages](https://github.com/Jasata/utu-vm-site/wiki) for technical and design notes.
+
+## Design Goals
 
  - **Simplicity** (in implementation, site structure, usage...).
  - Minimal dependencies (see "Third-party components").
- - Small scope (Only the essentials are "opened up" on asite. More detailed information will be provided by linking to GitLab/PDF documents).
+ - Small scope (Only the essentials discussed in the site. More detailed information will be provided in form of PDF documents).
  - **Two-step principle**. All actions (primary use cases) should be accomplished in no more than two clicks. One to choose the relevant subpage, another to open a folding information container (if necessary).
  
-Primary use cases (in order of importance)
+### Primary use cases (in order of importance)
  1. Student retrieves course-specific virtual machine image
  2. Student comes to learn how to set his or her personal system up to run virtual images
  3. Student comes to resolve an issue and/or report it
