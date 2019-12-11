@@ -102,12 +102,13 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before
 /*** DETAILS - Hypervisor specific steps **************************************
  *
  *  Expanding element (<details>) for hypervisor specifics
+ *  2019-12-12 Fixed DETAILS selectors to limit only to non-classed tags
  */
-div[data-tab] > details
+div[data-tab] > details:not([class])
 {
     margin-bottom:                  10px;
 }
-div[data-tab] > details > summary
+div[data-tab] > details:not([class]) > summary
 {
     outline:                        none;
     padding-left:                   6px;
@@ -116,7 +117,7 @@ div[data-tab] > details > summary
     font-weight:                    bold;
     color:                          White;
 }
-div[data-tab] > details > summary:hover
+div[data-tab] > details:not([class]) > summary:hover
 {
     background-color:               var(--utu-purple);
     -webkit-transition:             0.6s ease-out;
@@ -124,7 +125,7 @@ div[data-tab] > details > summary:hover
     -o-transition:                  0.6s ease-out;
     transition:                     0.6s ease-out;
 }
-div[data-tab] > details[open] > summary
+div[data-tab] > details[open]:not([class]) > summary
 {
     background-color:               var(--utu-purple);
 }
