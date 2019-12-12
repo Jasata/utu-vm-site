@@ -329,6 +329,25 @@ a[href^="/"]::before, a[href^=".."]::before
 }
 */
 
+article img.left
+{
+    display:                    block;
+    float:                      right;
+    width:                      40%;
+    min-width:                  340px;
+    height:                     auto;
+}
+
+@media 
+only screen and (max-width: 700px),
+(min-device-width: 768px) and (max-device-width: 1024px)
+{
+    article img.left
+    {
+        float:                      none;
+        width:                      100%;
+    }
+}
 
 /***********************************************************************
  *

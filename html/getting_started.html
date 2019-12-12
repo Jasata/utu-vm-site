@@ -43,9 +43,7 @@
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="nav navbar-nav">
                     <a class="nav-link p-3" href="#introduction">Introduction</a>
-                    <a class="nav-link p-3" href="#bios">BIOS</a>
-                    <a class="nav-link p-3" href="#install">Hypervisor</a>
-                    <a class="nav-link p-3" href="#addons">Add-ons</a>
+                    <a class="nav-link p-3" href="#bios">BIOS Settings</a>
                 </ul>
             </div>
         </div>
@@ -66,38 +64,73 @@
                 </nav>
                 <!-- EXECUTIVE SUMMARY -->
                 <article>
-                    <p>Getting started with virtual machines is straightforward and has very few steps - and you only need to do this once! These instructions should let you accomplish the required steps with ease and then proceed to download your first virtual machine.</p>
+                    <p>Here you are briefed on why and how - and most importantly, shown how to configure two important BIOS settings to make it all work.</p>
+                    <!-- Yllä ehdotus tähän
+                    <p>Getting started with virtual machines is straightforward and has very few steps - and you only need to do this once! These instructions should let you accomplish the required steps with ease and then proceed to download your first virtual machine.</p>-->
                 </article>
 
                 <!-- MAIN CONTENT -->
                 <article>
                     <h1 id="introduction"><i class="fa fa-meh-o"></i>What is this virtual machine stuff?</h1>
-                    <p>A <strong>virtual machine (VM)</strong> is an emulation of a computer system. Like a physical computer it can run an operating system and be used just like any other computer - the difference is that the "hardware" it runs on is created by a specific program, a <strong>hypervisor</strong>. In essence, a virtual machine is a computer inside a computer.</p>
-                    <p>The computer running the hypervisor is usually referred to as <strong>host</strong> while the virtual machine is called <strong>guest</strong>.</p>
-                    <p>
-                        <details>
+                    <p><img class="left" src="img/user_vm_diagram_1280.png">A <strong>virtual machine (VM)</strong> is just a software that emulates hardware - for example, an intel hardware or maybe an Arm based system. But alone it is not all that useful and they are commonly bundled with another kind of software that interfaces and manages resources for the VMs, called a <strong>hypervisor</strong>. You can use these terms interchangeably, but we try to use term 'hypervisor' when we talk about the software bundle and 'virtual machine' when we talk about the emulated hardware or the operating system inside it.</p>
+                    <p>As already mentioned above, just like your PC can run your operating system, by allocating some of your CPU power, memory and disk space to a virtual machine, a hypervisor can run another operating system inside your operating system. A computer inside a computer, if you will. Your operating system is called the <strong>host OS</strong> and all the operating systems running inside virtual machines are called <strong>guest OS'es</strong>. <i>(And this is as much special vocabulary as this topic requires...)</i></p>
+
+                    <h2>Okay, but why?</h2>
+                    <p>For more reasons than we can explain here, without you just leaving this page, but couple of the most important reasons in our case are:</p>
+                    <ul>
+                        <li>Everyone can have exactly the same kind of computing environment. Most importantly for you, it is exactly the same environment the teacher uses - things <strong>will</strong> work, and if for some reason not, its not your fault.</li>
+                        <li>VM can be installed with required software and copied to everyone - instead of everyone trying to install the software into all sorts of personal computers, operating systems and configurations.</li>
+                        <li>If something gets messed up too badly, you can simply download a new copy or rollback to last working savepoint (called a <strong>snapshot</strong> - <i>we lied, this term is also used in addition to the ones above</i>).</li>
+                        <li>You can ditch all that with a click of a mouse when the course is done and you no longer want to use or have those programs.</li>
+                    </ul>
+                    <p><i>We think this is a brilliant idea!</i></p>
+
+                    <h2>I still have guestions</h2>
+                    <details>
                         <summary>How does this benefit me?</summary>
-                        Virtual machines can be created, saved and passed between users. Through this site you can download a virtual machine image that contains pre-installed software and features, saving you the trouble of installing and configuring everything needed on a course separately. Just a couple of steps and you'll be ready to run your very own virtual machine!
-                        </details>
-                        <details>
-                            <summary>Do I need a virtual machine?</summary>
-                            While a virtual machine can be useful, the use of virtualization is not required on most courses. Check the Moodle site of the course or ask your teacher if you are unsure.
-                        </details>
-                        <details>
-                            <summary>Are there security or privacy risks?</summary>
-                            Basically, the VM runs on your computer, behind your firewall.
-                        </details>
-                        <details>
-                            <summary>I want to know more about how it works!</summary>
-                            For now, you could head over to <a href="https://en.wikipedia.org/wiki/Virtualization">Wikipedia</a> or search the web for more information. We aim to provide our own summary, but it's not ready yet! 
-                        </details>
-                    </p>
-                    <p>To get started, you first need to check that virtualization is enabled on yor computer.</p>
+                        <p><strong>In more ways that one!</strong></p>
+                        <p>As listed above, you no longer need to spend time and trouble yourself with the installation and configuration of the programs needed by the course you attend to. Instead, you can download a virtual machine image, import (usually with just a double-click) and enjoy ready made environment with all the necessary software, properly configured and ready to be used.</p>
+                        <p>Most of the hypervisors we support also feature <i>snapshots</i>, a kind of savepoint where you can return, in case you accidentally break something badly enough. Downside is that you need to tell the hypervisor when you want to take a snapshot and when you rollback to one, anything that was created after taking the snapshot, will disappear. However, most provided virtual machines should store your files into a cloud to prevent any loss, but you should check to make sure.</p>
+                        <p>You might also appreciate the convenience of getting rid of course specific software, which is as simple as deleting the virtual machine from your hypervisor. Boof, all gone and every bit of diskspace returned to you. No lingering log files, system configuration keys or other artefacts lying around. And if you thought the course was very interesting, you can export the virtual machine yourself to store it for later or move it to another PC.</p>
+                    </details>
+                    <details>
+                        <summary>Do I need a virtual machine?</summary>
+                        <p><strong>Yes</strong> most likely, since you are here... Odds are that the Moodle page for your course instructed you to come here and get one.</p>
+                        <p>However, depending on your teacher, you may have options. There may be an USB drive image available, which allows you to boot your PC into the operating system, after you have written the image into an USB disk. Some teachers may provide a list of software that you need to install into your own operating system, if you do not want to install a hypervisor and run the provided virtual machine.</p>
+                        <p>We merely provide a service to create and distribute these things to help both students and teachers. What is required and what is possible, are things that your teacher decides. Thus, the real answer to this question should be found in your course's Moodle page - and if not, please approach your teacher to inquire.</p>
+                    </details>
+                    <details>
+                        <summary>Are there security or privacy risks?</summary>
+                        <p><strong>There are no additional security risks or privacy concerns.</strong></p>
+                        <p>In fact, networkwise there are less risks than without using virtual machines. Default configuration places all virtual machines behind a <a target="_blank" href="https://en.wikipedia.org/wiki/Network_address_translation">NAT</a> which protects your virtual machine from most common attempts to brek in, and if an intruder somehow did manage to break into a virtual machine, all he can find there are course related files - all your personal items are in your host OS.</p>
+                        <p>Your privacy is also well protected because no additional details about you are used or stored anywhere. Most VM images will ask you for your name and email in order to configure <a target="_blank" href="https://en.wikipedia.org/wiki/Git">Git</a> for you, but those details are not secret to begin with. They can be found elsewhere much easier than trying to break into your virtual machine.</p>
+                        <p>The image you download and use is also exclusively your own and just like any other file in your personal computer, no one can access them. If you still have questions about privacy or security, please let us know - it will help us develop these pages to answer all possible questions.</p> 
+                    </details>
+                    <details>
+                        <summary>Does that picture mean that I will have to use Linux?</summary>
+                        <p><strong>Well, yes... but</strong> we have done a lot of work in order to make the userinterface easy and simple. We are not going to let confusing Linux desktop manager take away the gains for which we worked so hard to reach. All of this is supposed to be easy for you to use.</p>
+                        <p>Primary reason why you will see mostly Linux operating systems in the provided virtual machines is simply because of licensing. We cannot distribute licensed operating systems and unfortunately, you are not allowed to use one, even if you already run one in your personal computer - all companies require users to purchase separate licenses for their virtual machines.</p>
+                        <p>While this is being written, there are no exceptions to this rule, but if some course manages to overcome this licensing issue, nothing in our solution prevents teachers from distributing whatever operating system they are able to.</p>
+                    </details>
+                    <details>
+                        <summary>Can I remove all this after my course?</summary>
+                        <p><strong>Absolutely!</strong> You can reinstall and remove between every course that uses virtual machines. A hypervisor does not consume much disk space without any virtual machines and it consumer no memory and no CPU power when not running - meaning that you could just leave it there until you need it again. But if rather not, you can delete the virtual machine(s) and remove the hypervisor easily.</p>
+                    </details>
+                    <details>
+                        <summary>Where can I learn more?</summary>
+                        <p>Awww, you're just saying so to make us feel good... But in case you really mean it, there are a few links that we can recommend:</p>
+                        <ul>
+                            <li><a target="_blank" href="https://www.howtogeek.com/196060/beginner-geek-how-to-create-and-use-virtual-machines/">Virtual machines for beginners</a> at How-To Geek</li>
+                            <li><a target="_blank" href="https://en.wikipedia.org/wiki/Virtualization">Virtualization page</a> at Wikipedia</li>
+                            <li><a target="_blank" href="https://www.ibm.com/cloud/learn/virtual-machines">Introduction to Virtual Machines</a> by IBM</li>
+                        </ul>
+                    </details>
+
                 </article>
 
 
                 <article>
-                    <h1 id="bios"><i class="fa fa-edit"></i>Enable Virtualization from BIOS Settings</h1>
+                    <h1 id="bios"><i class="fa fa-edit"></i>BIOS Settings</h1>
                     <p>All virtual machines run inside a program called <strong>hypervisor</strong>, which rely on a virtualization feature in your processor. Unfortunately this is not enabled by default.</p>
                     <p>To <strong>enter BIOS</strong> you need to restart your PC and press the appropriate key (usually ESC, DEL, F1, F2 or F10) during the start-up, before your operating system begins to load.</p>
                     <p>Virtualization is called either <strong>VT-x</strong> or <strong>AMD-V</strong>.</p>
@@ -120,11 +153,12 @@
                     </details></p>
                 </article>
 
+<!--
                 <article>
                     <h1 id="install">Install a Hypervisor</h1>
                     <p><strong>Which OS are you running?</strong> The operating system into which the hypervisor is installed into, is called <u>Host OS</u>, and the installation instructions differ slightly between Linux, MacOS and Windows.</p>
                     <p><strong>Choose your hypervisor</strong> between Oracle's VirtualBox or VMWare's VMPlayer.</p>
-                        <!-- (DO WE WANT TO RECOMMEND EITHER FOR CERTAIN OS'es? -> MacOS issues. How is Linux?)-->
+
                     <p><strong>Download and install the hypervisor.</strong> Download links are provided underneath, but for more detailed installation instructions and additional help, head to our <a href="install.html">Install Hypervisor</a> section.</p>
                     <ul>
                         <li><a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox Homepage</a></li>
@@ -156,6 +190,7 @@
                     <h1>All Done!</h1>
                     <p>Next you should go to the <a href="download.html">download page</a> to download a VM image and to follow the instructions there.</p>
                 </article>
+-->
             </main>
         </div>
     </div>
