@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- https://www.w3schools.com/icons/icons_reference.asp -->
+<head>
+
+    <meta   charset="utf-8">
+    <meta   name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta   name="description"
+            content="">
+    <meta   name="author"
+            content="">
+
+    <title>Turku university - Course Virtual Machines</title>
+
+    <!-- Vendor -->
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/font-awesome.min.css">
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/bootstrap.min.css">
+    <script type="text/javascript"
+            charset="utf8"
+            src="js/jquery.min.js">
+    </script>
+    <script type="text/javascript"
+            charset="utf8"
+            src="js/bootstrap.min.js">
+    </script>
+    <!-- not needed ... yet
+    <link   rel='stylesheet'
+            type="text/css"
+            href='css/jquery.cardtabs.css'>
+    <script type='text/javascript'
+            charset="utf8"
+            src='js/jquery.cardtabs.js'></script>
+    <link   rel="stylesheet"
+            type="text/css"
+            href="DataTables/datatables.css">
+    <script type="text/javascript"
+            charset="utf8"
+            src="DataTables/datatables.js">
+    </script>
+    -->
+    <!-- Site Specific -->
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/common.css">
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/subpage.css">
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/upload.css">
+
+
+    <script type="text/javascript" charset="utf-8">
+        /*
+        $.ajax({
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        console.log(percentComplete);
+
+                        if (percentComplete === 100) {
+
+                        }
+
+                    }
+                }, false);
+
+                return xhr;
+            },
+            url:        posturlfile,
+            type:       "POST",
+            data:       JSON.stringify(fileuploaddata),
+            contentType: "application/json",
+            dataType:   "json",
+            success: function(result) {
+                console.log(result);
+            }
+        });
+        */
+        function secondsToStr (temp) {
+            function pluralize(unit, amount) {
+                return amount + ' ' + unit + (amount > 1) ? 's' : '';
+            }
+            var years = Math.floor(temp / 31536000);
+            if (years) {
+                return pluralize('year', years);
+            }
+            var days = Math.floor((temp %= 31536000) / 86400);
+            if (days) {
+                return pluralize('day', days);
+            }
+            var hours = Math.floor((temp %= 86400) / 3600);
+            if (hours) {
+                return pluralize('hour', hours);
+            }
+            var minutes = Math.floor((temp %= 3600) / 60);
+            if (minutes) {
+                return pluralize('minute', minutes);
+            }
+            var seconds = temp % 60;
+            return pluralize('second', seconds);
+        }
+    </script>
+
+
+
+</head>
+
+
+<body data-spy="scroll" data-target="#navbarContent" data-offset="70">
+
+    <nav class="navbar navbar-expand-md fixed-top navbar-light bg-white py-0">
+        <div class="container">
+            <a class="navbar-brand py-3" href=".">
+                <img id="navbar-logo" src="img/utu-torch-black.png">
+            </a><span id="navbar-title">Upload</span>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="nav navbar-nav">
+                    <a class="nav-link p-3" href="#upload">Upload</a>
+                    <a class="nav-link p-3" Href="#publish">Publish</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <!-- PAGE CONTENT -->
+    <div class="container-fluid">
+        <div class="row" id="content-row">
+            <main>
+
+
+                <nav class="site">
+                    <ol>
+                        <li><a href="index.html">UTU Virtual Machines</a></li>
+                        <li>Upload</li>
+                    </ol>
+                </nav>
+
+
+                <!-- Executive summary -->
+                <article style="display: none;"></article>
+
+
+
+                <!-- ARTICLE Upload image -->
+                <article>
+                    <h1 id="upload"><i class="fa fa-cloud-upload"></i>Upload</h1>
+                    <!-- http://talkerscode.com/webtricks/file-upload-progress-bar-using-jquery-and-php.php -->
+                    <p>
+                        <div class="flow-drop" ondragenter="jQuery(this).addClass('flow-dragover');" ondragend="jQuery(this).removeClass('flow-dragover');" ondrop="jQuery(this).removeClass('flow-dragover');">
+                            Drop files here to upload or <a class="flow-browse-folder"><u>select folder</u></a> or <a class="flow-browse"><u>select from your computer</u></a> or <a class="flow-browse-image"><u>select images</u></a>
+                          </div>
+                    </p>
+                    <p><!-- name="frmupload" -- >
+                        <form   id="uploadForm"
+                                action="upload_processor.html"
+                                method="POST" 
+                                enctype="multipart/form-data">
+                            <input type="file" name="file" />
+                            <input type="submit" onclick="upload();" />
+                        </form>
+                        <div class='flow-progress' id="flow-progress">
+                            <div    class='flow-progress-bar'
+                                    id='flow-progress-bar'></div>
+                            <div    class='flow-progress-percent'
+                                    id='flow-progress-percent'>0%</div>
+                        </div>-->
+                    </p>
+                    <p>
+                        <div class="flow-progress">
+                            <table>
+                              <tr>
+                                <td width="100%"><div class="progress-container"><div class="progress-bar"></div></div></td>
+                                <td class="progress-text" nowrap="nowrap"></td>
+                                <td class="progress-pause" nowrap="nowrap">
+                                  <a href="#" onclick="r.upload(); return(false);" class="progress-resume-link"><img src="resume.png" title="Resume upload" /></a>
+                                  <a href="#" onclick="r.pause(); return(false);" class="progress-pause-link"><img src="pause.png" title="Pause upload" /></a>
+                                  <a href="#" onclick="r.cancel(); return(false);" class="progress-cancel-link"><img src="cancel.png" title="Cancel upload" /></a>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                    </p>
+                </article>
+
+
+
+
+                <!-- ARTICLE Publish image -->
+                <article>
+                    <h1 id="publish"><i class="	fa fa-bullhorn"></i>Publish</h1>
+
+                    <p>Fill-in details and set the image visible.</p>
+                </article>
+
+
+
+            </main>
+        </div>
+    </div>
+    <!-- MAIN ENDS -->
+
+
+
+
+    <!-- If <footer> is nested inside "container-fluid" DIV, it screws up the layout. Close "conteiner-fluid", begin <footer> and start new boostrap layout within it. -->
+    <!-- FOOTER -------------------------------------------------------------->
+    <footer><!-- flex container -->
+        <div>
+            <img    class="footer-logo"
+            src="img/UTU_logo-white_EN_transparent.png">
+        </div>
+        <div><!-- flex container -->
+            <div>
+                © <a href="https://www.utu.fi">University of Turku</a>,
+                <a href="https://tech.utu.fi/en/">Department of Future  Technologies</a> 2019<br>
+                Brought to you by the <a href="https://gitlab.utu.fi/soft/ftdev/wikis/home">Course virtualization team</a> @ <a href="https://tech.utu.fi/fi/software-engineering/">SwDev laboratory</a>.
+            </div>
+            <div>
+                <a href="documentation.html">Documentation</a>
+                <a href="#">Statistics</a>
+                <a href="#">Support</a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>

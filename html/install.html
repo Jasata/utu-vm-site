@@ -167,7 +167,7 @@
                         </tbody>
                     </table>
                     <h2>Hardware Requirements</h2>
-                    <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than the default requirements listed here. Exceptional course specific requirements are listed with each downloadable VM image.</p>
+                    <p>Almost any recent computer will be sufficient. Please note that some course specific virtual machines may have greater than the default requirements listed here. If so, your course Moodle page should have information about it. You can also look into the details of each downloadable image in the <a href="download.html">download page</a> to check the resource requirements.</p>
                     <p>
                         <ul>
                             <li>4 GB RAM <i>(2 GB allocated for a VM)</i></li>
@@ -195,12 +195,14 @@
                             <p>Some courses might require more resources than our standard allocates. If so, your teacher will inform you of those, and you can also find non-standard resource requirements listed with the downloadable images.</p>
                         </details>
                     </p>
-                    <h2>I Want Something Else</h2>
-                    <div class="three-columns">
-                    <p><strong>Other hypervisors</strong> should also be able to run these virtual machines, but we provide support only for hypervisors listed in this page. You are of course free to use whatever hypervisor you feel most comfortable with - provided that you can import <a target="_blank" href="https://en.wikipedia.org/wiki/Open_Virtualization_Format">OVA (version 2)</a> images from the <a href="download.html">download page</a>. If you experience issues using unsupported hypervisor, you need to resolve them on your own with the resources you are able to find on the Internet.</p>
-                    <p><strong>USB disk</strong> alternatives can be found in the <a href="download.html#usb">download page</a>. They allow you to boot your machine into a course specific OS instance when you need to do course studies. Downside is that you do not have access to your own operating system at the same time. Note also that this alternative cannot quarantee that your hardware would be fully supported.</p>
-                    <p><strong>Installing the software to your OS</strong> could be an option. You need to ask your teacher if a list of required course specific software exists, and if it does, you need install and configure them directly into your PC. If you choose that option, these pages cannot offer you anything useful. Your teacher may also refuse to give you personalized support in the installation and configuration, if a virtual machine has been created for the very purpose of negating the need to support various OS'es and environments.</p>
-                    </div>
+                    <details class="subheader-h2">
+                        <summary>I Want Something Else</summary>
+                        <div class="three-columns">
+                            <p><strong>Other hypervisors</strong> should also be able to run these virtual machines, but we provide support only for hypervisors listed in this page. You are of course free to use whatever hypervisor you feel most comfortable with - provided that you can import <a target="_blank" href="https://en.wikipedia.org/wiki/Open_Virtualization_Format">OVA (version 2)</a> images from the <a href="download.html">download page</a>. If you experience issues using unsupported hypervisor, you need to resolve them on your own with the resources you are able to find on the Internet.</p>
+                            <p><strong>USB disk</strong> alternatives for some courses can be found in the <a href="download.html#usb">download page</a>. They allow you to boot your machine into a course specific OS instance when you need to do course related work. Downside is that you do not have access to your own operating system at the same time. Note also that this alternative cannot quarantee that your hardware would be fully supported.</p>
+                            <p><strong>Installing the software to your OS</strong> could be an option. You need to ask your teacher if a list of required course specific software exists, and if it does, you need install and configure them directly into your PC. If this option is available and you choose it, these pages cannot offer you anything useful. Please note that your teacher is not obligated to provide you with personalized IT support and may decline to solve any issues you encounter when refusing to use the provided virtual machine.</p>
+                        </div>
+                    </details>
                 </article>
 
 
@@ -250,83 +252,84 @@
                     <h2>About Licenses</h2>
                     <p>Turku University Department of Future Technologies (DFT) has acquired VMware licenses for all students <i>of Turku University</i>, who take part in <u>any course offered by DFT</u>. This license is valid for the duration of the course and does not allow other usage.</p>
                     <p>If the above condition does not apply - the course is not offered by DFT or you wish to use virtualization for your own purposes - your free alternatives are either VMware Player (for non-commercial use) or VirtualBox (free for any use).</p>
-                    <h2>Seriously, No Recommendation?</h2>
-                    <p>Nope. Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
-                    <!-- https://www.nakivo.com/blog/vmware-vs-virtual-box-comprehensive-comparison/ -->
-                    <p>
-                        <table class="responsive proscons">
-                            <thead>
-                                <th>Hypervisor</th>
-                                <th>Pros</th>
-                                <th>Cons</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>VirtualBox</td>
-                                    <td label="Pros">
-                                        <ul>
-                                            <li>Supports all OSes - you might have different kinds of devices, and using same in all of them can be nice.</li>
-                                            <li>No license concerns.</li>
-                                        </ul>
-                                    </td>
-                                    <td label="Cons">
-                                        <ul>
-                                            <li>An extension pack needs to be installed for USB 2.0/3.0 (without it, USB 1.0 only) - but its free for personal and educational use and you only need to install it once.</li>
-                                            <li>Video memory limited to 128 MB (VMware allows 2 GB).<sup>(1</sup></li>
-                                            <li>MacOS support can be sketchy.<sup>(2</sup></li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>VMware Fusion</td>
-                                    <td label="Pros">
-                                        <ul>
-                                            <li>Specifically made for MacOS. Given the MacOS issues VirtualBox has/had, this is more reliable option for Apple users.</li>
-                                        </ul>
-                                    </td>
-                                    <td label="Cons">
-                                        <ul>
-                                            <li>Licensing<sup>(3</sup></li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>VMware Player</td>
-                                    <td label="Pros">
-                                        <ul>
-                                            <li>Simple and intuitive graphical interface, the most user-friendly for inexperienced users.</li>
-                                        </ul>
-                                    </td>
-                                    <td label="Cons">
-                                        <ul>
-                                            <li>Allows only 1 VM to run at any given time - but for studying, you may not need more.</li>
-                                            <li>No snapshots - you cannot roll back if you accidentally mess up the VM.</li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>VMware Pro</td>
-                                    <td label="Pros">
-                                        <ul>
-                                            <li>(tba)</li>
-                                        </ul>
-                                    </td>
-                                    <td label="Cons">
-                                        <ul>
-                                            <li>Licensing<sup>(3</sup></li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <ol>
-                            <li>This should not matter at all, unless a course for 3D graphics appears from somewhere.</li>
-                            <li>For example, with MacOS 10.15 VirtualBox had the tendency to crash until it was fixed by release 6.0.14.</li>
-                            <li>Unless you are attending a course offerend by Department of Future Technologies, you need to acquire a valid license.</li>
-                        </ol>
-                    </p>
-                    <h3>Still not sure which one to choose?</h3>
-                    <p>If none of the pros and cons make choosing any easier, all we can suggest at this point is to flip a coin. Really, they all work for you - as long as your choice supports your OS. Alternatively, you could also talk to your friends who are taking the same course. It might make you feel more confident if you are using the same as your friends are. Or perhaps, during the first lecture, you could also ask if the teacher has any reason to favor one hypervisor over the others.</p>
+                    <details class="subheader-h2">
+                        <summary>Seriously, No Recommendation?</summary>
+                        <p>Nope. Seriously, we cannot even agree among ourselves. But while arguing, we managed to collect a few pros and cons:</p>
+                        <p>
+                            <table class="responsive proscons">
+                                <thead>
+                                    <th>Hypervisor</th>
+                                    <th>Pros</th>
+                                    <th>Cons</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>VirtualBox</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>Supports all OSes - you might have different kinds of devices, and using same in all of them can be nice.</li>
+                                                <li>No license concerns.</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>An extension pack needs to be installed for USB 2.0/3.0 (without it, USB 1.0 only) - but its free for personal and educational use and you only need to install it once.</li>
+                                                <li>Video memory limited to 128 MB (VMware allows 2 GB).<sup>(1</sup></li>
+                                                <li>MacOS support can be sketchy.<sup>(2</sup></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VMware Fusion</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>Specifically made for MacOS. Given the MacOS issues VirtualBox has/had, this is more reliable option for Apple users.</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>Licensing<sup>(3</sup></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VMware Player</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>Simple and intuitive graphical interface, the most user-friendly for inexperienced users.</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>Allows only 1 VM to run at any given time - but for studying, you may not need more.</li>
+                                                <li>No snapshots - you cannot roll back if you accidentally mess up the VM.</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VMware Pro</td>
+                                        <td label="Pros">
+                                            <ul>
+                                                <li>(tba)</li>
+                                            </ul>
+                                        </td>
+                                        <td label="Cons">
+                                            <ul>
+                                                <li>Licensing<sup>(3</sup></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ol>
+                                <li>This should not matter at all, unless a course for 3D graphics appears from somewhere.</li>
+                                <li>For example, with MacOS 10.15 VirtualBox had the tendency to crash until it was fixed by release 6.0.14.</li>
+                                <li>Unless you are attending a course offerend by Department of Future Technologies, you need to acquire a valid license.</li>
+                            </ol>
+                        </p>
+                        <h3>Still not sure which one to choose?</h3>
+                        <p>If none of the pros and cons make choosing any easier, all we can suggest at this point is to flip a coin. Really, they all work for you - as long as your choice supports your OS. Alternatively, you could also talk to your friends who are taking the same course. It might make you feel more confident if you are using the same as your friends are. Or perhaps, during the first lecture, you could also ask if the teacher has any reason to favor one hypervisor over the others.</p>
+                    </details>
                 </article>
 
 
@@ -408,12 +411,7 @@
                     </details>
 
 
-                </article>
-
-
-
-                <article>
-                    <h1>All Done?</h1>
+                    <h2>All Done?</h2>
                     <p>Almost! Now you need to head to the <a href="download.html">download</a> page and get a VM image for your course.</p>
                 </article>
             </main>

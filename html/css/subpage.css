@@ -24,33 +24,42 @@ html
 body
 /* hidden spacer before sections for proper offset */
 {
-    padding-top:            var(--navbar-padding);
-    overflow-y:             auto;
+    padding-top:                var(--navbar-padding);
+    overflow-y:                 auto;
     /* Required by Bootstrap Scrollspy */
-    position:               relative;
+    position:                   relative;
 }
 /* NOTE: Special article a:before {...} among 'article' selectors */
 a:link
 {
-    color:                  var(--link-color);
-    text-decoration:        none;
+    color:                      var(--link-color);
+    text-decoration:            none;
 }
 a:visited
 {
-    color:                  var(--link-color);
-    text-decoration:        none;
+    color:                      var(--link-color);
+    text-decoration:            none;
 }
 a:hover
 {
-    color:                  var(--text-color);
-    text-decoration:        underline dotted;
+    color:                      var(--text-color);
+    text-decoration:            underline dotted;
 }
 a:active
 {
-    color:                  var(--text-color);
-    text-decoration:        none;
+    color:                      var(--text-color);
+    text-decoration:            none;
+}
+details:not([class]) > p
+/* Plain vanilla <details> shall all have left padding in their P's */
+{
+    padding-left:               20px;
 }
 
+/******************************************************************************
+ *
+ * Bootstrap navbar / scrollspy
+ */
 a.navbar-brand::before
 /* the "<<" before UTU logo */
 {
@@ -166,6 +175,8 @@ article
     margin-bottom:          40px;
     max-width:              1280px;
 }
+/* This has most likely become obsolete long ago
+   Commented out 2019-12-12 // JTa
 article > header
 {
     color:                  var(--utu-purple);
@@ -179,25 +190,44 @@ article > header
     margin-bottom:          16px;
     box-sizing:             border-box;
     -webkit-tap-highlight-color: transparent;
-}
-article > h1
+}*/
+article h1
+/* Any H1 enclosed in <article> */
 {
     color:                  var(--utu-purple-dark);
     font-size:              1.75em;
     margin-bottom:          20px;
 }
-article h1[id] > i
-/* Font Awesome icon in ID'd H1 headers */
+article > h1[id] > i
+/* Font Awesome icon in ID'd H1 headers needs a little padding.
+   This applies ONLY to immediate H1 child that is "id" attrinute! */
 {
     padding-right:          6px;
 }
-article > h2
+article h2
+/* Any H2 enclosed in <article> */
 {
     color:                  var(--utu-purple);
     font-size:              1.4rem;
     margin-bottom:          10px;
 }
-article  h3
+article details.subheader-h2 > summary
+/* Folding subheader of H2 type */
+{
+    color:                  var(--utu-purple);
+    font-size:              1.4rem;
+    margin-bottom:          10px;
+}
+article details.subheader-h2 > summary::after
+{
+    content:                "...";
+}
+article details.subheader-h2[open] > summary::after
+{
+    content:                "";
+}
+article h3
+/* Any H3 enclosed in <article> */
 {
     color:                  Black;
     font-size:              1.1rem !important; /* Boostrap is messing */
@@ -593,33 +623,8 @@ div.shoutbox > i:first-child
 /***********************************************************************
  * Quote someone 
  */
-q.customer
-{
-    background-color:           Pink;
-/*    padding:                    30px; */
-}/*
-q.customer::before
-{
-    font-family:                FontAwesome;
-    content:                    "\f10d";
-    float:                      left;
-    padding:                    0;
-    text-align:                 center;
-    transform:                  translate(0, -1px);
-    width:                      24px;
-}
-q.customer::after
-{
-    font-family:                FontAwesome;
-    content:                    "\f10e";
-    float:                      left;
-    padding:                    0;
-    text-align:                 center;
-    transform:                  translate(0, -1px);
-    width:                      24px;
-}*/
 
-blockquote
+blockquote.testimonial
 {
     position:                   relative;
     display:                    inline-block;
@@ -633,7 +638,7 @@ blockquote
                                 3px 3px 1px #999;
     transition-duration:        0.3s;
 }
-blockquote span.author
+blockquote.testimonial span.author
 {
     position:                   relative;
     display:                    block;
@@ -641,7 +646,7 @@ blockquote span.author
     margin-top:                 5px;
     color:                      #999;
 }
-blockquote span.author i
+blockquote.testimonial span.author i
 {
     position:                   relative;
     background:                 #eee;
@@ -649,7 +654,7 @@ blockquote span.author i
     font-style:                 italic;
     z-index:                    5;
 }
-blockquote span.author::before
+blockquote.testimonial span.author::before
 {
     display:                    block;
     content:                    "";
@@ -661,13 +666,13 @@ blockquote span.author::before
     background:                 #ccc;
     z-index:                    1;
 }
-blockquote:hover
+blockquote.testimonial:hover
 {
     box-shadow:                 1px 1px 5px #999,
                                 2px 2px 6px #999,
                                 3px 3px 7px #999;
 }
-blockquote::before
+blockquote.testimonial::before
 /* Stylish quotation mark */
 {
     display:                    block;

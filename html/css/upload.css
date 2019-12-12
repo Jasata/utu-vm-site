@@ -1,0 +1,23 @@
+.flow-progress
+{
+  display:none; 
+  position:relative; 
+  width:400px; 
+  border: 1px solid #ddd; 
+  padding: 1px; 
+  border-radius: 3px; 
+}
+.flow-progress-bar
+{ 
+  background-color: #B4F5B4; 
+  width:0%; 
+  height:20px; 
+  border-radius: 3px; 
+}
+.flow-progress-percent
+{ 
+  position:absolute; 
+  display:inline-block; 
+  top:3px; 
+  left:48%; 
+}
