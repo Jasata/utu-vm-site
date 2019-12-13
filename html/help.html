@@ -80,64 +80,49 @@
                 <!-- ARTICLE FAQ -->
                 <article>
                     <h1 id="faq"><i class="fa fa-question-circle"></i>Frequently Asked Questions</h1>
-                    <div class="tabs">
 
-                        <input  type="radio"
-                                name="tabs"
-                                id="tabone"
-                                checked="checked">
-                        <label for="tabone">Installing Hypervisor</label>
-                        <div class="tab">
-                            <details>
-                                <summary>How do I get into my BIOS?</summary>
-                                <p>Unfortunately, PC manufacturers are not following any generally accepted convention. You could try spamming all these keys during boot (right after powering your PC on):</p>
-                                <ul>
-                                    <li>ESC</li>
-                                    <li>DEL</li>
-                                    <li>F1</li>
-                                    <li>F2</li>
-                                    <li>F10</li>
-                                </ul>
-                                <p>...or if none of those seem to do the trick, you should Google your maker and model to find the correct answer.</p>
-                            </details>
-                            <details>
-                                <summary>I cannot find my virtualization option from BIOS!</summary>
-                                <p>As with the keys used to enter BIOS, there are no commonly accepted conventions, but here are some that might help:</p>
-                                <ul>
-                                    <li>TBA</li>
-                                </ul>
-                            </details>
-                        </div><!-- end of class="tab" -->
+                    <h2>Installing a Hypervisor</h2>
+                    <p>
+                        <details>
+                            <summary>How do I get into my BIOS?</summary>
+                            <p>Unfortunately, PC manufacturers are not following any generally accepted convention. You could try spamming all these keys during boot (right after powering your PC on):</p>
+                            <ul>
+                                <li>ESC</li>
+                                <li>DEL</li>
+                                <li>F1</li>
+                                <li>F2</li>
+                                <li>F10</li>
+                            </ul>
+                            <p>...or if none of those seem to do the trick, you should Google your maker and model to find the correct answer.</p>
+                        </details>
+                        <details>
+                            <summary>I cannot find my virtualization option from BIOS!</summary>
+                            <p>As with the keys used to enter BIOS, there are no commonly accepted conventions, but here are some that might help:</p>
+                            <ul>
+                                <li>TBA</li>
+                            </ul>
+                        </details>
+                    </p>
 
+                    <h2>Getting a VM Image to Run</h2>
+                    <p>
+                        <details>
+                            <summary>VT-x is not available?</summary>
+                            Your hypervisor complaining that VT-x is not available is by far most likely due to the feature not being enabled in your BIOS.<br>
+                            <img src="img/vt-x_not_available.png">
+                            Did you exit BIOS <strong>and saved</strong> your changes? Could you double-check that the setting really is now enabled?<br>
+                        </details>
+                        <details>
+                            <summary>Can I run 64-bit VM in my 32-bit host OS?</summary>
+                            Yes. You can run 64-bit virtual machines even if your operating system is 32-bit, as long as your processor is 64-bit.
+                        </details>
+                    </p>
 
-                        <input  type="radio"
-                                name="tabs"
-                                id="tabtwo">
-                        <label for="tabtwo">Getting VM Image to Run</label>
-                        <div class="tab">
-                            <details>
-                                <summary>VT-x is not available?</summary>
-                                Your hypervisor complaining that VT-x is not available is by far most likely due to the feature not being enabled in your BIOS.<br>
-                                <img src="img/vt-x_not_available.png">
-                                Did you exit BIOS <strong>and saved</strong> your changes? Could you double-check that the setting really is now enabled?<br>
-                            </details>
-                            <details>
-                                <summary>Can I run 64-bit VM in my 32-bit host OS?</summary>
-                                Yes. You can run 64-bit virtual machines even if your operating system is 32-bit, as long as your processor is 64-bit.
-                            </details>
-                        </div><!-- end of class="tab" -->
+                    <h2>Using the VM</h2>
+                    <p>Please Note that your teacher may have chosen to create a virtual machine entirely of his or her own design and that the answers provided here may not apply.</p>
+                    <p>TBA</p>
 
 
-                        <input  type="radio"
-                                name="tabs"
-                                id="tabthree">
-                        <label for="tabthree">Using the VM</label>
-                        <div class="tab">
-                            <p>Please Note that your teacher may have chosen to create a virtual machine entirely of his or her own design and that the answers provided here may not apply.</p>
-                            <p>TBA</p>
-                        </div><!-- end of class="tab" -->
-
-                    </div><!-- class="tabs" -->
                 </article>
                 <!-- ARTICLE FAQ ENDS -->
 
