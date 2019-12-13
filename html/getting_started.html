@@ -128,11 +128,14 @@
 
                 </article>
 
-
+                <!-- BIOS instructions -->
                 <article>
                     <h1 id="bios"><i class="fa fa-edit"></i>BIOS Settings</h1>
-                    <p>All virtual machines run inside a program called <strong>hypervisor</strong>, which rely on a virtualization feature in your processor. Unfortunately this is not enabled by default.</p>
                     <p>To <strong>enter BIOS</strong> you need to restart your PC and press the appropriate key (usually ESC, DEL, F1, F2 or F10) during the start-up, before your operating system begins to load.</p>
+                    <p>In Windows 10, you can also access BIOS by pressing the shift key while selecting restart from the start menu. During the restart, a menu opens. Choose the options <i>Troubleshoot</i> > <i>Advanced options</i> > <i>UEFI Firmware settings</i> > <i>Reboot</i>.</p>
+                    
+                    <h2>Enabling virtualization</h2>
+                    <p>All virtual machines run inside a program called <strong>hypervisor</strong>, which rely on a virtualization feature in your processor. Unfortunately this is not enabled by default.</p>
                     <p>Virtualization is called either <strong>VT-x</strong> or <strong>AMD-V</strong>.</p>
                     <p>Once in your BIOS settings, first take a look at the system information page - some older PCs do not have a configuration for virtualization and simply list it in the first page as "supported". In such case, you don't need to do anything and can move to installing the hypervisor.</p>
 
@@ -151,6 +154,9 @@
                         <img src="img/bios_example.png">
 
                     </details></p>
+                    <h2>BIOS settings for booting from a USB drive</h2>
+                    <p>To enable booting from a USB drive, you'll have to disable <i>Secure Boot</i>, which can be found under a tab labeled something like <i>Boot</i>, <i>Security</i> or <i>Authentication</i>.</p>
+                    <p>Under a <i>Boot</i> or <i>Startup</i> tab, you can find a setting called <i>Boot</i> or <i>Boot priority order</i> or something similar. Here, you can find your bootable drives and make sure your USB drive is at the top.</p>
                 </article>
 
 <!--
