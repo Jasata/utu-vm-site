@@ -47,7 +47,7 @@ class File(DataObject):
             self.sql += f" WHERE type = '{type}'"
         try:
             self.cursor.execute(self.sql)
-        except sqlite3.Exception as e:
+        except sqlite3.Error as e:
             app.logger.exception(
                 f"'{self.table_name}' -table query failed! ({self.sql})"
             )
