@@ -115,21 +115,6 @@ finally:
 app.config.from_pyfile('application.conf')
 
 
-#
-# Logging
-#
-handler = RotatingFileHandler(
-    app.config.get('LOG_FILENAME', 'application.log'),
-    maxBytes    = 1000000,
-    backupCount = 1
-)
-handler.setFormatter(
-    Formatter(
-        '%(asctime)s %(levelname)s: %(message)s '
-        '[in %(pathname)s:%(lineno)d]'
-    )
-)
-app.logger.addHandler(handler)
 # Setting is given as a string, which needs to be converted into
 # the integer value that logger module uses. Default to DEBUG.
 # Using getattr() with default instead of logging.getLevelName()
