@@ -1,4 +1,3 @@
-/* 2019-12-07 Jani Tammi <jasata@utu.fi> */
 CREATE TABLE file
 (
     id              INTEGER     NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,7 +17,7 @@ CREATE TABLE file
     UNIQUE(label, version, type),
     CHECK (type IN ('usb', 'vm')),
     CHECK (dtap IN ('development', 'testing', 'acceptance', 'production'))
-)
+);
 INSERT INTO file (label, version, size, sha1, name, type)
 VALUES
 ("Java (generic)", "356", "1996267520", "a889307a9da4bf4ff1e8bb1e77e0153ca4f0206f", "utuvm-java-356.ova", "vm"),
@@ -37,33 +36,3 @@ VALUES
 ("DTEK2044 Embarrassed Systems Programming", "2019-12-06", "12312917", "deadbeef", "dtek2044-2019-12-06.zip", "usb"),
 ("DTEK2045 Emansipated Systems Programming", "2019-12-06", "4112321917", "deadbeef", "dtek2045-2019-12-06.zip", "usb"),
 ("DTEK2046 Eloquent Systems Programming", "2019-12-06", "9412117", "deadbeef", "dtek2046-2019-12-06.zip", "usb");
-/*
-CREATE TABLE course
-(
-    id              INTEGER     NOT NULL PRIMARY KEY AUTOINCREMENT,
-    code            TEXT        NOT NULL UNIQUE,
-    name            TEXT            NULL,
-    description     TEXT            NULL,
-    password        TEXT            NULL,
-    created         INTEGER     NOT NULL DEFAULT (strftime('%s', 'now'))
-)
-CREATE TABLE course_file
-(
-    course_id       INTEGER     NOT NULL,
-    file_id         INTEGER     NOT NULL,
-    created         INTEGER     NOT NULL DEFAULT (strftime('%s', 'now')),
-    PRIMARY KEY (course_id, file_id),
-    FOREIGN KEY (course_id) REFERENCES course (id),
-    FOREIGN KEY (file_id)   REFERENCES file (id)
-)
-
-INSERT INTO course (code, name, description)
-VALUES
-('DTEK2041','Embedded Systems Programming', NULL),
-('BOGUS0001', 'Bogus Course', 'Testing');
-
-INSERT INTO course_file (course_id, file_id)
-VALUES
-(1, 1), (1, 2), (2, 2), (2, 3), (2, 4);
-
-*/
