@@ -1,6 +1,12 @@
 #! /usr/bin/env python3
 #
 # https://gitlab.utu.fi/ttweb/exerciser/blob/master/openam.php
+# chrome://settings/cookies/detail?site=utu.fi
+#
+# Responses are either:
+# {'valid': False}
+# or
+# {'realm': '/utu', 'uid': 'jasata', 'valid': True}
 #
 import os
 import json
@@ -192,7 +198,7 @@ def openam_sessionsdata(tokenId):
     response = requests.post(
         OPENAM.BASE_URL + OPENAM.SESSION_URI + tokenId,
         params = {
-            'action':           'validate'
+            '_action':           'validate'
         },
         headers = {
             'Content-Type':     'application/json'
@@ -282,5 +288,5 @@ def openam_sso(tokenId: str) -> str:
 #https://requests.readthedocs.io/en/master/api/#requests.Response
 # https://gitlab.utu.fi/ttweb/exerciser/tree/master
 if __name__ == '__main__':
-    token = 'AQIC5wM2LY4SfczoFtxsflah-1X0Dy9qFWhm3_ouYtp-Uaw.*AAJTSQACMDIAAlNLABQtNDI4MzIwNjUyMzcwMDM1MTYzOQACUzEAAjA0*'
+    token = 'AQIC5wM2LY4Sfcy_j6fPt4QY_utAejx3JgEUGq7uqZNcoH0.*AAJTSQACMDIAAlNLABQtNzA2MjU0MTQwOTgwMjQ0ODY4NQACUzEAAjAx*'
     openam_sso(token)
