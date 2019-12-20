@@ -55,6 +55,13 @@ details:not([class]) > p
 {
     padding-left:               20px;
 }
+code
+{
+    font-family:                courier, courier new, serif;
+    color:                      Black;
+    background-color:           #ddd;
+    padding:                    2px;
+}
 
 /******************************************************************************
  *
