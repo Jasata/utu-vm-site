@@ -1,1 +1,1 @@
-../vendor/CardTabs/js/jquery.cardtabs.js
+../../vendor/CardTabs/js/jquery.cardtabs.js
