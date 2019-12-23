@@ -51,6 +51,7 @@ import sys
 import json
 import hashlib
 import requests
+import sqlite3
 
 from flask import g
 
