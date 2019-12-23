@@ -23,12 +23,12 @@ from flask          import request
 from flask          import Response
 from flask          import send_from_directory
 from flask          import g
+from flask          import session
 
-from application    import app
+from application    import app, sso
 
 # ApiException classes, data classes
 import api
-
 
 
 #
@@ -37,9 +37,8 @@ import api
 #
 def log_request(request):
     app.logger.debug(
-        f"{request.method} '{request.path}' (rule: '{request.url_rule.rule}')"
+        f"Debug={str(app.debug)}, Auth={str(sso.authenticated)} :: {request.method} '{request.path}' (rule: '{request.url_rule.rule}')"
     )
-
 
 
 ###############################################################################
@@ -74,7 +73,7 @@ def vm_file():
     log_request(request)
     try:
         from api.File import File
-        return api.response(File(request).search("vm"))
+        return api.response(File(request).search("vm", sso.authenticated))
     except Exception as e:
         return api.exception_response(e)
 
@@ -104,9 +103,69 @@ def usb_file():
     log_request(request)
     try:
         from api.File import File
-        return api.response(File(request).search("usb"))
+        return api.response(File(request).search("usb", sso.authenticated))
     except Exception as e:
         return api.exception_response(e)
+
+
+#
+# API endpoints for Single Sign-On implementation
+#
+@app.route('/sso/state', methods=['GET'])
+def sso_state():
+    """Returns a sigle iten JSON: { "role": "[anonymous|student|teacher]" }. This also implicitly indicates the authentication state (anonymous = not authenticated)."""
+    app.logger.debug(
+        f"STATE: session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}'"
+    )
+    return sso.roleJSON, 200
+
+@app.route('/sso/login', methods=['GET'])
+def sso_login():
+    """This is the landing URI from SSO login page. SSO REST API is re-queried and session is updated accordingly. Finally, 'destination' URL parameter is used to redirect the broser to the final location - persumably the page from where the "login" link/button was pressed."""
+    sso.login(force = True)
+    destination = request.args.get(
+        'destination',
+        default = '/index.html',
+        type = str
+    )
+    return flask.redirect(destination, code = 302)
+
+@app.route('/sso/logout', methods=['GET'])
+def sso_logout():
+    """This endpoint sets UID to None and ROLE to 'anonymous' in the session, thus effectively logging the user out."""
+    app.logger.debug(
+        f"BEFORE sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}'"
+    )
+    sso.logout()
+    app.logger.debug(
+        f"AFTER sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}'"
+    )
+    return "OK", 200
+
+
+
+
+# This will be the session re-validate handler
+#
+#   session.UID exists is "light" test
+#               Sufficient to dish out lists of images, for example
+#   sso.validate() will re-query sso.utu.fi 
+#
+@app.route('/api/login', methods=['GET', 'POST'])
+def api_login():
+    # Session authentication
+    if sso.authenticated:
+        app.logger.debug("I am authenticated")
+    else:
+        app.logger.debug("I am not authenticated")
+    # Expired session can be detected by trying to access a variable in it.
+    if not session.get('N'):
+        app.logger.debug("Session expired, OpenAM check!")
+        session['N'] = 1
+    else:
+        session['N'] += 1
+    ssoUTUauth = request.cookies.get("ssoUTUauth")
+    return f"{session['N']} - {session['UID']}", 200
 
 
 
@@ -128,6 +187,8 @@ def usb_file():
 def show_flask_config():
     """Middleware (Flask application) configuration. Sensitive entries are
     censored."""
+    if not sso.authenticated or not app.debug:
+        return api.response((404, {'error': 'Permission Denied'}))
     log_request(request)
     try:
         cfg = {}

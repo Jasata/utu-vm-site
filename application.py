@@ -7,7 +7,9 @@
 #
 # application.py - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2019.12.07  Initial version.
+#   0.1.0   2019-12-07  Initial version.
+#   0.2.0   2019-12-23  Add SSO object creation and .update()
+#                       @app.before_request
 #
 #
 # Code in this file gets executed ONLY ONCE, when the uWSGI is started.
@@ -40,11 +42,17 @@ import os
 import time
 import logging
 import sqlite3
+import datetime
 
 from logging.handlers       import RotatingFileHandler
 from logging                import Formatter
 from flask                  import Flask
 from flask                  import g
+from flask                  import session
+from flask                  import request
+
+# Local module(s)
+from sso                    import SSO
 
 
 # For some reason, if Flask() is given 'debug=True',
@@ -139,6 +147,16 @@ app.logger.info(
 
 
 #
+# Create Single Sign-On object
+#
+sso = SSO(
+    app.config.get('SSO_COOKIE'),
+    app.config.get('SSO_SESSION_API')
+)
+
+
+
+#
 # This logging happens only once, when uWSGI daemon starts
 #
 app.logger.info(
@@ -150,22 +168,6 @@ app.logger.info(
     "REST API version {}\n"
     .format(app.appversion, app.apiversion)
 )
-
-
-#
-# Check certain important configuration values
-#
-if not app.config.get('COMMAND_TIMEOUT', None):
-    app.logger.warning(
-        "COMMAND_TIMEOUT not defined in application.conf! Defaulting to 1 second..."
-    )
-    app.config['COMMAND_TIMEOUT'] = 1.0
-
-if not app.config.get('COMMAND_POLL_INTERVAL', None):
-    app.logger.warning(
-        "COMMAND_POLL_INTERVAL not defined in application.conf! Defaulting to 0.2 seconds..."
-    )
-    app.config['COMMAND_POLL_INTERVAL'] = 1.0
 
 
 
@@ -193,6 +195,7 @@ def before_request():
     g.t_cpu_start  = time.process_time()
     app.logger.debug("@app.before_request")
 
+
     #
     # Ensure database connection
     #
@@ -203,12 +206,27 @@ def before_request():
         cursor = g.db.cursor()
         cursor.execute("PRAGMA foreign_keys = 1")
 
+
+    #
+    # Refresh session expiration
+    #
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(
+        minutes = app.config.get('SESSION_LIFETIME', 60)
+    )
+    #
+    # Update SSO object with request and session from this request
+    #
+    sso.update(request, session)
+
     return
+
 
 #
 # Routes in 'routes.py'
 #
 import routes
+
 
 #
 # Executed each time application context tears down

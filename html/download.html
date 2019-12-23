@@ -41,6 +41,14 @@
             charset="utf8"
             src="DataTables/datatables.js">
     </script>
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/sso.css">
+    <script type="text/javascript"
+            charset="utf8"
+            src="js/sso.js">
+    </script>
+    
     <!-- Site Specific -->
     <link   rel="stylesheet"
             type="text/css"
@@ -83,6 +91,10 @@
         }
         $(document).ready(function() {
 
+            /******************************************************************
+            /* Single Sign-On Element
+             */
+             $("#sso").sso();
             /******************************************************************
             /* CardTab building
              */
@@ -226,6 +238,7 @@
                     <a class="nav-link p-3" Href="#usb">USB Disk Images</a>
                 </ul>
             </div>
+            <div id="sso"></div>
         </div>
     </nav>
 

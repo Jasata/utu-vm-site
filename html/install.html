@@ -19,8 +19,19 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/subpage.css">
     <link rel="stylesheet" href="css/install.css">
+    <link rel="stylesheet" href="css/sso.css">
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/sso.js"></script>
+    <script>
+        // Initialize SSO element
+        $(document).ready(function() {
+            $("#sso").sso();
+        });
+        $('.navbar-nav a').on('click', function() {
+            $('.navbar-collapse').collapse('hide');
+        });
+    </script>
 
 </head>
 
@@ -46,14 +57,9 @@
                     <a class="nav-link p-3" href="#install">Install</a>
                 </ul>
             </div>
+            <div id="sso"></div>
         </div>
     </nav>
-    <script>
-        $('.navbar-nav a').on('click', function()
-        {
-            $('.navbar-collapse').collapse('hide');
-        });
-    </script>
 
 
 

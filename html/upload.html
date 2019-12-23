@@ -53,9 +53,19 @@
     <link   rel="stylesheet"
             type="text/css"
             href="css/upload.css">
-
+    <link   rel="stylesheet"
+            type="text/css"
+            href="css/sso.css">
+    <script src="js/sso.js"></script>
 
     <script type="text/javascript" charset="utf-8">
+        // Initialize SSO element
+        $(document).ready(function() {
+            $("#sso").sso();
+        });
+        $('.navbar-nav a').on('click', function() {
+            $('.navbar-collapse').collapse('hide');
+        });
         /*
         $.ajax({
             xhr: function() {
@@ -135,6 +145,7 @@
                     <a class="nav-link p-3" Href="#publish">Publish</a>
                 </ul>
             </div>
+            <div id="sso"></div>
         </div>
     </nav>
 

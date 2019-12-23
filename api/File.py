@@ -10,6 +10,7 @@
 #   0.1.0   2019.12.07  Initial version.
 #
 #
+#   TODO: remove _* -columns from result sets.
 #
 import time
 import logging
@@ -40,11 +41,20 @@ class File(DataObject):
         super().__init__(self.cursor, 'file')
 
 
-    def search(self, type: str = None):
-        """If we would support any arguments, __init__() would have processed and stored them for us...."""
+    def search(self, type: str = None, include_restricted: bool = False):
+        """Argument 'type' as per column file.type, 'restricted' as column file.restricted."""
+        app.logger.debug(
+            f"Query will {('not ', '')[int(include_restricted)]}include restricted {type} images"
+        )
         self.sql = f"SELECT * FROM {self.table_name}"
+        where = []
         if type is not None:
-            self.sql += f" WHERE type = '{type}'"
+            where.append(f" type = '{type}' ")
+        if not include_restricted:
+            where.append(f" _restricted = 'no' ")
+        if where:
+            self.sql += " WHERE " + " and ".join(where)
+        app.logger.debug("SQL: " + self.sql)
         try:
             self.cursor.execute(self.sql)
         except sqlite3.Error as e:

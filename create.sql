@@ -15,10 +15,12 @@ CREATE TABLE file
     dtap            TEXT        NOT NULL DEFAULT 'production',
     created         INTEGER     NOT NULL DEFAULT (strftime('%s', 'now')),
     _owner          TEXT        NOT NULL,
+    _restricted     TEXT        NOT NULL DEFAULT 'no',
     FOREIGN KEY (_owner) REFERENCES teacher (uid),
     UNIQUE(label, version, type),
     CHECK (type IN ('usb', 'vm')),
-    CHECK (dtap IN ('development', 'testing', 'acceptance', 'production'))
+    CHECK (dtap IN ('development', 'testing', 'acceptance', 'production')),
+    CHECK (_restricted IN ('no', 'yes'))
 );
 CREATE TABLE teacher
 (

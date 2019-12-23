@@ -1,0 +1,85 @@
+:root {
+    --sso-font-size:            14px;
+}
+#sso
+{
+    padding:                    6px;
+    width:                      80px;
+    height:                     auto;
+    background-color:           White; /* Pink; for visual */
+    text-align:                 center;
+}
+#sso > div
+{
+    padding:                    4px;
+    border-radius:              7%;
+    border:                     1px solid Silver;
+    background-color:           White;
+    -webkit-transition:         0.3s ease-out;
+    -moz-transition:            0.3s ease-out;
+    -o-transition:              0.3s ease-out;
+    transition:                 0.3s ease-out;
+}
+#sso > div:hover
+{
+    box-shadow:                 0 5px 17px rgba(0,0,0,0.25),
+                                0 3px 4px rgba(0,0,0,0.22);
+    background-color:           #f4f4f4;
+}
+#sso a
+{
+    font-size:                  var(--sso-font-size);
+}
+#sso a:link
+{
+    color:                      var(--link-color);
+    text-decoration:            none;
+}
+#sso a:visited
+{
+    color:                      var(--link-color);
+    text-decoration:            none;
+}
+#sso a:hover
+{
+    color:                      var(--text-color);
+    text-decoration:            none;
+}
+#sso a:active
+{
+    color:                      var(--text-color);
+    text-decoration:            none;
+}
+#sso a::before
+{
+    display:                    block;
+    font-family:                FontAwesome;
+    font-size:                  calc(var(--sso-font-size) + 6px);
+}
+#sso a::after
+{
+    display:                    block;
+    font-family:                FontAwesome;
+    font-size:                  calc(var(--sso-font-size) + 6px);
+}
+#sso.anonymous a::before
+{
+    content:                    '\f090'; /* sign-in         */
+}
+#sso.student a::before
+{
+    content:                    '\f19d'; /* graduation cap  */
+}
+#sso.teacher a::before
+{
+    content:                    '\f19c'; /* university      */
+}
+#sso.deactivated a
+{
+    color:                      Silver !important;
+}
+#sso.deactivated > div:hover
+{
+    box-shadow:                 none !important;
+    background-color:           White !important;
+}

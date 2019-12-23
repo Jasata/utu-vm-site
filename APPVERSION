@@ -5,6 +5,7 @@
 # APPVERSION - Jani Tammi <jasata@utu.fi>
 #
 #   0.1.0   2019.12.07  Initial version.
+#   0.2.0   2019.12.23  December release.
 #
 # This file may contain ONLY one single non-comment line.
 # That row is expected to contain a semantic version string "x.y.z".
@@ -13,4 +14,4 @@
 #
 # 
 
-0.1.0
+0.2.0
