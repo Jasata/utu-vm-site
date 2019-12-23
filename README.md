@@ -33,6 +33,11 @@ Original idea about separate virtual server has been dropped in favor of expandi
  - Publishes a download list (in the downloads -page) of available .OVA files.
  - OVA metadata will be a combination of extracted XML from OVA and uploader specified information.
  - Download statistics will be based on webserver log files, which will be generated into (some kind of) graph/report nightly and made available in separate statistics page.
+ - Uses UTU SSO authentication, but restricts itself to UTU UID only. No other **P**ersonally **I**dentifiable **I**nformation (PII) is handled or stored.
+
+## GDPR
+
+*IT-Services will be consulted about UID as PII data. If UID alone is also considered to enough to bring this solution under GDPR regulations, solution model where all UID's are one-way hashed (both in client's session storage and `teacher` database table) will be proposed.*
 
 ### Items That Need Technical Solutions
 
