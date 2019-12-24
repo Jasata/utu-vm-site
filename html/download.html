@@ -94,7 +94,13 @@
             /******************************************************************
             /* Single Sign-On Element
              */
-             $("#sso").sso();
+            $("#sso").sso();
+            // Reload tables each time sso element triggers 'updateState'
+            // It only happens when authenticated session is disposed (logout).
+            $("#sso").on('updateState', function(event) {
+                $('#vm_table').DataTable().ajax.reload(null, false);
+                $('#usb_table').DataTable().ajax.reload(null, false);
+            });
             /******************************************************************
             /* CardTab building
              */
