@@ -95,9 +95,9 @@
             /* Single Sign-On Element
              */
             $("#sso").sso();
-            // Reload tables each time sso element triggers 'updateState'
+            // Reload tables each time sso element triggers 'stateChanged'.
             // It only happens when authenticated session is disposed (logout).
-            $("#sso").on('updateState', function(event) {
+            $("#sso").on('stateChanged', function(event) {
                 $('#vm_table').DataTable().ajax.reload(null, false);
                 $('#usb_table').DataTable().ajax.reload(null, false);
             });
