@@ -8,6 +8,8 @@
 # application.py - Jani Tammi <jasata@utu.fi>
 #
 #   0.1.0   2019.12.07  Initial version.
+#   0.2.0   2019.12.23  Add /sso endpoints
+#   0.3.0   2919.12.25  Add /api/publish endpoint
 #
 #   This Python module only defines the routes, which the application.py
 #   includes directly into itself.
@@ -21,7 +23,7 @@ import logging
 
 from flask          import request
 from flask          import Response
-from flask          import send_from_directory
+#from flask          import send_from_directory
 from flask          import g
 from flask          import session
 
@@ -37,7 +39,7 @@ import api
 #
 def log_request(request):
     app.logger.debug(
-        f"Debug={str(app.debug)}, Auth={str(sso.authenticated)} :: {request.method} '{request.path}' (rule: '{request.url_rule.rule}')"
+        f"Debug={str(app.debug)}, Auth={str(sso.is_authenticated)} :: {request.method} '{request.path}' (rule: '{request.url_rule.rule}')"
     )
 
 
@@ -48,14 +50,22 @@ def log_request(request):
 ###############################################################################
 
 
-#
-# List of VM Image Downloadables
-#
-@app.route('/api/vm', methods=['GET'])
-def vm_file():
-    """List of Virtual Machine -type downloadables (column "type" = "vm").
+@app.route(
+    '/api/file',
+    methods=['GET'],
+    strict_slashes = False
+)
+@app.route(
+    '/api/file/<any("vm","usb"):ftype>',
+    methods=['GET'],
+    strict_slashes = False
+)
+def api_file(ftype = None):
+    """List of downloadable file, with optional type filtering. Allowed types are "vm" and "usb".
     
-    GET /api/vm
+    GET /api/file
+    GET /api/file/usb
+    GET /api/file/vm
     Query parameters:
     (none implemented)
     API returns 200 OK and:
@@ -72,44 +82,153 @@ def vm_file():
     """
     log_request(request)
     try:
+        if ftype not in (None, "usb", "vm"):
+            raise api.InvalidArgument(f"Invalid type '{ftype}'!")
         from api.File import File
-        return api.response(File(request).search("vm", sso.authenticated))
+        return api.response(
+            File().search(
+                file_type = ftype,
+                downloadable_to = sso.role
+            )
+        )
     except Exception as e:
         return api.exception_response(e)
 
 
+
 #
-# List of USB Image Downloadables
+#   /api/file/<int:id>/schema
 #
-@app.route('/api/usb', methods=['GET'])
-def usb_file():
-    """List of USB disk -type downloadables (column "type" = "usb").
-    
-    GET /api/usb
-    Query parameters:
-    (none implemented)
-    API returns 200 OK and:
-    {
-        ...,
-        "data" : [
-            {
-                TBA
-            },
-            ...
-        ],
-        ...
-    }
-    """
+#   JSONForm schema for specified 'file.id' database record.
+#
+#
+@app.route('/api/file/schema', methods=['GET'], strict_slashes = False)
+def api_file_schema():
+    """Create data schema JSON for client FORM creation."""
     log_request(request)
     try:
-        from api.File import File
-        return api.response(File(request).search("usb", sso.authenticated))
+        if not sso.is_teacher:
+            raise api.Unauthorized("Teacher privileges required")
+        return api.response(api.File().schema())
+
     except Exception as e:
-        return api.exception_response(e)
+        return str(e), 500
+        #return api.exception_response(e)
+
+
+
+
+@app.route(
+    '/api/file/<int:id>',
+    methods = ['GET','PATCH'],
+    strict_slashes = False
+)
+def api_file_id(id):
+    """Database table row endpoint."""
+    log_request(request)
+    try:
+        if not sso.is_teacher:
+            raise api.Unauthorized("Teacher privileges required")
+        if request.method == 'PATCH':
+            return api.response(api.File().update(request, id))
+        elif request.method == 'GET':
+            raise api.NotImplemented("Sorry! Not yet implemented!")
+            #return api.response(api.File().get())
+        else:
+            raise MethodNotAllowed(
+                f"Method {request.method} not supported for this endpoint."
+            )
+    except Exception as e:
+        return str(e), 500
+        #return api.exception_response(e)
+
 
 
 #
-# API endpoints for Single Sign-On implementation
+#   /api/file/owned
+#
+#   Return a listing of files owned by current session holder.
+#
+@app.route('/api/file/owned', methods=['GET'], strict_slashes = False)
+def api_file_owned():
+    """Return JSON listing of files owned by currently authenticated person. Slightly 'special' endpoint that accepts only GET method and no parameters of any kind. Data is returned based on the SSO session role. Specially created for Upload and Manage UI, to list user's files."""
+    log_request(request)
+    try:
+        return api.response(api.File().search(owner = sso.uid))
+    except Exception as e:
+        return str(e), 500
+        #return api.exception_response(e)
+
+
+
+###############################################################################
+### THIS NEEDS RETHINKING ... ONCE THE UPLOAD HAS BEEN IMPLEMENTED ############
+###############################################################################
+#
+#   /api/publish  (session.ROLE == 'teacher')
+#
+#       Endpoint to fill in .OVA/image details and
+#       to publish them (make downloadable)
+#
+#   GET ?file=<file>
+#
+#       Return database row for <file> in JSON.
+#
+#   POST
+#
+#       Update <file> -row and move file to downloadable -directory.
+#
+@app.route('/api/publish', methods=['GET'])
+@app.route('/api/publish/<int:id>', methods=['POST'])
+def api_publish(id = None):
+    """POST with uploaded filename will trigger prepublish procedure. For .OVA files this means reading the included .OVF file for characteristics of the virtual machine. A 'file' table row is inserted and the ID will be returned in the response JSON body { 'id': <int> }."""
+    try:
+        # Dummy response tuple REMOVE WHEN THIS ROUTE IS COMPLETED!
+        response = (
+            200,
+            {
+                'data': {
+                    '.role':                f'{sso.role}',
+                    '.is_teacher':          f'{str(sso.is_teacher)}',
+                    '.is_student':          f'{str(sso.is_student)}',
+                    '.is_anonymous':        f'{str(sso.is_anonymous)}',
+                    '.is_authenticated':    f'{str(sso.is_authenticated)}'
+                }
+            }
+        )
+        if not sso.is_teacher:
+            raise api.Unauthorized("Teacher privileges required")
+        if not app.config.get('UPLOAD_FOLDER', None):
+            raise api.InternalError(
+                "Configuration parameter 'UPLOAD_FOLDER' is not set!"
+            )
+
+        if request.method == 'GET':
+            file    = request.args.get('file', default = None, type = str)
+            folder  = app.config.get('UPLOAD_FOLDER')
+            if not file:
+                raise api.InvalidArgument(
+                    "GET Request must provide 'file' URI variable"
+                )
+            # Generate JSONForm for editing
+            response = api.Publish(request).preprocess(
+                folder + "/" + file,
+                sso.uid
+            )
+        elif request.method == 'POST':
+            pass
+    except Exception as e:
+        return str(e), 500
+        #return api.exception_response(e)
+    else:
+        # api.response(code: int, payload: dict) -> Flask.response_class
+        return api.response(response)
+
+
+
+###############################################################################
+#
+# SSO API endpoints for Single Sign-On implementation
 #
 @app.route('/sso/state', methods=['GET'])
 def sso_state():
@@ -134,38 +253,15 @@ def sso_login():
 def sso_logout():
     """This endpoint sets UID to None and ROLE to 'anonymous' in the session, thus effectively logging the user out."""
     app.logger.debug(
-        f"BEFORE sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}'"
+        f"BEFORE sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}"
     )
     sso.logout()
     app.logger.debug(
-        f"AFTER sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}'"
+        f"AFTER sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}"
     )
     return "OK", 200
 
 
-
-
-# This will be the session re-validate handler
-#
-#   session.UID exists is "light" test
-#               Sufficient to dish out lists of images, for example
-#   sso.validate() will re-query sso.utu.fi 
-#
-@app.route('/api/login', methods=['GET', 'POST'])
-def api_login():
-    # Session authentication
-    if sso.authenticated:
-        app.logger.debug("I am authenticated")
-    else:
-        app.logger.debug("I am not authenticated")
-    # Expired session can be detected by trying to access a variable in it.
-    if not session.get('N'):
-        app.logger.debug("Session expired, OpenAM check!")
-        session['N'] = 1
-    else:
-        session['N'] += 1
-    ssoUTUauth = request.cookies.get("ssoUTUauth")
-    return f"{session['N']} - {session['UID']}", 200
 
 
 
@@ -187,7 +283,8 @@ def api_login():
 def show_flask_config():
     """Middleware (Flask application) configuration. Sensitive entries are
     censored."""
-    if not sso.authenticated or not app.debug:
+    # Allow output only when debugging AND when the user is authenticated
+    if not sso.is_authenticated or not app.debug:
         return api.response((404, {'error': 'Permission Denied'}))
     log_request(request)
     try:
@@ -224,7 +321,7 @@ def show_flask_config():
 def api_doc():
     """JSON API Documentation.
     Generates API document from the available endpoints. This functionality
-    replies on PEP 257 (https://www.python.org/dev/peps/pep-0257/) convention
+    relies on PEP 257 (https://www.python.org/dev/peps/pep-0257/) convention
     for docstrings and Flask micro framework route ('rule') mapping to
     generate basic information listing on all the available REST API functions.
     This call takes no arguments.
@@ -355,7 +452,7 @@ def api_not_implemented(path = ''):
 def send_ui(path = 'index.html'):
     """Send static HTML/CSS/JS/images/... content."""
     log_request(request)
-    return send_from_directory('html', path)
+    return flask.send_from_directory('html', path)
 
 
 

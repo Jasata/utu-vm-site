@@ -62,6 +62,21 @@
 
 
     <script type="text/javascript">
+        // From: https://stackoverflow.com/questions/19491336/get-url-parameter-jquery-or-how-to-get-query-string-values-in-js
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
 
         function timestamp2str(timestamp)
         {
@@ -111,10 +126,12 @@
             /******************************************************************
              * VM Image DataTable
              */
+            searchString = getUrlParameter('search');
             var vm_table = $('#vm_table').DataTable( {
                 responsive: true,
-                'ajax':     'api/vm',
+                'ajax':     'api/file/vm',
                 'dataSrc':  'data',
+                "oSearch":  { "sSearch": searchString },
                 'columns':  [
                     {'data': 'label'},
                     {'data': 'version'},
@@ -122,10 +139,10 @@
                     {'data': 'name'},
                     {'data': 'sha1'},
                     {'data': 'description'},
-                    {'data': 'courses'},
                     {'data': 'ram'},
                     {'data': 'cores'},
-                    {'data': 'disk'},
+                    {'data': 'disksize'},
+                    {'data': 'ostype'},
                     {'data': 'dtap'},
                     {'data': 'created'}
                 ],
@@ -142,13 +159,15 @@
                         "className": "text-center"
                     },
                     {
+                        // (file) size
                         "targets": 2,
                         "render": function(data, type, row, meta) {
                             return formatBytes(data, 2);
                         },
                         "className": "text-center"
-                    },
+                    } /*,
                     {
+                        // created
                         "targets": 11,
                         "render": function(data, type, row, meta) {
                             return timestamp2str(data);
@@ -167,8 +186,9 @@
              */
             var usb_table = $('#usb_table').DataTable( {
                 responsive: true,
-                'ajax':     'api/usb',
+                'ajax':     'api/file/usb',
                 'dataSrc':  'data',
+                "oSearch":  { "sSearch": searchString },
                 'columns':  [
                     {'data': 'label'},
                     {'data': 'version'},
@@ -176,10 +196,10 @@
                     {'data': 'name'},
                     {'data': 'sha1'},
                     {'data': 'description'},
-                    {'data': 'courses'},
                     {'data': 'ram'},
                     {'data': 'cores'},
-                    {'data': 'disk'},
+                    {'data': 'disksize'},
+                    {'data': 'ostype'},
                     {'data': 'dtap'},
                     {'data': 'created'}
                 ],
@@ -196,21 +216,34 @@
                         "className": "text-center"
                     },
                     {
+                        // (file) size
                         "targets": 2,
                         "render": function(data, type, row, meta) {
                             return formatBytes(data, 2);
                         },
                         "className": "text-center"
-                    },
+                    } /*,
                     {
+                        // created
                         "targets": 11,
                         "render": function(data, type, row, meta) {
                             return timestamp2str(data);
                         }
-                    }
+                    }*/
                 ]
             } );
-
+            /*
+            // search= URL parameter
+            searchString = getUrlParameter('search');
+            if (typeof searchString !== 'undefined') {
+                $('#usb_table').dataTable({
+                    "oSearch": { "sSearch": searchString }
+                });
+                $('#vm_table').dataTable({
+                    "oSearch": { "sSearch": searchString }
+                });
+            }
+            */
         } );
 
         /*
@@ -283,10 +316,10 @@
                             <th class="none">Filename</th>
                             <th class="none">SHA1</th>
                             <th class="none">Description</th>
-                            <th class="none">Courses</th>
                             <th class="none">RAM</th>
                             <th class="none">Cores</th>
-                            <th class="none">Disk</th>
+                            <th class="none">Disksize</th>
+                            <th class="none">OS Type</th>
                             <th class="none">Status</th>
                             <th class="none">Created</th>
                         </thead>
@@ -339,13 +372,13 @@
 
 
                         <div data-tab="Windows">
-                            <details class="install-hypervisor">
+                            <details>
                                 <summary>VirtualBox</summary>
                                 <ol>
                                     <li>Double-click the downloaded .OVA file.</li>
                                 </ol>
                             </details>
-                            <details class="install-hypervisor">
+                            <details>
                                 <summary>VMware Player & Pro</summary>
                                 <ol>
                                     <li>Double-click the downloaded .OVA file.</li>
@@ -374,10 +407,10 @@
                             <th class="none">Filename</th>
                             <th class="none">SHA1</th>
                             <th class="none">Description</th>
-                            <th class="none">Courses</th>
                             <th class="none">RAM</th>
                             <th class="none">Cores</th>
-                            <th class="none">Disk</th>
+                            <th class="none">Disksize</th>
+                            <th class="none">OS Type</th>
                             <th class="none">Status</th>
                             <th class="none">Created</th>
                         </thead>

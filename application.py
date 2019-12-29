@@ -217,7 +217,7 @@ def before_request():
     #
     # Update SSO object with request and session from this request
     #
-    sso.update(request, session)
+    sso.before_request(request, session)
 
     return
 

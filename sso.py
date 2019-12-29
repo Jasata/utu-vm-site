@@ -66,12 +66,12 @@ class SSO:
         """Created ONCE as the Flask application initializes."""
         self.sso_cookie     = sso_hash_cookie
         self.session_api    = sso_session_api
-        self.request        = None
-        self.session        = None
+        self.request        = None      # set in .before_request()
+        self.session        = None      # set in .before_request()
 
 
 
-    def update(self, request, session):
+    def before_request(self, request, session):
         """Call this on @app.before_request to update with current state. Quarantees that session['UID'] will always exist, containing either None or the SSO UID."""
         self.request = request
         self.session = session
@@ -155,6 +155,45 @@ class SSO:
 
 
     #
+    # SSO AUTHENTICATION STATUS PROPERTIES
+    #
+    #   Use these property-functions to check SSO session state.
+    #
+    #       PROPERTY            ANONYMOUS   STUDENT     TEACHER
+    #       .is_authenticated   False       True        True
+    #       .is_anonymous       True        False       False
+    #       .is_student         False       True        False
+    #       .is_teacher         False       False       True
+    #
+    @property
+    def is_authenticated(self) -> bool:
+        if self.session.get('UID', None):
+            return True
+        return False
+
+
+    @property
+    def is_anonymous(self) -> bool:
+        if 'anonymous' == self.session.get('ROLE', None):
+            return True
+        return False
+
+
+    @property
+    def is_student(self) -> bool:
+        if 'student' == self.session.get('ROLE', None):
+            return True
+        return False
+
+
+    @property
+    def is_teacher(self) -> bool:
+        if 'teacher' == self.session.get('ROLE', None):
+            return True
+        return False
+
+
+    """ To be removed
     # Use this for trivial session check (does session['UID'] exist?)
     # - usable for retrieving lists and other data that is not restricted,
     #   but rather only filtered based on authorized session, to provide
@@ -168,7 +207,21 @@ class SSO:
         if self.session.get('UID'):
             return True
         return False
+    """
 
+
+    @property
+    def uid(self) -> str:
+        return self.session.get("UID")
+
+
+    @property
+    def role(self) -> str:
+        """Returns the role associated with the uid of this SSO session."""
+        if self.session.get("UID") and self.session.get("ROLE"):
+            return self.session['ROLE']
+        else:
+            return "anonymous"
 
 
     @property

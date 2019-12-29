@@ -12,7 +12,7 @@ This API implementation offers all the required functionality to support specifi
 
 **Header parameters** are located in the HTTP header. Aside from path/endpoint, HTTP method and response codes, these parameters have no other putpose in this API specification and are left for HTTP and application purposes (such as session management, XSS prevention and access control mechanisms). 
 
-### There exists two distinct GET requests
+## There exists two distinct GET requests
 
 First, the more obvious, can be called as **the "fetch" type**. These GET requests identify the entity with an ID and responses return it as one object. Second type can be called **the "search" type**, which can define any number of criteria that result in zero or more matching entities.
 
@@ -44,17 +44,17 @@ This implementation follows number of principles.
 
 ## HTTP Methods
 
-    GET     get/query
-    POST    create new
+    GET     search/fetch
+    POST    create
     PUT     NOT USED
-    PATCH   update existing
+    PATCH   update
     DELETE  delete
 
-NOTE: Some specifications make the distinction between PUT and PATCH to be that PUT *replaces* the specified entity, while PATCH *updates* the existing entity. This API has no use for such distinction and PUT method is unused.
+NOTE: Some specifications make the distinction between PUT and PATCH to be that PUT *replaces* the specified entity, while PATCH *updates* the existing entity. This API has no use for such distinction (nor does that distinction make any sense) and therefore PUT method is unused.
 
 ## HTTP Responses
 
-This section discusses HTTP responses in general terms. Implementation strives to follow these principles whereever possible.
+This section discusses HTTP responses in general terms. Implementation strives to follow these principles when ever possible. Most important of the response code usages involved signaling if the requested resource is available at all. For resource (endpoint) + method combinations and their logical meaning, following table should be used:
 
         +-------------+---------+--------+---------+--------+--------+
         | Resource    | POST    | GET    | PUT     | PATCH  | DELETE |
@@ -63,32 +63,49 @@ This section discusses HTTP responses in general terms. Implementation strives t
         | /user/<:id> | 405     | Fetch  | Replace | Update | Delete |
         +-------------+---------+--------+---------+--------+--------+
 
-**Reply "405 Method Not Allowed" should be the only 4xx response used.** Response "406 Not Acceptable" should indicate that while the combination of an endpoint and HTTP method is allowed, something in the request and/or its arguments make the action disallowed.
+**Reply `405 Method Not Allowed` should be the only 4xx response used to indicate unavailable method + endpoint combinations.**
+
+### HTTP Response Codes Acknowledged by this API
+
+* `200 OK`<br />**Transaction completed as expected.** It is up to each endpoint implementation to document any payloads they might return.
+* `202 Accepted`<br />**Asyncronous action accepted/queued.** This is for actions that cannot be completed within HTTP Request/Response transaction and thus cannot have a definite answer. Instead, asyncronous transaction ID is returned and client may query later for its status (which needs its own API endpoint, of course). *Unless the distinction between completed transactions and pending/asyncronous transactions are needed within one API endpoint, it is also recommended that this return code is also replaced with code 200. For example, if an API endpoint exists to receive commands that get executed when the system has time to do them, then a normal process would never expect any other outcome than to queue commands.*
+* `400 Bad Request`<br />**Problems in data schema.** Not recoverable by simply correcting values. Examples might include issues such as misnamed/missing keys, incorrect datatypes or malformed JSON for example.
+* `401 Unauthorized`<br />**Unauthorized.** All errors including insifficient privileges and errors in trying to authenticate the session/user/access instance.
+* `404 Not Found`<br />**Entity not found.** Provided ID or other data do not match any entity in the database. This is specially for ID / Primary Key use because making the distinction between just some incorrect values and incorrect entity identifier is paramount how a client should proceed.
+* `405 Method Not Allowed`<br />**Resource + method combination does not exist.**
+* `406 Not Acceptable`<br />**Data value error.** Data schema is OK, but values are errornous or cause database constraint violations. Transaction can be attempted again with corrected values.
+
 
 ### GET (entity generic endpoint)
 
-Action: Search  
-Payload: None  
-URI parameters: None
+**Action:** Search  
+**Payload:** None  
+**URI Parameters:** None  
+**Query Parameters:** Implementation defined  
+**Returns on Success:** Always a `list` of zero to N entities under key `data`.
 
 **Possible Replies**
 
         Code                    Payload                 Description
         200 OK                  'data': [{},...]        Success. List of objects (0...N) returned.
+        400 Bad Request         None                    Data/structure error.
         401 Unauthorized        None                    Access/authorization error.
         405 Method not allowed  None                    Endpoint + method combo not supported.
         406 Not Acceptable      None                    Argument error.
 
 ### GET (identified entity endpoint)
 
-Action: Fetch  
-Payload: None  
-URI parameters: <int:id>
+**Action:** Fetch Entity  
+**Payload:** None  
+**URI Parameters:** `<int:id>` (or similar)  
+**Query Parameters:** Implementation defined (possibly to limit which entity attributes are retrieved)  
+**Returns on Success:** One entity object under key `data`.
 
 **Possible Replies**
 
         Code                    Payload                 Description
         200 OK                  'data': {}              Success. Object is returned.
+        400 Bad Request         None                    Data/structure error.
         401 Unauthorized        None                    Access/authorization error.
         404 Not Found           None                    Entity by ID not found.
         405 Method not allowed  None                    Endpoint + method combo not supported.
@@ -96,50 +113,54 @@ URI parameters: <int:id>
 
 ### POST (entity generic endpoint)
 
-Action: Create  
-Payload: Entity object JSON  
-URI parameters: None
+**Action:** Create  
+**Payload:** Entity object JSON  
+**URI Parameters:** None  
+**Query Parameters:** None  
+**Returns on Success:** ID / PK of the new entity under key `data`
 
 **Possible Replies**
 
         Code                    Payload                 Description
-        200 OK                  (case dependent)        Success. Procedure or function completed successfully.
-        201 Created             'id' : <int>            New entity/respirce created.
-        202 Accepted            'command_id' : <int>    Asyncronous action queued (command interface, mostly).
+        200 OK                  'data': {'id': <int>}   Success. New entity created.
+        202 Accepted            'data': {'id': <int>}   Asyncronous action queued.
+        400 Bad Request         None                    Data/structure error.
         401 Unauthorized        None                    Access/authorization error.
         405 Method not allowed  None                    Endpoint + method combo not supported.
-        406 Not Acceptable      None                    Argument error or DB CHECK constraint failure.
-        409 Conflict            None                    Unique, Primary key or Foreign key violation.
+        406 Not Acceptable      None                    Argument error.
 
-Most common reply is 201 along with the ID of the newly created resources. The cases where this is not appropriate are commands (prodecures and functions). Commands that can be executed during HTTP request handling, are returned with code 200, while commands cannot, are replied with 202.
-
-This API interacts asyncronously with the backend and therefore majority of command API calls are replied with 201 code.
+Response code `202` usage should be carefully considered. If one API endpoint accessed with one method, does not return both asyncronous and immediate response "values", code `200` should be used instead.
 
 ### PUT (identified entity endpoint)
 
-This API does not use *replace* operations. "405 Method Not Allowed" is returned.
+This API does not use *replace* operations. "405 Method Not Allowed" is returned. Standard CRUD model (**C**reate, **R**ead, **U**pdate, **D**elete) does not need "replace" operation and it would be difficult to imagine what exactly it would be, if not just another update operation.
 
 ### PATCH (identified entity endpoint)
 
-Action: Update  
-Payload: Entity object (with only the attributes to be updated)  
-URI parameters: <int:id>
+**Action:** Update  
+**Payload:** Entity object (with only the attributes to be updated)  
+**URI Parameters:** `<int:id>` (or similar)  
+**Query Parameters:** None  
+**Returns on Success:** ID / PK of the updated entity under key `data` 
 
 **Possible Replies**
 
         Code                    Payload                 Description
-        200 OK                  'data': {}              Success. Object is returned.
+        200 OK                  'data': {'id': <int>}   Success. Entity updated.
+        400 Bad Request         None                    Data/structure error.
         401 Unauthorized        None                    Access/authorization error.
         404 Not Found           None                    Entity by ID not found.
         405 Method not allowed  None                    Endpoint + method combo not supported.
-        406 Not Acceptable      None                    Argument error or DB CHECK constraint failure.
-        409 Conflict            None                    Unique, Primary key or Foreign key violation.
+        406 Not Acceptable      None                    Argument error.
+
 
 ### DELETE (identified entity endpoint)
 
-Action: Delete  
-Payload: None  
-URI parameters: <int:id>
+**Action:** Delete  
+**Payload:** None  
+**URI parameters:** `<int:id>` (or similar)  
+**Query Parameters:** None  
+**Returns on Success:** No payload
 
 **Possible Replies**
 
@@ -148,6 +169,6 @@ URI parameters: <int:id>
         401 Unauthorized        None                    Access/authorization error.
         404 Not Found           None                    Entity by ID not found.
         405 Method not allowed  None                    Endpoint + method combo not supported.
-        409 Conflict            None                    Foreign key violation.
+        406 Not Acceptable      None                    Foreign key violation, or other reason.
 
 

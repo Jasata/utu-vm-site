@@ -28,21 +28,10 @@
             charset="utf8"
             src="js/bootstrap.min.js">
     </script>
-    <!-- not needed ... yet
-    <link   rel='stylesheet'
-            type="text/css"
-            href='css/jquery.cardtabs.css'>
-    <script type='text/javascript'
-            charset="utf8"
-            src='js/jquery.cardtabs.js'></script>
-    <link   rel="stylesheet"
-            type="text/css"
-            href="DataTables/datatables.css">
-    <script type="text/javascript"
-            charset="utf8"
-            src="DataTables/datatables.js">
-    </script>
-    -->
+    <!-- JSONForm (bootstrap style CSS dependant) -->
+    <script type="text/javascript" src="js/jsonform/underscore.js"></script>
+    <script type="text/javascript" src="js/jsonform/jsv.js"></script>
+    <script type="text/javascript" src="js/jsonform/jsonform.js"></script>
     <!-- Site Specific -->
     <link   rel="stylesheet"
             type="text/css"
@@ -59,13 +48,305 @@
     <script src="js/sso.js"></script>
 
     <script type="text/javascript" charset="utf-8">
-        // Initialize SSO element
+        /*
+         * Functions and resources
+         */
+        // From: https://stackoverflow.com/questions/19491336/get-url-parameter-jquery-or-how-to-get-query-string-values-in-js
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+        function formatBytes(bytes, decimals = 2)
+        /* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
+        {
+            if (bytes === 0) return '0 Bytes';
+
+            const k = 1024;
+            var dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+            // No decimals for Bytes
+            if (i == 0) dm = 0;
+            return (bytes / Math.pow(k, i)).toFixed(dm) + ' ' + sizes[i];
+        }
+        function secondsToStr (temp) {
+            function pluralize(unit, amount) {
+                return amount + ' ' + unit + (amount > 1) ? 's' : '';
+            }
+            var years = Math.floor(temp / 31536000);
+            if (years) {
+                return pluralize('year', years);
+            }
+            var days = Math.floor((temp %= 31536000) / 86400);
+            if (days) {
+                return pluralize('day', days);
+            }
+            var hours = Math.floor((temp %= 86400) / 3600);
+            if (hours) {
+                return pluralize('hour', hours);
+            }
+            var minutes = Math.floor((temp %= 3600) / 60);
+            if (minutes) {
+                return pluralize('minute', minutes);
+            }
+            var seconds = temp % 60;
+            return pluralize('second', seconds);
+        }
+
+        // JSONForm.js presentation:
+        form = {
+            "form": [
+                {
+                    "key":          "id",
+                    "type":         "hidden"
+                },
+                {
+                    "key":          "name",
+                    "title":        "File Name",
+                    "readonly":     true
+                },
+                {
+                    "key":          "size",
+                    "title":        "File Size",
+                    "readonly":     true
+                },
+                {
+                    "key":          "label",
+                    "title":        "Label"
+                    //"notitle": true,
+                    //"htmlClass": "usermood",
+                    //"fieldHtmlClass": "input-small"
+                },
+                {
+                    "key":          "ostype",
+                    "title":        "Operating System",
+                    "placeholder":  "'Debian 10 64-bit' or 'FreeDOS 1.2' for example."
+                },
+                {
+                    "key":          "type",
+                    "title":        "File Type",
+                    "titleMap": {
+                        "vm":   "Virtual Machine image",
+                        "usb":  "Bootable USB-stick image"
+                    }
+                },
+                {
+                    "key":          "version",
+                    "title":        "Version",
+                    "placeholder":  "Version number, date or similar"
+                },
+                {
+                    "key":          "dtap",
+                    "title":        "Status",
+                    "titleMap": {
+                        "development":  "Development Version",
+                        "testing":      "Testing Version",
+                        "acceptance":   "Version for Acceptance Testing",
+                        "production":   "Production Version"
+                    }
+                },
+                {
+                    "key":          "ram",
+                    "title":        "RAM",
+                    "description":  "Allocated memory",
+                    "minimum":      1
+                },
+                {
+                    "key":          "cores",
+                    "title":        "CPU Cores",
+                    "description":  "Allocated number processor cores"
+                },
+                {
+                    "key":          "disksize",
+                    "title":        "Disk Size",
+                    "description":  "Allocated disk space"
+                },
+                {
+                    "key":          "downloadable_to",
+                    "title":        "Downloadable to",
+                    "description":  "Sets the minimum privilege level to be able to download",
+                    "titleMap": {
+                        "nobody":   "NOT AVAILABLE",
+                        "anyone":   "Available to anyone",
+                        "student":  "All university account holders",
+                        "teacher":  "Only teachers"
+                    }
+                },
+                {
+                    "key":          "description",
+                    "title":        "Description",
+                    "type":         "textarea",
+                    "placeholder":  "Up to 300 characters"
+                },
+                {
+                    "type":         "help",
+                    "helpvalue":    "<strong>Click on <em>Submit</em></strong> when you're done"
+                },
+                {
+                    "type":         "submit",
+                    "title":        "Publish"
+                } /* DO IT LIKE THIS, if you want to server-validate fields
+                ,{
+                    "key": "text",
+                    "onChange": function (evt) {
+                        var value = $(evt.target).val();
+                        if (value) alert(value);
+                    }
+                },
+                {
+                    "type": "button",
+                    "title": "Click me",
+                    "onClick": function (evt) {
+                        evt.preventDefault();
+                        alert('Thank you!');        
+                    }
+                } */
+            ]
+        };
+        code = {
+            onSubmit: function (errors, values) {
+                console.log(values);
+                return;
+                /*
+                if (errors) {
+                    alert('Check the form for invalid values!');
+                    return;
+                } else {
+                    console.log(values);
+                }*/
+            },
+            displayErrors: function (errors, formElt) {
+                for (var i = 0; i < errors.length; i++) {
+                    errors[i].message = "msg " + i;
+                }
+                if (typeof formElt !== 'undefined') {
+                    console.log(formElt);
+                    $(formElt).jsonFormErrors(errors, formObject);
+                }
+            },
+            onSubmitValid: function (errors, values) {
+                console.log(values);
+                return;
+                /*
+                if (errors) {
+                    alert('Check the form for invalid values!');
+                    return;
+                }
+                console.log(values);
+                $.ajax({
+                    url: "api/file/" + encodeURIComponent(id),
+                    type: 'POST',
+                    data: values,
+                    complete: function(data, status) {
+                        if (status == 'error') {
+                            alert("Unable to load form data! Contact vm-support@utu.fi and tell them that the file ID is '" + id + "'");
+                            return;
+                        }
+                        $.extend(data.responseJSON, form);
+                        $.extend(data.responseJSON, code);
+                        //console.log(data.responseJSON);
+                        $('#filerecord').jsonForm(data.responseJSON);
+                    }
+                });
+                // Don't do default get action, pls?
+                return;
+                */
+            },
+            onBeforeRender: function (data, node) {
+                // Failed attempt to change datatype on sizes
+                // int:bytes -> str:GB ("1.62 GB", for example)
+                /*
+                if (node.key == 'disksize') {
+                    console.log('NODE: disksize');
+                    console.log(data.schema);
+                    if (data.schema.default) {
+                        // Not null, undefined, NaN, empty string (""), 0 or false
+                        // ZERO (0) IS A PROBLEM!
+                        console.log("non-null disksize");
+                        console.log(formatBytes(data.schema.default, 2));
+                    }
+                } else if (node.key == 'size') {
+                    console.log("NODE: size");
+                    data.schema.type = "string";
+                    data.elt.type = "string";
+                    console.log(formatBytes(data.schema.default, 2));
+                    data.value = formatBytes(data.schema.default, 2);
+                    console.log(data);
+                } else if (node.key == 'label') {
+                    console.log("NODE: label");
+                    console.log(data);
+                }
+                */
+                return;
+            }
+        };
+
+
+
+        /*** DOCUMENT READY **************************************************
+         * 
+         *  Initialize page elements
+         */
         $(document).ready(function() {
+            // Initialize SSO element
             $("#sso").sso();
+
+            // OnClick handler to close sandwich menu
+            $('.navbar-nav a').on('click', function() {
+                $('.navbar-collapse').collapse('hide');
+            });
+
+            // Make the form method POST
+            $('#filerecord').prop("method", "PATCH");
+
+            // *IF* URL parameter id exists, load the data
+            var id = getUrlParameter('id');
+            if (typeof id === 'undefined') { id = 3; }
+            console.log("URL parameter id: " + id);
+            if (typeof id !== 'undefined')
+            {
+                // TODO: Disable fileupload whem form loaded
+                $.ajax({
+                    url: 'api/file/schema',
+                    type: 'GET',
+                    complete: function(data, status) {
+                        if (status == 'error') {
+                            alert("Unable to load form data! Contact vm-support@utu.fi and tell them that the file ID is '" + id + "'");
+                            return;
+                        }
+                        $.extend(data.responseJSON, form);
+                        $.extend(data.responseJSON, code);
+                        //console.log(data.responseJSON);
+                        $('#filerecord').jsonForm(data.responseJSON);
+                    }
+                });
+                // Five the form valid target
+                $('#filerecord').prop(
+                    "action",
+                    'api/file/' + encodeURIComponent(id)
+                );
+            }
+
         });
-        $('.navbar-nav a').on('click', function() {
-            $('.navbar-collapse').collapse('hide');
-        });
+
+
+
+        /*** DOCUMENT READY **************************************************
+         * 
+         *  Initialize page elements
+         */
         /*
         $.ajax({
             xhr: function() {
@@ -96,29 +377,6 @@
             }
         });
         */
-        function secondsToStr (temp) {
-            function pluralize(unit, amount) {
-                return amount + ' ' + unit + (amount > 1) ? 's' : '';
-            }
-            var years = Math.floor(temp / 31536000);
-            if (years) {
-                return pluralize('year', years);
-            }
-            var days = Math.floor((temp %= 31536000) / 86400);
-            if (days) {
-                return pluralize('day', days);
-            }
-            var hours = Math.floor((temp %= 86400) / 3600);
-            if (hours) {
-                return pluralize('hour', hours);
-            }
-            var minutes = Math.floor((temp %= 3600) / 60);
-            if (minutes) {
-                return pluralize('minute', minutes);
-            }
-            var seconds = temp % 60;
-            return pluralize('second', seconds);
-        }
     </script>
 
 
@@ -142,7 +400,7 @@
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="nav navbar-nav">
                     <a class="nav-link p-3" href="#upload">Upload</a>
-                    <a class="nav-link p-3" Href="#publish">Publish</a>
+                    <a class="nav-link p-3" Href="#publish">Publish and Manage</a>
                 </ul>
             </div>
             <div id="sso"></div>
@@ -216,9 +474,13 @@
 
                 <!-- ARTICLE Publish image -->
                 <article>
-                    <h1 id="publish"><i class="	fa fa-bullhorn"></i>Publish</h1>
-
-                    <p>Fill-in details and set the image visible.</p>
+                    <h1 id="publish"><i class="	fa fa-bullhorn"></i>Publish and Manage</h1>
+                    <p>Choose from a list of .</p>
+                    <div style="bottom-margin: 40px; background-color: Pink;">TO BE FILE LIST SELECT</div>
+                    <fieldset>
+                        <legend> Virtual Machine Details </legend>
+                        <form id="filerecord"></form>
+                    </fieldset>
                 </article>
 
 
