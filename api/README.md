@@ -1,32 +1,45 @@
 # Self-documenting JSON REST API
 
-This API implementation offers all the required functionality to support specified functionality and data access.
+*This API implementation offers all the required functionality to support specified features and data access capabilities.*
 
-## Basic Terminology
+# Basic Terminology
 
-**URI parameters** are baked into the resource path. For example; `/api/company/123/order/90121` has two URI parameters. The ID of the company entity (`123`) and the ID of the order (`90121`).
+* **Endpoint** is a term that means an URI that implements some functionality.
 
-**Query parameters** are appended to the URI with `?` character and chained with `&` separator. For example; `/api/classifieddata?begin=1541409470&fields=ss00p01,ss00p02` has two query parameters; `begin`, which is an UNIT timestamp in string format and `fields`, which is a string that can be converted into a comma separated list.
+* **URI parameters** are baked into the resource path. For example; `/api/company/123/order/90121` has two URI parameters. The ID of the company entity (`123`) and the ID of the order (`90121`).
 
-**Payload parameters** are located in the HTTP payload (*body*) portion, in a JSON format (as far as this API specification is concerned). Usage of Payload parameters is reserved to data altering actions, such as PUT,PATCH and POST, which need to deliver number of entity attributes. Notable exception is the DELETE HTTP method, which does not need to send entity data and identifies the target for the delete operation through URI parameter (for example; `/api/item/028121/delete`).
+* **Query parameters** are appended to the URI with `?` character and chained with `&` separator. For example; `/api/classifieddata?begin=1541409470&fields=ss00p01,ss00p02` has two query parameters; `begin`, which is an UNIT timestamp in string format and `fields`, which is a string that can be converted into a comma separated list.
 
-**Header parameters** are located in the HTTP header. Aside from path/endpoint, HTTP method and response codes, these parameters have no other putpose in this API specification and are left for HTTP and application purposes (such as session management, XSS prevention and access control mechanisms). 
+* **Payload parameters** are located in the HTTP payload (*body*) portion, in a JSON format (as far as this API specification is concerned). Usage of client-side payload parameters is reserved to data altering actions, such as PUT, PATCH and POST, which need to deliver number of entity attributes. Notable exception is the DELETE HTTP method, which does not need to send entity data and identifies the target for the delete operation through URI parameter (for example; `/api/item/028121/delete`). *Should the endpoint handle parameters other than entity attributes, they should be included in the Query parameters.*
 
-## There exists two distinct GET requests
+* **Header parameters** are located in the HTTP header. Aside from path/endpoint, HTTP method and response codes, these parameters have no other putpose in this API specification and are left for HTTP and application purposes (such as session management, XSS prevention and access control mechanisms).
 
-First, the more obvious, can be called as **the "fetch" type**. These GET requests identify the entity with an ID and responses return it as one object. Second type can be called **the "search" type**, which can define any number of criteria that result in zero or more matching entities.
+* **Idempotence** is a property of an operation, which means that the ***operation can be applied multiple times*** (on the same target/entity) and the result will always be identical to the first result. *For example; paint_green(X) would make X green. Calling the function any number of times will always result in green X. Thus, the function is idempotent.*
 
-The distinction between these is relevant, because "fetch" type entity requests are supposed to be identified by means of *URI parameters* and because search parameters are to be sent as *query parameters*. Also, "fetch" API endpoints do not support search criterias (usually, only a field selector query paramter).
 
-**When "fetch" yields no results, response "404 Not Found" is returned. When "search" type request yields no results, an empty list is returned with code "200 OK".**
+## API Endpoint Types
 
-### Endpoints are either Entity generic or Identified Entities
+* **An Entity Identifying Endpoint** is simply URI that contains the entity ID as a URI Parameter, for example: `/api/file/3201`, which gives access to file by ID = 3201.
 
-While most CRUD (**C**reate, **R**ead, **U**pdate, **D**elete) actions deal with identified entities (`/api/entity/<int:id>`), POST ("create") action cannot. Only the service can give the new entity instance a valid and non-conflicting ID. GET ("read") action can be either to identified entity (making it "fetch" type), or to entity generic (making it a "search" request).
+* **A Generic Endpoint** does not contain entity ID. For example; `/api/file`.
 
-For this reason, identified routes (`/api/entity/<int:id>`) and generic routes (`/api/entity`) are usually defined separately and offer different sets of supported methods.
+Identifying endpoints are used when actions are targeting specified entity and generi endpoints when the identity is either not relevant (search) or not available (create new entity, for example).
 
-## REST API Principles
+Most CRUD (**C**reate, **R**ead, **U**pdate, **D**elete) actions deal with identified entities (`/api/entity/<int:id>`), except POST ("create") action. Only the service can give the new entity instance a valid and non-conflicting ID.
+
+A GET Request ("read") action can access either identified entity (making it "fetch" type), or to entity generic (making it a "search" request).
+
+
+
+## Why are Primary Keys not considered Entity Attributes?
+
+Idiotic teachings in almost all universities, in their database courses, tell us to use "some immutable attribute of the entity as a primary key". ***This is horseshit!*** If you are so utterly clueless and stupid to actually do that, I would have fired you from my company, on the spot, and been miffed about hiring you in the first place. ***You will NEVER use actual entity data in schema*** because there is no such thing as "immutable attributes" in real-life. Not even back account numbers or social security number. There is no such thing at all!
+
+Thus it is paramount to separate data from schema and give each entity an autogenerated primary key that simply cannot face real-world pressure to change its value. ***Thus, primary keys created by this principle, ARE NOT ATTRIBUTES OF AN ENTITY!***
+
+
+
+# REST API Principles
 
 This implementation follows number of principles.
 
@@ -36,32 +49,34 @@ This implementation follows number of principles.
   * Meta parameters, such as field selector (specifying which fields are returned), are sent
  as query parameters (…`?fields=firstname,lastname&order=asc`)
   * Both GET request types ("fetch" and "search") accept all parameters as query parameters. (GET requests never send JSON payloads).
-  * For non-idempotent (state altering) methods (POST,PUT,PATCH), entity data is required to be sent in JSON payload.
+  * Entity data/attributes must always be sent in a JSON payload.
   * DELETE method does not use JSON payloads. Entity is identified by URI parameter (`/user/<id>`).
   * Authentication (keys, cookies, tokens, whatever) shall not use any other storage than the HTTP header.
   * When supporting versions, recommended way is to build that into the endpoint URI: (`/api/v2/user`). This allows supporting multiple versions and very simple interface of obsoleted API versions – they simply are not found. No code to write about “wrong version requested”…
   * "Fetch" type requests are served only via URI parametrized endpoints (`/api/v1/employee/<id>`), "search" type requests shall not be accessible through endpoints that have parametrized the identity of the searched entity. (Correct would be; `/api/v1/employee/`).
 
-## HTTP Methods
 
-    GET     search/fetch
-    POST    create
-    PUT     NOT USED
-    PATCH   update
-    DELETE  delete
 
-NOTE: Some specifications make the distinction between PUT and PATCH to be that PUT *replaces* the specified entity, while PATCH *updates* the existing entity. This API has no use for such distinction (nor does that distinction make any sense) and therefore PUT method is unused.
 
-## HTTP Responses
+# HTTP Methods
 
-This section discusses HTTP responses in general terms. Implementation strives to follow these principles when ever possible. Most important of the response code usages involved signaling if the requested resource is available at all. For resource (endpoint) + method combinations and their logical meaning, following table should be used:
+    GET     search/fetch        Idempotent
+    POST    create              Non-idempotent
+    PUT     update              Idempotent
+    PATCH   (special)           Non-Idempotent
+    DELETE  delete              Idempotent
 
-        +-------------+---------+--------+---------+--------+--------+
-        | Resource    | POST    | GET    | PUT     | PATCH  | DELETE |
-        +-------------+---------+--------+---------+--------+--------+
-        | /user       | Create  | Search | 405     | 405    | 405    |
-        | /user/<:id> | 405     | Fetch  | Replace | Update | Delete |
-        +-------------+---------+--------+---------+--------+--------+
+
+# HTTP Responses
+
+This implementation strives to follow these principles when ever possible. Most important of the response code usages involved signaling if the requested resource is available at all. For resource (endpoint) + method combinations and their logical meaning, following table should be used:
+
+        +---------------+---------+--------+---------+--------+--------+
+        | Resource      | POST    | GET    | PUT     | PATCH  | DELETE |
+        +---------------+---------+--------+---------+--------+--------+
+        | /entity       | Create  | Search | 405     | 405    | 405    |
+        | /entity/<:id> | 405     | Fetch  | Replace | Update | Delete |
+        +---------------+---------+--------+---------+--------+--------+
 
 **Reply `405 Method Not Allowed` should be the only 4xx response used to indicate unavailable method + endpoint combinations.**
 
@@ -75,49 +90,57 @@ This section discusses HTTP responses in general terms. Implementation strives t
 * `405 Method Not Allowed`<br />**Resource + method combination does not exist.**
 * `406 Not Acceptable`<br />**Data value error.** Data schema is OK, but values are errornous or cause database constraint violations. Transaction can be attempted again with corrected values.
 
+# HTTP Transactions (Request - Response)
 
-### GET (entity generic endpoint)
+## GET
 
-**Action:** Search  
-**Payload:** None  
-**URI Parameters:** None  
-**Query Parameters:** Implementation defined  
-**Returns on Success:** Always a `list` of zero to N entities under key `data`.
+**Idempotent**  
+**Verb:** Fetch / Search (`SELECT`)  
+**Query Parameters:** FETCH: maybe, SEARCH: always  
+**Accesses:** FETCH: Entity Identifying Endpoint (`/api/entity/<int:id>`), SEARCH: Generic Endpoint (`/api/entity`)  
+**Send Payload:** None  
+**Get Payload:** FETCH: entity object, SEARCH: list of entity objects (0 ... N)
 
-**Possible Replies**
+First, the more obvious, is be called **the "fetch" type**. These GET requests access Entity Identifying Endpoints and expect to receive **one** entity object in JSON format.
+
+Second type is **the "search" type**, which accesses Generic Entity Endpoint with any number of search/filtering criteria in Query Parameters. These requests expect to receive a list JSON, containing zero to N entity objects.
+
+Fetch type GET queries usually do not support Query parameters, but if deemed necessary, an implementation may choose to define them.
+
+**When "fetch" yields no results, response "404 Not Found" is returned. When "search" type request yields no results, an empty list is returned with code "200 OK".**
+
+
+**Search GET : Possible Replies**
 
         Code                    Payload                 Description
-        200 OK                  'data': [{},...]        Success. List of objects (0...N) returned.
+        200 OK                  'data': [{},...]        Success. List of entities returned.
         400 Bad Request         None                    Data/structure error.
         401 Unauthorized        None                    Access/authorization error.
         405 Method not allowed  None                    Endpoint + method combo not supported.
         406 Not Acceptable      None                    Argument error.
 
-### GET (identified entity endpoint)
-
-**Action:** Fetch Entity  
-**Payload:** None  
-**URI Parameters:** `<int:id>` (or similar)  
-**Query Parameters:** Implementation defined (possibly to limit which entity attributes are retrieved)  
-**Returns on Success:** One entity object under key `data`.
-
-**Possible Replies**
+**Fetch GET : Possible Replies**
 
         Code                    Payload                 Description
-        200 OK                  'data': {}              Success. Object is returned.
+        200 OK                  'data': {}              Success. Entity is returned.
         400 Bad Request         None                    Data/structure error.
         401 Unauthorized        None                    Access/authorization error.
         404 Not Found           None                    Entity by ID not found.
         405 Method not allowed  None                    Endpoint + method combo not supported.
         406 Not Acceptable      None                    Argument error.
 
-### POST (entity generic endpoint)
 
-**Action:** Create  
-**Payload:** Entity object JSON  
-**URI Parameters:** None  
+
+## POST
+
+**Non-idempotent**  
+**Verb:** Create (`INSERT`)  
 **Query Parameters:** None  
-**Returns on Success:** ID / PK of the new entity under key `data`
+**Access:** Generic Endpoint (`/api/entity`)  
+**Send Payload:** Complete entity object JSON  
+**Get Payload:** Entity ID: `{ 'id': <int:id>}`
+
+POST Request accesses *Generic Endpoint* (`/api/entity`) with entity object JSON and the server creates a new database record (row). Response will always contain the ID of the created entity . Client may use or discard this information at its discretion.
 
 **Possible Replies**
 
@@ -131,17 +154,18 @@ This section discusses HTTP responses in general terms. Implementation strives t
 
 Response code `202` usage should be carefully considered. If one API endpoint accessed with one method, does not return both asyncronous and immediate response "values", code `200` should be used instead.
 
-### PUT (identified entity endpoint)
 
-This API does not use *replace* operations. "405 Method Not Allowed" is returned. Standard CRUD model (**C**reate, **R**ead, **U**pdate, **D**elete) does not need "replace" operation and it would be difficult to imagine what exactly it would be, if not just another update operation.
 
-### PATCH (identified entity endpoint)
+## PUT
 
-**Action:** Update  
-**Payload:** Entity object (with only the attributes to be updated)  
-**URI Parameters:** `<int:id>` (or similar)  
+**Idempotent**  
+**Verb:** Update (`UPDATE`)  
 **Query Parameters:** None  
-**Returns on Success:** ID / PK of the updated entity under key `data` 
+**Access:** Entity Identifying Endpoint (`/api/entity/<int:id>`)  
+**Send Payload:** Complete or partial entity object JSON  
+**Get Payload:** None
+
+PUT Request accesses *Entity Identifying Endpoint* (`api/entity/<int:id>`) with entity object JSON payload, containing those attributes that need to be updated and their new values. Successul response will have no payload.
 
 **Possible Replies**
 
@@ -154,13 +178,50 @@ This API does not use *replace* operations. "405 Method Not Allowed" is returned
         406 Not Acceptable      None                    Argument error.
 
 
-### DELETE (identified entity endpoint)
 
-**Action:** Delete  
-**Payload:** None  
-**URI parameters:** `<int:id>` (or similar)  
-**Query Parameters:** None  
-**Returns on Success:** No payload
+
+## PATCH
+
+**Non-idemptent**  
+**Verb:** N/A  
+**Query Parameters**: None  
+**Access:** Either Entity Identifying Endpoint (`api/entity/<int:id>`) OR *Generic Endpoint* (`/api/entity`)  
+**Send Payload:** Implementation specific  
+**Get Payload:** Implementation specific  
+
+PATCH Request accesses *Entity Identifying Endpoint* (`api/entity/<int:id>`) **OR** *Generic Endpoint* (`/api/entity`) (depending which one makes logical sense) with **special JSON payload** (specifications up to the implementation). The special payload contains instructions or commands (as allowed by the implementation) that cannot be expressed simply as an entity attribute update.
+
+An example might be an archive command to `api/entity` with payload `{ 'archive': {'olderthan': '2019-01-01'} }`, which would cause the server to archive entities older than the specified date (possibly moving to a compressed .tar archive, maybe).
+
+Alternatively, PATCH Request may limit its effects to the entity, but requests an action that is not idempotent, such as "increment usage count" (something which you never want to implement as fetch-update action, to avoid race conditions).
+
+Need for response payload and its content are also entirely implementation specific.
+
+
+**Possible Replies**
+
+        Code                    Payload                 Description
+        200 OK                  'data': {'id': <int>}   Success. Entity updated.
+        400 Bad Request         None                    Data/structure error.
+        401 Unauthorized        None                    Access/authorization error.
+        405 Method not allowed  None                    Endpoint + method combo not supported.
+        406 Not Acceptable      None                    Argument error.
+
+
+
+## DELETE
+
+**Idempotent**  
+**Verb:** Delete (`DELETE`)  
+**Query Parameters:** None
+**Access:** Entity Identifying Endpoint (`/api/entity/<int:id>`)  
+**Send Payload:** None  
+**Get Payload:** None  
+
+DELETE Request accesses *Entity Identifying Endpoint* (`api/entity/<int:id>`) and carries no payload. Response will neither carry payload.
+
+*At first, DELETE might not seem like idempotent, but the fact that you can delete a specific entity only once and thenafter only receive 404 Not Found replies, effectively means that no matter how many times the same DELETE is repeated, the database state has the sone end result.*
+
 
 **Possible Replies**
 
