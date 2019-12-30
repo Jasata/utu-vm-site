@@ -218,13 +218,14 @@ class File(DataObject):
 
 
 
-    # TODO
+    # TODO ####################################################################
     def publish(self, file_id: int) -> tuple:
         """Moves a file from uload folder to download folder and makes it accessible/downloadable."""
         return (200, { "data": "OK" })
 
 
 
+    # TODO!! ##################################################################
     def create(self, request) -> tuple:
         """POST method handler - INSERT new row."""
         if not request.json:
@@ -248,43 +249,35 @@ class File(DataObject):
                 "Error parsing SQL",
                 {'sql': self.sql or '', 'exception' : str(e)}
             )
-        # TO BE COMPLETED!!!!
+        # TO BE COMPLETED!!!! #################################################
 
 
 
-    ### NEEDS TO BE DONE ######################################################
-    def get(self, include=[]):
-        """Retrieve and return 'file' table row. The table either has no rows (backend is not running) or there is only one row."""
 
+    def fetch(self, id):
+        """Retrieve and return a table row. There are no restrictions for retrieving and viewing file data (but update() and create() methods do require a role)."""
+        self.sql = f"SELECT * FROM {self.table_name} WHERE id = ?"
         try:
-            self.sql = "SELECT "
-            self.sql += self.select_columns(
-                include=self.args.fields or include,
-                exclude=["id"],
-                include_primarykeys = False
+            # ? bind vars want a list argument
+            self.cursor.execute(self.sql, [id])
+        except sqlite3.Error as e:
+            app.logger.exception(
+                "psu -table query failed! ({})".format(self.sql)
             )
-            self.sql += " FROM psu"
-            try:
-                self.cursor.execute(self.sql)
-            except sqlite3.Error as e:
-                app.logger.exception(
-                    "psu -table query failed! ({})".format(self.sql)
+            raise
+        else:
+            # list of tuples
+            result = self.cursor.fetchall()
+            if len(result) < 1:
+                raise NotFound(
+                    f"File (ID: {id}) not found!",
+                    { 'sql': this.sql }
                 )
-                raise
-            else:
-                # list of tuples
-                result = self.cursor.fetchall()
-                if len(result) < 1:
-                    raise NotFound(
-                        "No data in table 'psu'!",
-                        "Most likely cause is that the OBC emulator is not running."
-                    )
             # Create data dictionary from result
             data = dict(zip([c[0] for c in self.cursor.description], result[0]))
         finally:
             self.cursor.close()
 
-        fields = self.args.pop('fields', None)
         if app.config.get("DEBUG", False):
             return (
                 200,
@@ -292,8 +285,7 @@ class File(DataObject):
                     "data"          : data,
                     "query" : {
                         "sql"       : self.sql,
-                        "variables" : None,
-                        "fields"    : fields or "ALL"
+                        "variables" : {'id': id}
                     }
                 }
             )
@@ -316,20 +308,12 @@ class File(DataObject):
             'id' : <int>
         }
         """
-        # HACK: ...until upload.html posts JSON
-        #if not request.json:
-        #    raise InvalidArgument("API Request has no JSON payload!")
+        app.logger.debug("Hello from File.update()!")
+        if not request.json:
+            raise InvalidArgument("API Request has no JSON payload!")
 
         # Extract POST data into dict
         try:
-            #
-            # HACK: upload.html's filerecord form does not (yet) post in JSON
-            #  -> convert request.form into JSON
-            #
-            if not request.json and request.form:
-                data = request.form
-            else:
-                data = json.loads(request.json)
             #
             # Primary key checking
             #

@@ -2,6 +2,8 @@
 <html lang="en">
 <!-- https://www.w3schools.com/icons/icons_reference.asp -->
 <head>
+    <!-- skip the idiotic "favicon" bullshit -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
     <meta   charset="utf-8">
     <meta   name="viewport"
@@ -32,6 +34,15 @@
     <script type="text/javascript" src="js/jsonform/underscore.js"></script>
     <script type="text/javascript" src="js/jsonform/jsv.js"></script>
     <script type="text/javascript" src="js/jsonform/jsonform.js"></script>
+    <!-- DataTables -->
+    <link   rel="stylesheet"
+            type="text/css"
+            href="DataTables/datatables.css">
+    <script type="text/javascript"
+            charset="utf8"
+            src="DataTables/datatables.js">
+    </script>
+
     <!-- Site Specific -->
     <link   rel="stylesheet"
             type="text/css"
@@ -46,65 +57,9 @@
             type="text/css"
             href="css/sso.css">
     <script src="js/sso.js"></script>
+    <script src="js/upload.js"></script>
 
     <script type="text/javascript" charset="utf-8">
-        /*
-         * Functions and resources
-         */
-        // From: https://stackoverflow.com/questions/19491336/get-url-parameter-jquery-or-how-to-get-query-string-values-in-js
-        var getUrlParameter = function getUrlParameter(sParam) {
-            var sPageURL = window.location.search.substring(1),
-                sURLVariables = sPageURL.split('&'),
-                sParameterName,
-                i;
-
-            for (i = 0; i < sURLVariables.length; i++) {
-                sParameterName = sURLVariables[i].split('=');
-
-                if (sParameterName[0] === sParam) {
-                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-                }
-            }
-        };
-        function formatBytes(bytes, decimals = 2)
-        /* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
-        {
-            if (bytes === 0) return '0 Bytes';
-
-            const k = 1024;
-            var dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-            // No decimals for Bytes
-            if (i == 0) dm = 0;
-            return (bytes / Math.pow(k, i)).toFixed(dm) + ' ' + sizes[i];
-        }
-        function secondsToStr (temp) {
-            function pluralize(unit, amount) {
-                return amount + ' ' + unit + (amount > 1) ? 's' : '';
-            }
-            var years = Math.floor(temp / 31536000);
-            if (years) {
-                return pluralize('year', years);
-            }
-            var days = Math.floor((temp %= 31536000) / 86400);
-            if (days) {
-                return pluralize('day', days);
-            }
-            var hours = Math.floor((temp %= 86400) / 3600);
-            if (hours) {
-                return pluralize('hour', hours);
-            }
-            var minutes = Math.floor((temp %= 3600) / 60);
-            if (minutes) {
-                return pluralize('minute', minutes);
-            }
-            var seconds = temp % 60;
-            return pluralize('second', seconds);
-        }
-
         // JSONForm.js presentation:
         form = {
             "form": [
@@ -228,13 +183,16 @@
                 }*/
             },
             displayErrors: function (errors, formElt) {
+                console.log(errors);
                 for (var i = 0; i < errors.length; i++) {
                     errors[i].message = "msg " + i;
+                    console.log(errors[i].message);
                 }
                 if (typeof formElt !== 'undefined') {
                     console.log(formElt);
                     $(formElt).jsonFormErrors(errors, formObject);
                 }
+                return false;
             },
             onSubmitValid: function (errors, values) {
                 console.log(values);
@@ -259,10 +217,9 @@
                         //console.log(data.responseJSON);
                         $('#filerecord').jsonForm(data.responseJSON);
                     }
-                });
+                }); */
                 // Don't do default get action, pls?
-                return;
-                */
+                return false;
             },
             onBeforeRender: function (data, node) {
                 // Failed attempt to change datatype on sizes
@@ -302,81 +259,91 @@
         $(document).ready(function() {
             // Initialize SSO element
             $("#sso").sso();
+            // Reload tables each time sso element triggers 'stateChanged'.
+            // It only happens when authenticated session is disposed (logout).
+            $("#sso").on('stateChanged', function(event) {
+                $('#fileTable').DataTable().ajax.reload(null, false);
+                clearForm();
+            });
 
             // OnClick handler to close sandwich menu
             $('.navbar-nav a').on('click', function() {
                 $('.navbar-collapse').collapse('hide');
             });
-
-            // Make the form method POST
-            $('#filerecord').prop("method", "PATCH");
+            /* This had no effect??
+            $('#formbuilder').on('submit', function() {
+                return submitForm(this);
+            });
+            */
 
             // *IF* URL parameter id exists, load the data
             var id = getUrlParameter('id');
-            if (typeof id === 'undefined') { id = 3; }
-            console.log("URL parameter id: " + id);
+            //if (typeof id === 'undefined') { id = 3; }
+            //console.log("URL parameter id: " + id);
             if (typeof id !== 'undefined')
             {
-                // TODO: Disable fileupload whem form loaded
-                $.ajax({
-                    url: 'api/file/schema',
-                    type: 'GET',
-                    complete: function(data, status) {
-                        if (status == 'error') {
-                            alert("Unable to load form data! Contact vm-support@utu.fi and tell them that the file ID is '" + id + "'");
-                            return;
-                        }
-                        $.extend(data.responseJSON, form);
-                        $.extend(data.responseJSON, code);
-                        //console.log(data.responseJSON);
-                        $('#filerecord').jsonForm(data.responseJSON);
-                    }
-                });
-                // Five the form valid target
-                $('#filerecord').prop(
-                    "action",
-                    'api/file/' + encodeURIComponent(id)
-                );
+                console.log("Document Ready loading File...");
+                loadForm(id);
             }
 
-        });
-
-
-
-        /*** DOCUMENT READY **************************************************
-         * 
-         *  Initialize page elements
-         */
-        /*
-        $.ajax({
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        var percentComplete = evt.loaded / evt.total;
-                        percentComplete = parseInt(percentComplete * 100);
-                        console.log(percentComplete);
-
-                        if (percentComplete === 100) {
-
+            /******************************************************************
+            //
+            //  Files owned by "me" - DataTable
+            //
+            */
+            // Page accepts Query Parameter to filter the list/table
+            searchString = getUrlParameter('search');
+            var fileTable = $('#fileTable').DataTable( {
+                responsive: true,
+                'ajax':     'api/file/owned',
+                'dataSrc':  'data',
+                "oSearch":  { "sSearch": searchString },
+                'columns':  [
+                    {'data': 'label'},
+                    {'data': 'version'},
+                    {'data': 'type'},
+//                    {'data': 'size'},
+//                    {'data': 'name'},
+//                    {'data': 'sha1'},
+//                    {'data': 'description'},
+//                    {'data': 'ram'},
+//                    {'data': 'cores'},
+//                    {'data': 'disksize'},
+//                    {'data': 'ostype'},
+//                    {'data': 'dtap'},
+                    {'data': 'created'}
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "render": function(data, type, row, meta) {
+                            return createLink(data, row);
+                        },
+                        "className": "column-course"
+                    },
+                    {
+                        "targets": 2,
+                        "className": "text-center"
+                    }/*,
+                    {
+                        // (file) size
+                        "targets": 2,
+                        "render": function(data, type, row, meta) {
+                            return formatBytes(data, 2);
+                        },
+                        "className": "text-center"
+                    } / *,
+                    {
+                        // created
+                        "targets": 11,
+                        "render": function(data, type, row, meta) {
+                            return timestamp2str(data);
                         }
-
-                    }
-                }, false);
-
-                return xhr;
-            },
-            url:        posturlfile,
-            type:       "POST",
-            data:       JSON.stringify(fileuploaddata),
-            contentType: "application/json",
-            dataType:   "json",
-            success: function(result) {
-                console.log(result);
-            }
+                    }*/
+                ]
+            } );
         });
-        */
+
     </script>
 
 
@@ -475,11 +442,31 @@
                 <!-- ARTICLE Publish image -->
                 <article>
                     <h1 id="publish"><i class="	fa fa-bullhorn"></i>Publish and Manage</h1>
-                    <p>Choose from a list of .</p>
-                    <div style="bottom-margin: 40px; background-color: Pink;">TO BE FILE LIST SELECT</div>
+                    <table  id="fileTable"
+                            class="dataTable table-striped nowrap downloads">
+                        <thead>
+                            <th class="all">Label</th>
+                            <th class="min-phone-l">Version</th>
+                            <th class="min-phone-l">Type</th>
+<!--                            <th class="min-phone-l">Size</th>
+                            <th class="none">Filename</th>
+                            <th class="none">SHA1</th>
+                            <th class="none">Description</th>
+                            <th class="none">RAM</th>
+                            <th class="none">Cores</th>
+                            <th class="none">Disksize</th>
+                            <th class="none">OS Type</th>
+                            <th class="none">Status</th> -->
+                            <th class="min-phone-l">Created</th>
+                        </thead>
+                    </table>
+                    <p>&nbsp;</p>
                     <fieldset>
                         <legend> Virtual Machine Details </legend>
-                        <form id="filerecord"></form>
+                        <form
+                            id="fileForm"
+                            class="please-choose-file"
+                            onsubmit="return onSubmitForm(this);"></form
                     </fieldset>
                 </article>
 

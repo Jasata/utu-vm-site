@@ -158,5 +158,7 @@ class NotImplemented(ApiException):
         super().__init__(message, details)
         self.code = 501
 
+# 502 Bad Gateway
+# Nginx will hand out this response when Flask fails to deliver.
 
 # EOF

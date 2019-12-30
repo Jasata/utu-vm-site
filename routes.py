@@ -120,7 +120,7 @@ def api_file_schema():
 
 @app.route(
     '/api/file/<int:id>',
-    methods = ['GET','PATCH'],
+    methods = ['GET','PUT'],
     strict_slashes = False
 )
 def api_file_id(id):
@@ -129,17 +129,17 @@ def api_file_id(id):
     try:
         if not sso.is_teacher:
             raise api.Unauthorized("Teacher privileges required")
-        if request.method == 'PATCH':
-            return api.response(api.File().update(request, id))
+        if request.method == 'PUT':
+            return api.response(api.File().update(id, request))
         elif request.method == 'GET':
-            raise api.NotImplemented("Sorry! Not yet implemented!")
-            #return api.response(api.File().get())
+            #raise api.NotImplemented("Sorry! Not yet implemented!")
+            return api.response(api.File().fetch(id))
         else:
             raise MethodNotAllowed(
                 f"Method {request.method} not supported for this endpoint."
             )
     except Exception as e:
-        return str(e), 500
+        return str(e), getattr(e, "code", 422)
         #return api.exception_response(e)
 
 
@@ -154,7 +154,7 @@ def api_file_owned():
     """Return JSON listing of files owned by currently authenticated person. Slightly 'special' endpoint that accepts only GET method and no parameters of any kind. Data is returned based on the SSO session role. Specially created for Upload and Manage UI, to list user's files."""
     log_request(request)
     try:
-        return api.response(api.File().search(owner = sso.uid))
+        return api.response(api.File().search(owner = sso.uid or ''))
     except Exception as e:
         return str(e), 500
         #return api.exception_response(e)
