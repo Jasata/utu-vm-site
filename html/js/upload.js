@@ -81,6 +81,7 @@ function secondsToStr (temp) {
  * JSONForm specific functions
  */
 // The entire JSONForm object
+// Apparently cannot be recycled... and thus recreated every time.
 var formObject = {};
 
 // Object that tracks that both JSON sources are retrieved
@@ -157,6 +158,7 @@ function loadForm(id) {
 
 
 function renderForm(extData) {
+    console.log("renderForm()");
     if (extData.data && extData.schema) {
         formObject = {};
         $.extend(formObject, form);
@@ -164,7 +166,7 @@ function renderForm(extData) {
         //$.extend(formObject, extData.data);
         formObject.value = extData.data.data;
         $.extend(formObject, extData.schema);
-        console.log(formObject);
+        //console.log(formObject);
         $('#fileForm').jsonForm(formObject);
     }
 }
@@ -174,9 +176,39 @@ function renderForm(extData) {
 
 function onSubmitForm(formObj) {
     console.log("onSubmitForm()");
-    // TODO: validate and all that (find hooks to JSONForm)
-    // Execute XMLHTTPRequest to API endpoint
-    clearForm();
+    var data = {};
+
+    var x = $("#fileForm").serializeArray(); 
+    $.each(x, function(i, field) {
+        data[field.name] = field.value;
+        /*
+        data.push({
+            key:   field.name,
+            value: field.value
+        });
+        */
+        
+    });
+    console.log(data);
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function(e)
+    {
+        if (this.status == 200) {
+            console.log("Successful PUT");
+            clearForm();
+        } else {
+            console.log("Status code " + this.status);
+        }
+    };
+    xhr.onerror = function(e)
+    // Network error!
+    {
+        console.log("xhr Network error! Status:" + this.status + ", readyState: " + this.readyState);
+    };
+    xhr.open('PUT', '/api/file/' + data.id);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(data));
+
 
 
     // Must not let the HTML FORM do anything; return false

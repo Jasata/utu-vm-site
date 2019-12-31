@@ -184,6 +184,7 @@
             },
             displayErrors: function (errors, formElt) {
                 console.log(errors);
+                /*
                 for (var i = 0; i < errors.length; i++) {
                     errors[i].message = "msg " + i;
                     console.log(errors[i].message);
@@ -193,6 +194,7 @@
                     $(formElt).jsonFormErrors(errors, formObject);
                 }
                 return false;
+                */
             },
             onSubmitValid: function (errors, values) {
                 console.log(values);
@@ -297,6 +299,10 @@
                 responsive: true,
                 'ajax':     'api/file/owned',
                 'dataSrc':  'data',
+                "lengthChange": false,  // No "showw N entries" dropdown
+                "searching": false,     // No search box
+                "paging": false,        // No paging widgets
+                "info": false,          // No lower left infor bit
                 "oSearch":  { "sSearch": searchString },
                 'columns':  [
                     {'data': 'label'},
@@ -443,7 +449,7 @@
                 <article>
                     <h1 id="publish"><i class="	fa fa-bullhorn"></i>Publish and Manage</h1>
                     <table  id="fileTable"
-                            class="dataTable table-striped nowrap downloads">
+                            class="dataTable table-striped nowrap display compact">
                         <thead>
                             <th class="all">Label</th>
                             <th class="min-phone-l">Version</th>
@@ -466,7 +472,7 @@
                         <form
                             id="fileForm"
                             class="please-choose-file"
-                            onsubmit="return onSubmitForm(this);"></form
+                            onsubmit="return onSubmitForm(this);"></form>
                     </fieldset>
                 </article>
 

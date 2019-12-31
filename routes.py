@@ -139,6 +139,7 @@ def api_file_id(id):
                 f"Method {request.method} not supported for this endpoint."
             )
     except Exception as e:
+        app.logger.exception("File endpoint failure!")
         return str(e), getattr(e, "code", 422)
         #return api.exception_response(e)
 

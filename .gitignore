@@ -1,6 +1,8 @@
 # Project specific
 *.sqlite3
 *.log
+# Code not-quite-thrown-away
+.discard
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -15,6 +15,7 @@
 #   TODO: remove _* -columns from result sets.
 #
 import os
+import json
 import time
 import logging
 import sqlite3
@@ -309,8 +310,16 @@ class File(DataObject):
         }
         """
         app.logger.debug("Hello from File.update()!")
+        app.logger.debug("this.primarykeys: " + str(self.primarykeys))
+        app.logger.debug("fnc arg id: " + str(id))
         if not request.json:
             raise InvalidArgument("API Request has no JSON payload!")
+        else:
+            data = request.json # json.loads(request.json)
+        # This is horrible solution - client code should take care of this!
+        data['id'] = int(data['id'])
+        app.logger.debug(data)
+
 
         # Extract POST data into dict
         try:
@@ -330,10 +339,12 @@ class File(DataObject):
                     "Primary key '{self.primarykeys[0]}' values do not match! One provided as URI parameter, one included in the data set."
                 )
         except Exception as e:
+            app.logger.exception("Prerequisite failure!")
             raise InvalidArgument(
                 "Argument parsing error",
                 {'request.json' : request.json, 'exception' : str(e)}
             ) from None
+        app.logger.debug("Prerequisites OK!")
 
 
         #
@@ -352,6 +363,8 @@ class File(DataObject):
                 "SQL parsing error",
                 {'sql' : self.sql or '', 'exception' : str(e)}
             ) from None
+        app.logger.debug("SQL: " + self.sql)
+
 
         #
         # Execute Statement
