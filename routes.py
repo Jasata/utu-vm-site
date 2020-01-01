@@ -260,11 +260,30 @@ def sso_logout():
     return "OK", 200
 
 
+###############################################################################
+#
+# Catch-all for non-existent API requests
+#
+@app.route('/api', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+@app.route('/api/', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+@app.route('/api/<path:path>', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+def api_not_implemented(path = ''):
+    """Catch-all route for '/api*' access attempts that do not match any defined routes.
+    "405 Method Not Allowed" JSON reply is returned."""
+    log_request(request)
+    try:
+        raise api.MethodNotAllowed(
+            "Requested API endpoint ('{}') does not exist!"
+            .format("/api/" + path)
+        )
+    except Exception as e:
+        return api.exception_response(e)
 
 
 
 ###############################################################################
 #
+# /sys
 # System / development URIs
 #
 #       These routes are to be grouped under '/sys' path, with the notable
@@ -366,14 +385,15 @@ def api_doc():
             try:
                 from ext.markdown2 import markdown
                 with open('api/README.md') as f:
-                    readme = markdown(f.read())
+                    readme = markdown(f.read(), extras=["tables"])
             except:
                 app.logger.exception("Unable to process 'api/README.md'")
                 readme = ''
             html =  "<!DOCTYPE html><html><head><title>API Listing</title>"
             html += "<link rel='stylesheet' href='/css/api.css'></head><body>"
             html += readme
-            html += "<table><tr><th>Service</th><th>Methods</th><th>Endpoint</th><th>Documentation</th></tr>"
+            html += "<h2>List of Flask routes and Endpoints</h2>"
+            html += "<table class='endpointTable'><tr><th>Service</th><th>Methods</th><th>Endpoint</th><th>Documentation</th></tr>"
             for row in eplist:
                 html += "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>" \
                         .format(
@@ -398,26 +418,34 @@ def api_doc():
 
 
 
-###############################################################################
-#
-# Catch-all for non-existent API requests
-#
-@app.route('/api', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-@app.route('/api/', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-@app.route('/api/<path:path>', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-def api_not_implemented(path = ''):
-    """Catch-all route for '/api*' access attempts that do not match any defined routes.
-    "405 Method Not Allowed" JSON reply is returned."""
-    log_request(request)
-    try:
-        raise api.MethodNotAllowed(
-            "Requested API endpoint ('{}') does not exist!"
-            .format("/api/" + path)
-        )
-    except Exception as e:
-        return api.exception_response(e)
 
 
+#
+# Very bad file upload implementation - simply for getting the site published
+# on time on January 2020. HTML5 File API based, chunk'ed and checksum'ed
+# solution will be completed later.
+#
+
+@app.route('/upload/', methods=['POST'])
+def upload_file():
+    def allowed_file(fname):
+        return '.' in fname and \
+            fname.rsplit('.', 1)[1].lower() in app.config['UPLOAD_ALLOWED_EXT']
+    if 'file' not in request.files:
+        app.logger.error('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit an empty part without filename
+    if file.filename == '':
+        app.logger.error('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return redirect(url_for('uploaded_file',
+                                filename=filename))
+    return "tba", 200
 
 
 ###############################################################################

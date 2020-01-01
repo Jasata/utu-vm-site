@@ -56,3 +56,4 @@ as follows:
 - test/Markdown.pl: BSD-style
 
   A copy of Perl Markdown (http://daringfireball.net/projects/markdown/).
+

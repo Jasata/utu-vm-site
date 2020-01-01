@@ -12,29 +12,40 @@ h1
 table
 {
     border-collapse:        collapse;
+}
+table th
+{
+    border:                 1px solid Silver;
+    padding:                5px;
+    text-align:             left;
+}
+table td
+{
+    border:                 1px solid Silver;
+    padding:                5px;
+    vertical-align:         top;
+    text-align:             left;
+}
+/*** Generated API endpoint listing table *********************/
+table.endpointTable
+{
+    border-collapse:        collapse;
     width:                  100%;
 }
-table, th, td
+table.endpointTable tr:nth-child(even)
 {
-    border:                 1px solid black;
+    background-color:       #f2f2f2;
 }
-th
+table.endpointTable th
 {
     background-color:       #606060;
     color:                  white;
     height:                 50px;
     vertical-align:         bottom;
 }
-th, td
+table.endpointTable td
 {
     text-align:             left;
-}
-td
-{
     vertical-align:         top;
-}
-
-tr:nth-child(even)
-{
-    background-color:       #f2f2f2;
+    border:                 1px solid black;
 }

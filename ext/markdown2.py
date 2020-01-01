@@ -4,6 +4,7 @@
 # License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 r"""A fast and complete Python implementation of Markdown.
+
 [from http://daringfireball.net/projects/markdown/]
 > Markdown is a text-to-HTML filter; it translates an easy-to-read /
 > easy-to-write structured text format into HTML.  Markdown's text
@@ -15,15 +16,19 @@ r"""A fast and complete Python implementation of Markdown.
 > specifically to serve as a front-end to (X)HTML. You can use span-level
 > HTML tags anywhere in a Markdown document, and you can use block level
 > HTML tags (like <div> and <table> as well).
+
 Module usage:
+
     >>> import markdown2
     >>> markdown2.markdown("*boo!*")  # or use `html = markdown_path(PATH)`
     u'<p><em>boo!</em></p>\n'
+
     >>> markdowner = Markdown()
     >>> markdowner.convert("*boo!*")
     u'<p><em>boo!</em></p>\n'
     >>> markdowner.convert("**boom!**")
     u'<p><strong>boom!</strong></p>\n'
+
 This implementation of Markdown implements the full "core" syntax plus a
 number of extras (e.g., code syntax coloring, footnotes) as described on
 <https://github.com/trentm/python-markdown2/wiki/Extras>.
@@ -31,8 +36,10 @@ number of extras (e.g., code syntax coloring, footnotes) as described on
 
 cmdln_desc = """A fast and complete Python implementation of Markdown, a
 text-to-HTML conversion tool for web writers.
+
 Supported extra syntax options (see -x|--extras option below and
 see <https://github.com/trentm/python-markdown2/wiki/Extras> for details):
+
 * code-friendly: Disable _ and __ for em and strong.
 * cuddled-lists: Allow lists to be cuddled to the preceding paragraph.
 * fenced-code-blocks: Allows a code block to not have to be indented
@@ -89,7 +96,7 @@ see <https://github.com/trentm/python-markdown2/wiki/Extras> for details):
 #   not yet sure if there implications with this. Compare 'pydoc sre'
 #   and 'perldoc perlre'.
 
-__version_info__ = (2, 3, 7)
+__version_info__ = (2, 3, 9)
 __version__ = '.'.join(map(str, __version_info__))
 __author__ = "Trent Mick"
 
@@ -195,6 +202,8 @@ class Markdown(object):
     html_spans = None
     html_removed_text = "[HTML_REMOVED]"  # for compat with markdown.py
 
+    _toc = None
+
     # Used to track when we're inside an ordered or unordered list
     # (see _ProcessListItems() for details):
     list_level = 0
@@ -210,6 +219,7 @@ class Markdown(object):
         else:
             self.empty_element_suffix = " />"
         self.tab_width = tab_width
+        self.tab = tab_width * " "
 
         # For compatibility with earlier markdown2.py and with
         # markdown.py's safe_mode being a boolean,
@@ -266,6 +276,7 @@ class Markdown(object):
             self._count_from_header_id = defaultdict(int)
         if "metadata" in self.extras:
             self.metadata = {}
+        self._toc = None
 
     # Per <https://developer.mozilla.org/en-US/docs/HTML/Element/a> "rel"
     # should only be used in <a> tags with an "href" attribute.
@@ -483,6 +494,7 @@ class Markdown(object):
 
     def _get_emacs_vars(self, text):
         """Return a dictionary of emacs-style local variables.
+
         Parsing is done loosely according to this spec (and according to
         some in-practice deviations from this):
         http://www.gnu.org/software/emacs/manual/html_node/emacs/Specifying-File-Variables.html#Specifying-File-Variables
@@ -583,6 +595,7 @@ class Markdown(object):
 
     def _detab_line(self, line):
         r"""Recusively convert tabs to spaces in a single line.
+
         Called from _detab()."""
         if '\t' not in line:
             return line
@@ -593,6 +606,7 @@ class Markdown(object):
 
     def _detab(self, text):
         r"""Iterate text line by line and convert tabs to spaces.
+
             >>> m = Markdown()
             >>> m._detab("\tfoo")
             '    foo'
@@ -675,11 +689,13 @@ class Markdown(object):
 
     def _hash_html_blocks(self, text, raw=False):
         """Hashify HTML blocks
+
         We only want to do this for block-level HTML tags, such as headers,
         lists, and tables. That's because we still want to wrap <p>s around
         "paragraphs" that are wrapped in non-block-level tags, such as anchors,
         phrase emphasis, and spans. The list of tags we're looking for is
         hard-coded.
+
         @param raw {boolean} indicates if these are raw HTML blocks in
             the original source. It makes a difference in "safe" mode.
         """
@@ -883,12 +899,16 @@ class Markdown(object):
 
     def _strip_footnote_definitions(self, text):
         """A footnote definition looks like this:
+
             [^note-id]: Text of the note.
+
                 May include one or more indented paragraphs.
+
         Where,
         - The 'note-id' can be pretty much anything, though typically it
           is the number of the footnote.
         - The first paragraph may start on the next line, like so:
+
             [^note-id]:
                 Text of the note.
         """
@@ -1030,8 +1050,10 @@ class Markdown(object):
         less_than_tab = self.tab_width - 1
         table_re = re.compile(r'''
                 (?:(?<=\n\n)|\A\n?)             # leading blank line
+
                 ^[ ]{0,%d}                      # allowed whitespace
                 (.*[|].*)  \n                   # $1: header row (at least one pipe)
+
                 ^[ ]{0,%d}                      # allowed whitespace
                 (                               # $2: underline row
                     # underline row with leading bar
@@ -1040,6 +1062,7 @@ class Markdown(object):
                     # or, underline row without leading bar
                     (?:  \ *:?-+:?\ *\|  )+  (?:  \ *:?-+:?\ *  )?  \n
                 )
+
                 (                               # $3: data rows
                     (?:
                         ^[ ]{0,%d}(?!\ )         # ensure line begins with 0 to less_than_tab spaces
@@ -1051,23 +1074,43 @@ class Markdown(object):
 
     def _wiki_table_sub(self, match):
         ttext = match.group(0).strip()
-        # print 'wiki table: %r' % match.group(0)
+        # print('wiki table: %r' % match.group(0))
         rows = []
         for line in ttext.splitlines(0):
             line = line.strip()[2:-2].strip()
             row = [c.strip() for c in re.split(r'(?<!\\)\|\|', line)]
             rows.append(row)
+        # from pprint import pprint
         # pprint(rows)
-        hlines = ['<table%s>' % self._html_class_str_from_tag('table'), '<tbody>']
-        for row in rows:
-            hrow = ['<tr>']
-            for cell in row:
-                hrow.append('<td>')
-                hrow.append(self._run_span_gamut(cell))
-                hrow.append('</td>')
-            hrow.append('</tr>')
-            hlines.append(''.join(hrow))
-        hlines += ['</tbody>', '</table>']
+        hlines = []
+
+        def add_hline(line, indents=0):
+            hlines.append((self.tab * indents) + line)
+
+        def format_cell(text):
+            return self._run_span_gamut(re.sub(r"^\s*~", "", cell).strip(" "))
+
+        add_hline('<table%s>' % self._html_class_str_from_tag('table'))
+        # Check if first cell of first row is a header cell. If so, assume the whole row is a header row.
+        if rows and rows[0] and re.match(r"^\s*~", rows[0][0]):
+            add_hline('<thead>', 1)
+            add_hline('<tr>', 2)
+            for cell in rows[0]:
+                add_hline("<th>{}</th>".format(format_cell(cell)), 3)
+            add_hline('</tr>', 2)
+            add_hline('</thead>', 1)
+            # Only one header row allowed.
+            rows = rows[1:]
+        # If no more rows, don't create a tbody.
+        if rows:
+            add_hline('<tbody>', 1)
+            for row in rows:
+                add_hline('<tr>', 2)
+                for cell in row:
+                    add_hline('<td>{}</td>'.format(format_cell(cell)), 3)
+                add_hline('</tr>', 2)
+            add_hline('</tbody>', 1)
+        add_hline('</table>')
         return '\n'.join(hlines) + '\n'
 
     def _do_wiki_tables(self, text):
@@ -1273,6 +1316,7 @@ class Markdown(object):
     _safe_protocols = re.compile(r'(https?|ftp):', re.I)
     def _do_links(self, text):
         """Turn Markdown link shortcuts into XHTML <a> and <img> tags.
+
         This is a combination of Markdown.pl's _DoAnchors() and
         _DoImages(). They are done together because that simplified the
         approach. It was necessary to use a different approach than
@@ -1388,7 +1432,7 @@ class Markdown(object):
                             result_head = '<a href="#"%s>' % (title_str)
                         else:
                             result_head = '<a href="%s"%s>' % (_html_escape_url(url, safe_mode=self.safe_mode), title_str)
-                        result = '%s%s</a>' % (result_head, _xml_escape_attr(link_text))
+                        result = '%s%s</a>' % (result_head, link_text)
                         if "smarty-pants" in self.extras:
                             result = result.replace('"', self._escape_table['"'])
                         # <img> allowed from curr_pos on, <a> from
@@ -1467,8 +1511,10 @@ class Markdown(object):
     def header_id_from_text(self, text, prefix, n):
         """Generate a header id attribute value from the given header
         HTML content.
+
         This is only called if the "header-ids" extra is enabled.
         Subclasses may override this for different header ids.
+
         @param text {str} The text of the header tag
         @param prefix {str} The requested prefix for header ids. This is the
             value of the "header-ids" extra key, if any. Otherwise, None.
@@ -1487,7 +1533,6 @@ class Markdown(object):
 
         return header_id
 
-    _toc = None
     def _toc_add_entry(self, level, id, name):
         if level > self._toc_depth:
             return
@@ -1633,7 +1678,7 @@ class Markdown(object):
         re.M | re.X | re.S)
 
     _task_list_item_re = re.compile(r'''
-        (\[[\ x]\])[ \t]+       # tasklist marker = \1
+        (\[[\ xX]\])[ \t]+       # tasklist marker = \1
         (.*)                   # list item text = \2
     ''', re.M | re.X | re.S)
 
@@ -1642,7 +1687,7 @@ class Markdown(object):
     def _task_list_item_sub(self, match):
         marker = match.group(1)
         item_text = match.group(2)
-        if marker == '[x]':
+        if marker in ['[x]','[X]']:
                 return self._task_list_warpper_str % ('checked ', item_text)
         elif marker == '[ ]':
                 return self._task_list_warpper_str % ('', item_text)
@@ -1750,7 +1795,7 @@ class Markdown(object):
                 lexer_name = lexer_name[3:].strip()
                 codeblock = rest.lstrip("\n")   # Remove lexer declaration line.
                 formatter_opts = self.extras['code-color'] or {}
-        
+
         # Use pygments only if not using the highlightjs-lang extra
         if lexer_name and "highlightjs-lang" not in self.extras:
             def unhash_code(codeblock):
@@ -1938,6 +1983,7 @@ class Markdown(object):
     def _do_smart_punctuation(self, text):
         """Fancifies 'single quotes', "double quotes", and apostrophes.
         Converts --, ---, and ... into en dashes, em dashes, and ellipses.
+
         Inspiration is: <http://daringfireball.net/projects/smartypants/>
         See "test/tm-cases/smarty_pants.text" for a full discussion of the
         support here and
@@ -1958,6 +2004,13 @@ class Markdown(object):
         text = text.replace("...", "&#8230;")
         text = text.replace(" . . . ", "&#8230;")
         text = text.replace(". . .", "&#8230;")
+
+        # TODO: Temporary hack to fix https://github.com/trentm/python-markdown2/issues/150
+        if "footnotes" in self.extras and "footnote-ref" in text:
+            # Quotes in the footnote back ref get converted to "smart" quotes
+            # Change them back here to ensure they work.
+            text = text.replace('class="footnote-ref&#8221;', 'class="footnote-ref"')
+
         return text
 
     _block_quote_base = r'''
@@ -2043,7 +2096,7 @@ class Markdown(object):
 
                 # Wrap <p> tags.
                 graf = self._run_span_gamut(graf)
-                grafs.append("<p>" + graf.lstrip(" \t") + "</p>")
+                grafs.append("<p%s>" % self._html_class_str_from_tag('p') + graf.lstrip(" \t") + "</p>")
 
                 if cuddled_list:
                     grafs.append(cuddled_list)
@@ -2111,12 +2164,12 @@ class Markdown(object):
         text = self._naked_gt_re.sub('&gt;', text)
         return text
 
-    _incomplete_tags_re = re.compile("<(/?\w+\s+)")
+    _incomplete_tags_re = re.compile("<(/?\w+[\s/]+?)")
 
     def _encode_incomplete_tags(self, text):
         if self.safe_mode not in ("replace", "escape"):
             return text
-            
+
         return self._incomplete_tags_re.sub("&lt;\\1", text)
 
     def _encode_backslash_escapes(self, text):
@@ -2188,6 +2241,11 @@ class Markdown(object):
                 if text[start - 2:start] == '](' or text[end:end + 2] == '")':
                     continue
 
+                # Do not match against links which are escaped.
+                if text[start - 3:start] == '"""' and text[end:end + 3] == '"""':
+                    text = text[:start - 3] + text[start:end] + text[end + 3:]
+                    continue
+
                 escaped_href = (
                     href.replace('"', '&quot;')  # b/c of attr quote
                         # To avoid markdown <em> and <strong>:
@@ -2214,8 +2272,10 @@ class Markdown(object):
 
 class MarkdownWithExtras(Markdown):
     """A markdowner class that enables most extras:
+
     - footnotes
     - code-color (only has effect if 'pygments' Python module on path)
+
     These are not included:
     - pyshell (specific to Python-related documenting)
     - code-friendly (because it *disables* part of the syntax)
@@ -2230,6 +2290,7 @@ class MarkdownWithExtras(Markdown):
 
 def calculate_toc_html(toc):
     """Return the HTML for the current TOC.
+
     This expects the `_toc` attribute to have been set on this instance.
     """
     if toc is None:
@@ -2276,6 +2337,7 @@ def _slugify(value):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
     and converts spaces to hyphens.
+
     From Django's "django/template/defaultfilters.py".
     """
     import unicodedata
@@ -2328,11 +2390,13 @@ def _regex_from_encoded_pattern(s):
 # Recipe: dedent (0.1.2)
 def _dedentlines(lines, tabsize=8, skip_first_line=False):
     """_dedentlines(lines, tabsize=8, skip_first_line=False) -> dedented lines
+
         "lines" is a list of lines to dedent.
         "tabsize" is the tab width to use for indent width calculations.
         "skip_first_line" is a boolean indicating if the first line should
             be skipped for calculating the indent width and for dedenting.
             This is sometimes useful for docstrings and similar.
+
     Same as dedent() except operates on a sequence of lines. Note: the
     lines list is modified **in-place**.
     """
@@ -2396,11 +2460,13 @@ def _dedentlines(lines, tabsize=8, skip_first_line=False):
 
 def _dedent(text, tabsize=8, skip_first_line=False):
     """_dedent(text, tabsize=8, skip_first_line=False) -> dedented text
+
         "text" is the text to dedent.
         "tabsize" is the tab width to use for indent width calculations.
         "skip_first_line" is a boolean indicating if the first line should
             be skipped for calculating the indent width and for dedenting.
             This is sometimes useful for docstrings and similar.
+
     textwrap.dedent(s), but don't expand tabs to spaces
     """
     lines = text.splitlines(1)
@@ -2412,6 +2478,7 @@ class _memoized(object):
     """Decorator that caches a function's return value each time it is called.
     If called later with the same arguments, the cached value is returned, and
     not re-evaluated.
+
     http://wiki.python.org/moin/PythonDecoratorLibrary
     """
     def __init__(self, func):
@@ -2478,6 +2545,7 @@ _hr_tag_re_from_tab_width = _memoized(_hr_tag_re_from_tab_width)
 
 def _xml_escape_attr(attr, skip_single_quote=True):
     """Escape the given string for use in an HTML/XML tag attribute.
+
     By default this doesn't bother with escaping `'` to `&#39;`, presuming that
     the tag attribute is surrounded by double quotes.
     """

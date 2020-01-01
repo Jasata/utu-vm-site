@@ -60,11 +60,13 @@ This implementation follows number of principles.
 
 # HTTP Methods
 
-    GET     search/fetch        Idempotent
-    POST    create              Non-idempotent
-    PUT     update              Idempotent
-    PATCH   (special)           Non-Idempotent
-    DELETE  delete              Idempotent
+| Method    | Action            | Idempontence      |
+|:----------|:------------------|:------------------|
+| `GET`     | search/fetch      | Idempotent        |
+| `POST`    | create            | Non-idempotent    |
+| `PUT`     | update            | Idempotent        |
+| `PATCH`   | (special)         | Non-Idempotent    |
+| `DELETE`  | delete            | Idempotent        |
 
 
 # HTTP Responses
