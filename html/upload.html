@@ -36,10 +36,10 @@
     <!-- DataTables -->
     <link   rel="stylesheet"
             type="text/css"
-            href="DataTables/datatables.css">
+            href="css/datatables.css">
     <script type="text/javascript"
             charset="utf8"
-            src="DataTables/datatables.js">
+            src="js/datatables.js">
     </script>
 
     <!-- Site Specific -->
@@ -202,6 +202,7 @@
                 responsive: true,
                 'ajax':     'api/file/owned',
                 'dataSrc':  'data',
+                'select': true,
                 "lengthChange": false,  // No "showw N entries" dropdown
                 "searching": false,     // No search box
                 "paging": false,        // No paging widgets
@@ -227,6 +228,13 @@
                     }
                 ]
             } );
+            //
+            // We also need some kind of an even from JSONForm solution
+            // to trigger DataTable row deselect()
+            //
+            /*
+            fileTable.row( { selected: true } ).deselect();
+            */
         });
 
     </script>
