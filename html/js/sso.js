@@ -8,6 +8,7 @@
  *  0.5.0   2019-12-23  Domain-SSO redirect added
  *  0.6.0   2019-12-23  Clean out unnecessary debug messages
  *  0.7.0   2019-12-25  Add 'stateChanged' event for pages
+ *  0.8.0   2010-01-01  API endpoints now under /api/sso
  *
  *  HOW TO USE
  *
@@ -70,14 +71,14 @@ jQuery.fn.sso = function(options)
         // It is a LOGIN action
         {
             // direct broser to SSO login page
-            window.location.href = "https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2Fvm.utu.fi%3A443%2Fsso%2flogin%3Fdestination%3D" + encodeURIComponent(window.location.pathname);
+            window.location.href = "https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2Fvm.utu.fi%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D" + encodeURIComponent(window.location.pathname);
         }
         else
         // It is a LOGOUT action
         {
             // Issue Ajax query to sso/logout
             $.ajax({
-                url:        '/sso/logout',
+                url:        '/api/sso/logout',
                 type:       'GET',
                 success: function(data, textStatus, xhr) {
                     // Executes only after server responds with 200
@@ -98,7 +99,7 @@ jQuery.fn.sso = function(options)
     //
     $(_this).on('updateState', function(event) {
         // Launch an Ajax query and trigger event 'stateUpdated' (for pages).
-        $.getJSON(window.location.origin + '/sso/state', function(data) {
+        $.getJSON(window.location.origin + '/api/sso', function(data) {
             //console.log(".getJSON() success, role: " + data.role);
         }).done(function(data) {
             console.log(".getJSON().done(), role: " + data.role);

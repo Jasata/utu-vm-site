@@ -51,6 +51,11 @@ def log_request(request):
 ###############################################################################
 
 
+#
+# NOTE: All access to these endpoints (made by JQuery) will have a underscore
+#       ('_') query parameter. This is an anti-cache strategy by the JQuery
+#       and should be ignored.
+#
 @app.route(
     '/api/file',
     methods=['GET'],
@@ -223,15 +228,15 @@ def api_publish(id = None):
 #
 # SSO API endpoints for Single Sign-On implementation
 #
-@app.route('/sso/state', methods=['GET'])
+@app.route('/api/sso', methods=['GET'], strict_slashes = False)
 def sso_state():
     """Returns a sigle iten JSON: { "role": "[anonymous|student|teacher]" }. This also implicitly indicates the authentication state (anonymous = not authenticated)."""
     app.logger.debug(
-        f"STATE: session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}'"
+        f"SSO STATE QUERY: session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}' sso.roleJSON = {sso.roleJSON}"
     )
     return sso.roleJSON, 200
 
-@app.route('/sso/login', methods=['GET'])
+@app.route('/api/sso/login', methods=['GET'], strict_slashes = False)
 def sso_login():
     """This is the landing URI from SSO login page. SSO REST API is re-queried and session is updated accordingly. Finally, 'destination' URL parameter is used to redirect the broser to the final location - persumably the page from where the "login" link/button was pressed."""
     sso.login(force = True)
@@ -242,7 +247,7 @@ def sso_login():
     )
     return flask.redirect(destination, code = 302)
 
-@app.route('/sso/logout', methods=['GET'])
+@app.route('/api/sso/logout', methods=['GET'], strict_slashes = False)
 def sso_logout():
     """This endpoint sets UID to None and ROLE to 'anonymous' in the session, thus effectively logging the user out."""
     app.logger.debug(
