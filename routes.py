@@ -21,9 +21,10 @@ import json
 import flask
 import logging
 
+# These are the only four items so common that they can be referred without
+# the 'flask.' prefix, and reader still knows what they are.
 from flask          import request
 from flask          import Response
-#from flask          import send_from_directory
 from flask          import g
 from flask          import session
 
@@ -109,8 +110,7 @@ def api_file_schema():
     try:
         return api.response(api.File().schema())
     except Exception as e:
-        return str(e), 500
-        #return api.exception_response(e)
+        return api.exception_response(e)
 
 
 
@@ -133,9 +133,7 @@ def api_file_id(id):
                 f"Method {request.method} not supported for this endpoint."
             )
     except Exception as e:
-        app.logger.exception("File endpoint failure!")
-        return str(e), getattr(e, "code", 422)
-        #return api.exception_response(e)
+        return api.exception_response(e)
 
 
 
@@ -151,8 +149,7 @@ def api_file_owned():
     try:
         return api.response(api.File().search(owner = sso.uid or ''))
     except Exception as e:
-        return str(e), 500
-        #return api.exception_response(e)
+        return api.exception_response(e)
 
 
 
@@ -215,8 +212,7 @@ def api_publish(id = None):
         elif request.method == 'POST':
             pass
     except Exception as e:
-        return str(e), 500
-        #return api.exception_response(e)
+        return api.exception_response(e)
     else:
         # api.response(code: int, payload: dict) -> Flask.response_class
         return api.response(response)
@@ -307,8 +303,9 @@ def show_flask_config():
 #   NOTES:
 #           - Built-in route '/static' is ignored.
 #           - Implicit methods 'HEAD' and 'OPTIONS' are hidden.
-#             That's not the correct way about doing this, but since this implementation
-#             does not use either of them, we can skip this issue and just hide them.
+#             That's not the correct way about doing this, but since this
+#             implementation does not use either of them, we can skip this
+#             issue and just hide them.
 #
 #   See also:
 #   https://stackoverflow.com/questions/13317536/get-a-list-of-all-routes-defined-in-the-app
@@ -447,7 +444,7 @@ def api_not_implemented(path = ''):
 # No-path case
 @app.route('/', methods=['GET'])
 def send_ui(path = 'index.html'):
-    """Send static HTML/CSS/JS/images/... content."""
+    """Send static content (HTML/CSS/JS/images/...)."""
     log_request(request)
     return flask.send_from_directory('html', path)
 
