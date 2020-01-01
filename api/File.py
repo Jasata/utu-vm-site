@@ -271,7 +271,7 @@ class File(DataObject):
             if len(result) < 1:
                 raise NotFound(
                     f"File (ID: {id}) not found!",
-                    { 'sql': this.sql }
+                    { 'sql': self.sql }
                 )
             # Create data dictionary from result
             data = dict(zip([c[0] for c in self.cursor.description], result[0]))
