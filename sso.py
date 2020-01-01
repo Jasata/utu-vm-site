@@ -8,7 +8,8 @@
 # sso.py - Jani Tammi <jasata@utu.fi>
 #
 #   0.1.0   2019-12-22  Initial version.
-#   0.2.0   2019-12-22  .authenticated and .validate()
+#   0.2.0   2019-12-22  .authenticated and .validate().
+#   0.3.0   2020-01-01  Only "enabled" teachers get teacher role.
 #
 #
 # ============================================================================
@@ -101,7 +102,8 @@ class SSO:
             #session['UID'] = self.__get_hashed_uid(request)
         # Query DB to determine teacher/student role
         if self.session['UID'] is not None and not self.session.get('ROLE'):
-            sql = f"SELECT * FROM teacher WHERE uid = '{self.session['UID']}'"
+            sql = f"SELECT * FROM teacher WHERE uid = '{self.session['UID']}' "
+            sql += "AND status = 'enabled'"
             try:
                 cursor = g.db.cursor()
                 cursor.execute(sql)

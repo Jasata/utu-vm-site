@@ -107,10 +107,7 @@ def api_file_schema():
     """Create data schema JSON for client FORM creation."""
     log_request(request)
     try:
-        if not sso.is_teacher:
-            raise api.Unauthorized("Teacher privileges required")
         return api.response(api.File().schema())
-
     except Exception as e:
         return str(e), 500
         #return api.exception_response(e)
@@ -127,12 +124,9 @@ def api_file_id(id):
     """Database table row endpoint."""
     log_request(request)
     try:
-        if not sso.is_teacher:
-            raise api.Unauthorized("Teacher privileges required")
         if request.method == 'PUT':
-            return api.response(api.File().update(id, request))
+            return api.response(api.File().update(id, request, sso.uid))
         elif request.method == 'GET':
-            #raise api.NotImplemented("Sorry! Not yet implemented!")
             return api.response(api.File().fetch(id))
         else:
             raise MethodNotAllowed(
@@ -197,6 +191,8 @@ def api_publish(id = None):
                 }
             }
         )
+        raise api.NotImplemented("Sorry! Not yet implemented!")
+
         if not sso.is_teacher:
             raise api.Unauthorized("Teacher privileges required")
         if not app.config.get('UPLOAD_FOLDER', None):

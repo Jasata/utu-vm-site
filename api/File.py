@@ -30,6 +30,7 @@ from .OVFData           import OVFData
 # Extends api.DataObject
 class File(DataObject):
 
+
     class DefaultDict(dict):
         """Returns for missing key, value for key '*' is returned or raises KeyError if default has not been set."""
         def __missing__(self, key):
@@ -43,13 +44,41 @@ class File(DataObject):
         'student':  ['anyone', 'student'],
         '*':        ['anyone']
     })
+    # Columns that must not be updated
+    _readOnly = ['id', 'name', 'size', 'sha1', 'created']
+
+
 
 
     def __init__(self):
-        """No need to parse - no request arguments supported"""
         self.cursor = g.db.cursor()
         # Init super for table name 'file'
         super().__init__(self.cursor, 'file')
+
+
+
+
+    def schema(self):
+        """Return file -table database schema in JSON.
+        Possible responses:
+        500 InternalError - Other processing error
+        200 OK"""
+        try:
+            # Do not send owner data to client
+            schema = super().schema(['owner'])
+            # Set readonly columns
+            for col, attribute in schema.items():
+                if col in self._readOnly:
+                    attribute['readonly'] = True
+        except Exception as e:
+            app.logger.exception("error creating JSON")
+            raise InternalError(
+                "schema() error while generating schema JSON", str(e)
+            ) from None
+        #
+        # Return schema
+        #
+        return (200, {"schema": schema})
 
 
 
@@ -187,42 +216,12 @@ class File(DataObject):
 
 
 
-    def schema(self):
-        """Retrieve 'file' table row by provided ID and return it in JSONForm Schema format.
-        Possible responses:
-        404 NotFound - Table 'file' does not have a row by specified id
-        500 InternalError - Other processing error
-        200 OK"""
-        #
-        # Limit and modify schema
-        #
-        exclude = ['sha1', 'owner']
-        readonly = ['id', 'name', 'size', 'created']
-        try:
-            schema = super().schema(exclude)
-            # Set readonly columns
-            for key, val in schema.items():
-                if key in readonly:
-                    val['readonly'] = True
-        except Exception as e:
-            app.logger.exception("error creating JSON")
-            raise InternalError(
-                "preprocess() error while generating JSON content", str(e)
-            ) from None
-
-
-        #
-        # Return schema
-        #
-        return (200, {"schema": schema})
-
-
-
-
     # TODO ####################################################################
     def publish(self, file_id: int) -> tuple:
         """Moves a file from uload folder to download folder and makes it accessible/downloadable."""
         return (200, { "data": "OK" })
+
+
 
 
 
@@ -295,7 +294,8 @@ class File(DataObject):
 
 
 
-    def update(self, id, request):
+
+    def update(self, id, request, owner):
         # 2nd argument must be the URI Parameter /api/file/<int:id>.
         # Second copy is expected to be found within the request data
         # and it has to match with the URI parameter.
@@ -338,6 +338,22 @@ class File(DataObject):
                 raise ValueError(
                     "Primary key '{self.primarykeys[0]}' values do not match! One provided as URI parameter, one included in the data set."
                 )
+            #
+            # Check ownership
+            #
+            result = self.cursor.execute(
+                "SELECT owner FROM file WHERE id = ?",
+                [id]
+            ).fetchall()
+            if len(result) != 1:
+                raise ValueError(
+                    f"File (id: {id}) does not exist!"
+                )
+            else:
+                if result[0] != owner:
+                    raise ValueError(
+                        f"User '{owner}' not the owner of file {id}, or file do"
+                    )
         except Exception as e:
             app.logger.exception("Prerequisite failure!")
             raise InvalidArgument(
@@ -353,6 +369,8 @@ class File(DataObject):
         try:
             # columns list, without primary key(s)
             cols = [ c for c in data.keys() if c not in self.primarykeys ]
+            # Remove read-only columns, in case someone injected them
+            cols = [ c for c in cols if c not in self._readOnly ]
             app.logger.debug(f"Columns: {','.join(cols)}")
             self.sql = f"UPDATE {self.table_name} SET "
             self.sql += ",".join([ c + ' = :' + c for c in cols ])
@@ -414,6 +432,7 @@ class File(DataObject):
 
 
 
+
     @staticmethod
     def __ova_attributes(file: str) -> dict:
         # Establish defaults
@@ -465,6 +484,7 @@ class File(DataObject):
 
 
 
+
     @staticmethod
     def __img_attributes(file: str) -> dict:
         filedir, filename = os.path.split(file)
@@ -476,6 +496,8 @@ class File(DataObject):
             'type':     'vm'
         }
         return attributes
+
+
 
 
 
