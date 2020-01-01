@@ -10,18 +10,11 @@
 #   0.1.0   2019-12-22  Initial version.
 #   0.2.0   2019-12-22  .authenticated and .validate().
 #   0.3.0   2020-01-01  Only "enabled" teachers get teacher role.
+#   0.4.0   2020-01-01  Chanced to 'active' / 'inactive' status values.
 #
 #
 # ============================================================================
-#   MASSIVE ISSUE! Flask session cookie is HTTPOnly!
-#   They cannot be accessed from Javascript, thus negating
-#   the original plan to let client side script monitor the
-#   session state from the Flask session cookie - impossible!
-#
-#   I have to consider alternatives... but I may need to implement
-#   API endppoint for Ajax queries which is queried by each page load.
-#
-# ============================================================================
+#   USING THIS MODULE
 #
 #
 #   Has to be created during application creation and
@@ -47,6 +40,23 @@
 #   For important stuff, function sso.validate():
 #   if sso.validate():
 #       ...
+#
+# =============================================================================
+#   END POINTS SUPPORTING THIS MODULE
+#
+#
+# Three API endpoints are needed by the client side 'sso.js' code.
+#
+#
+# [GET] /sso/login?destination=...
+#           Calls ´sso.login(force = true)' to reload SSO session from
+#           the SSO_SESSION_API. This endpoint will then redirect the
+#           browser to (query parameter) 'destination' or index.html,
+#           if the destination is not defined.
+#
+# [GET] /sso/logout
+#           Calls `sso.logout()` and returns response 200 OK.
+#           Client is responsible for removing privileged data from the page.
 #
 import sys
 import json
@@ -103,7 +113,7 @@ class SSO:
         # Query DB to determine teacher/student role
         if self.session['UID'] is not None and not self.session.get('ROLE'):
             sql = f"SELECT * FROM teacher WHERE uid = '{self.session['UID']}' "
-            sql += "AND status = 'enabled'"
+            sql += "AND status = 'active'"
             try:
                 cursor = g.db.cursor()
                 cursor.execute(sql)

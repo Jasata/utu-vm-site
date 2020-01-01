@@ -1,3 +1,10 @@
+CREATE TABLE teacher
+(
+    uid             TEXT        NOT NULL PRIMARY KEY,
+    created         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status          TEXT        NOT NULL DEFAULT 'active',
+    CHECK (status IN ('active', 'inactive'))
+);
 CREATE TABLE file
 (
     id              INTEGER     NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -21,13 +28,6 @@ CREATE TABLE file
     CHECK (type IN ('usb', 'vm')),
     CHECK (dtap IN ('development', 'testing', 'acceptance', 'production')),
     CHECK (downloadable_to IN ('anyone', 'student', 'teacher', 'nobody'))
-);
-CREATE TABLE teacher
-(
-    uid             TEXT        NOT NULL PRIMARY KEY,
-    created         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status          TEXT        NOT NULL DEFAULT 'enabled',
-    CHECK (status IN ('enabled', 'disabled'))
 );
 CREATE TABLE uses
 (
