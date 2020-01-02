@@ -15,6 +15,7 @@
 #   includes directly into itself.
 #   Any actual work is implemented in the api module.
 #
+import os
 import sys
 import time
 import json
@@ -390,7 +391,10 @@ def api_doc():
                 app.logger.exception("Unable to process 'api/README.md'")
                 readme = ''
             html =  "<!DOCTYPE html><html><head><title>API Listing</title>"
-            html += "<link rel='stylesheet' href='/css/api.css'></head><body>"
+            html += "<link rel='stylesheet' href='/css/api.css'>"
+            # substitute for favicon
+            html += "<link rel='icon' href='data:;base64,iVBORw0KGgo='>"
+            html += "</head><body>"
             html += readme
             html += "<h2>List of Flask routes and Endpoints</h2>"
             html += "<table class='endpointTable'><tr><th>Service</th><th>Methods</th><th>Endpoint</th><th>Documentation</th></tr>"
@@ -433,19 +437,19 @@ def upload_file():
             fname.rsplit('.', 1)[1].lower() in app.config['UPLOAD_ALLOWED_EXT']
     if 'file' not in request.files:
         app.logger.error('No file part')
-        return redirect(request.url)
+        return flask.redirect(request.url)
     file = request.files['file']
     # if user does not select file, browser also
     # submit an empty part without filename
     if file.filename == '':
-        app.logger.error('No selected file')
-        return redirect(request.url)
+        app.logger.error(f"file.filename: '{file.filename or 'None'}'")
+        return flask.redirect(request.url)
     if file and allowed_file(file.filename):
+        from werkzeug.utils import secure_filename
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return redirect(url_for('uploaded_file',
-                                filename=filename))
-    return "tba", 200
+        return flask.redirect(request.referrer)
+    return "File not in the list of allowed types", 406
 
 
 ###############################################################################

@@ -85,9 +85,6 @@
                 {
                     "key":          "label",
                     "title":        "Label"
-                    //"notitle": true,
-                    //"htmlClass": "usermood",
-                    //"fieldHtmlClass": "input-small"
                 },
                 {
                     "key":          "ostype",
@@ -171,7 +168,7 @@
         $(document).ready(function() {
             // Initialize SSO element
             $("#sso").sso();
-            // Reload tables each time sso element triggers 'stateChanged'.
+            // Reload table and empty the form on 'stateChanged' event.
             // It only happens when authenticated session is disposed (logout).
             $("#sso").on('stateChanged', function(event) {
                 $('#fileTable').DataTable().ajax.reload(null, false);
@@ -228,7 +225,7 @@
                     }
                 ]
             } );
-            //
+            // TODO:
             // We also need some kind of an even from JSONForm solution
             // to trigger DataTable row deselect()
             //
@@ -369,7 +366,7 @@
     <footer><!-- flex container -->
         <div>
             <img    class="footer-logo"
-            src="img/UTU_logo-white_EN_transparent.png">
+                    src="img/UTU_logo-white_EN_transparent.png">
         </div>
         <div><!-- flex container -->
             <div>
