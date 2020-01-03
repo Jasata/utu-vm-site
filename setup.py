@@ -458,7 +458,7 @@ if __name__ == '__main__':
     #
     cfg = {**defaults['common'], **defaults[args.mode], **cfgfile['System']}
     # Add special value; generated SECRET_KEY
-    cfg['SECRET_KEY'] = os.urandom(24)
+    cfg['secret_key'] = os.urandom(24)
     # Unfortunately, argparse object cannot be merged (it's not a dictionary)
     if args.force:
         # Could not test against None, as the 'action=store_true' means that
