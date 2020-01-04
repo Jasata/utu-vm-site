@@ -9,6 +9,8 @@
 #
 #   0.1.0   2020-01-02  Initial version
 #   0.2.0   2020-01-02  Parallerized processing
+#   0.3.0   2020-01-03  Add os.nice()
+#   0.4.0   2020-01-03  Slight improvements to error reporting
 #
 #
 import os
@@ -21,13 +23,15 @@ import multiprocessing
 from multiprocessing import Process
 
 
+# os.nice() value. Unprivileged; 0 ... 20 (lowest priority)
+NICE        = 20
 
 FILEFOLDER  = '/var/www/files'
 DATABASE    = '/var/www/vm.utu.fi/application.sqlite3'
 TABLE       = 'file'
 PKCOLUMN    = 'id'
 SHA1COLUMN  = 'sha1'
-NAMECOLUMN  = 'name'        # has to be UNIQUE!
+NAMECOLUMN  = 'name'
 
 SCRIPTNAME  = os.path.basename(__file__)
 
@@ -80,7 +84,7 @@ class Task(object):
                 raise ValueError("None or too many rows updated!")
         except Exception as e:
             db.rollback()
-            log.exception(f"Subprocess failure for file '{self.filename}'")
+            log.exception(f"Task failure for file '{self.filename}'")
             try:
                 # Restore NULL so that another process will do this
                 cursor.execute(update, [None, self.id])
@@ -89,6 +93,7 @@ class Task(object):
         finally:
             db.commit()
             cursor.close()
+        # In case of an exception, this could still be None
         return self.result
 
 
@@ -117,6 +122,8 @@ class Worker(multiprocessing.Process):
 
 
     def run(self):
+        # Be nice
+        os.nice(NICE)
         log = logging.getLogger(
             os.path.basename(__file__) + ":" + \
             self.__class__.__name__ + "." + \
@@ -141,9 +148,10 @@ class Worker(multiprocessing.Process):
         return
 
 
-def tag_file(db, id: int):
+def tag_file(db, id: int) -> bool:
     """Write a message into 'sha1' column so that the same row will not be picked up as a task by the next cron job starting."""
     import datetime
+    success = True
     sql = f"UPDATE {TABLE} SET {SHA1COLUMN} = ? WHERE {PKCOLUMN} = ?"
     try:
         cursor = db.cursor()
@@ -158,9 +166,10 @@ def tag_file(db, id: int):
         cursor.close()
     except Exception as e:
         db.rollback()
+        success = False
     finally:
         cursor.close()
-
+    return success
 
 
 if __name__ == '__main__':
@@ -176,8 +185,7 @@ if __name__ == '__main__':
     )
     log.addHandler(handler)
 
-    # UPDATE file SET sha1 = NULL WHERE id in (5,11,12,13,14,15,16)
-    # NOTE: Column 'name' is unique
+
     select = f"SELECT {PKCOLUMN}, {NAMECOLUMN} FROM {TABLE} "
     select += f"WHERE {SHA1COLUMN} IS NULL"
     try:
@@ -192,8 +200,12 @@ if __name__ == '__main__':
                 q_task      = multiprocessing.Queue()
                 q_result    = multiprocessing.Queue()
                 for id, name,  in result:
-                    tag_file(db, id)
-                    q_task.put(Task(id, name))
+                    if tag_file(db, id):
+                        q_task.put(Task(id, name))
+                    else:
+                        log.error(
+                            f"Could not tag and queue ID {id}, file '{name}'!"
+                        )
 
 
                 # Start only as many workers as there are tasks
@@ -203,7 +215,7 @@ if __name__ == '__main__':
                     ntasks
                 )
                 #
-                # Add one Poison Pill for each worker
+                # Add one Poison Pill for each worker (None value Task)
                 #
                 for _ in range(nworkers):
                     q_task.put(Task())
@@ -213,7 +225,8 @@ if __name__ == '__main__':
                 # Create and start the workers
                 #
                 log.info(
-                    f"Creating {nworkers} workers for {ntasks} tasks")
+                    f"Creating {nworkers} workers for {ntasks} tasks"
+                )
                 workers = [Worker(q_task, q_result) for _ in range(nworkers)]
                 for worker in workers:
                     worker.start()
@@ -239,17 +252,24 @@ if __name__ == '__main__':
                             log.error(
                                 f"Received unsupported command '{q_item}'"
                             )
-                    elif q_item.result is None:
-                        # Worker exited, leaving empty task item into queue
+                    elif q_item.id is None:
+                        # Worker exited, passing the poison pill to result queue
                         nworkers -= 1
                         log.debug("Worker exited after completing tasks")
+                    elif q_item.result is None:
+                        # Was not poison pill, and None result = failure!
+                        log.error(
+                            f"SHA1 for ID {q_item.id} '{q_item.name}' failed!"
+                        )
                     else:
+                        # Successful SHA1 calculation
                         log.info(
                             f"File '{q_item.filename}' SHA1: {q_item.result}"
                         )
 
+
     except Exception as e:
-        log.exception("Process failure")
+        log.exception("Process failure! Database might need manual clean-up!")
         os._exit(-1)
 
 
