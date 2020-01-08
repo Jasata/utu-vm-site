@@ -42,17 +42,17 @@ class File(DataObject):
     # Translate file.downloadable_to <-> sso.role ACL
     # (who can access if file.downloadable_to says...)
     _downloadable_to2acl = DefaultDict({
-        'teacher':      ['teacher'],
-        'student':      ['student', 'teacher'],
-        'anonymous':    ['anyone', 'student', 'teacher'],
-        '*':            []
+        'teacher':  ['teacher'],
+        'student':  ['student', 'teacher'],
+        'anyone':   ['anonymous', 'student', 'teacher'],
+        '*':        []
     })
     # Translate current sso.role into a list of file.downloadable_to -values
     # (what can I access with my role...)
     _role2acl = DefaultDict({
-        'teacher':  ['anyone', 'student', 'teacher'],
-        'student':  ['anyone', 'student'],
-        '*':        ['anyone']
+        'teacher':      ['anyone', 'student', 'teacher'],
+        'student':      ['anyone', 'student'],
+        '*':            ['anyone']
     })
     # Columns that must not be updated (by client)
     _readOnly = ['id', 'name', 'size', 'sha1', 'created']
