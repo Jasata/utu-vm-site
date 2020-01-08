@@ -15,6 +15,7 @@
 #   0.6.0   2020-01-02  Add cron job detection and removal
 #   0.7.0   2020-01-02  Fix do_or_die() to handle script input
 #   0.8.0   2020-01-02  Add stdout and stderr output to do_or_die()
+#   0.8.1   2020-01-08  Add download config items into flask app instance file
 #
 #
 #   REQUIRES ROOT PRIVILEGES TO RUN!
@@ -76,7 +77,7 @@ if sys.version_info < REQUIRE_PYTHON_VER:
 
 
 # PEP 396 -- Module Version Numbers https://www.python.org/dev/peps/pep-0396/
-__version__ = "0.4.0"
+__version__ = "0.8.1"
 __author__  = "Jani Tammi <jasata@utu.fi>"
 VERSION = __version__
 HEADER  = """
@@ -107,6 +108,8 @@ defaults = {
         'mode':                     'PRD',
         'upload_folder':            '/var/www/vm.utu.fi/unpublished',
         'upload_allowed_ext':       ['ova', 'zip', 'img'],
+        'download_folder':          '/var/www/downloads',
+        'download_urlpath':         '/x-accel-redirect/',
         'sso_cookie':               'ssoUTUauth',
         'sso_session_api':          'https://sso.utu.fi/sso/json/sessions/',
         'overwrite':                False
@@ -265,7 +268,8 @@ files['application.conf'] = ConfigFile(
 #
 #   0.1.0   2019.12.07  Initial version.
 #   0.2.0   2019.12.23  Updated for SSO implementation.
-#   0.3.0   2020.01.01  Generated format
+#   0.3.0   2020.01.01  Generated format.
+#   0.4.0   2020.01.08  Download configuration items added.
 #
 #
 # See https://flask.palletsprojects.com/en/1.1.x/config/ for details.
@@ -305,10 +309,12 @@ SQLITE3_DATABASE_FILE   = 'application.sqlite3'
 
 
 #
-# File upload
+# File upload and download
 #
 UPLOAD_FOLDER           = '{{upload_folder}}'
 UPLOAD_ALLOWED_EXT      = {{upload_allowed_ext}}
+DOWNLOAD_FOLDER         = '{{download_folder}}'
+DOWNLOAD_URLPATH        = '{{download_urlpath}}'
 
 # EOF
 

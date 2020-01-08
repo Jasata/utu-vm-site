@@ -19,6 +19,7 @@ import json
 import time
 import logging
 import sqlite3
+import flask
 
 from flask              import g
 from application        import app
@@ -34,17 +35,26 @@ class File(DataObject):
     class DefaultDict(dict):
         """Returns for missing key, value for key '*' is returned or raises KeyError if default has not been set."""
         def __missing__(self, key):
-            """For DefaultDict[key] access, missing keys."""
-            if self.get('*', None):
+            if key == '*':
+                raise KeyError("Key not found and default ('*') not set!")
+            else:
                 return self['*']
-            raise KeyError("Neither key nor default key ('*') exist!")
-    # Database column file.downloadable_to <-> sso.role
-    _downloadable_to = DefaultDict({
+    # Translate file.downloadable_to <-> sso.role ACL
+    # (who can access if file.downloadable_to says...)
+    _downloadable_to2acl = DefaultDict({
+        'teacher':  ['teacher'],
+        'student':  ['student', 'teacher'],
+        'anyone':   ['anyone', 'student', 'teacher'],
+        '*':        []
+    })
+    # Translate current sso.role into a list of file.downloadable_to -values
+    # (what can I access with my role...)
+    _role2acl = DefaultDict({
         'teacher':  ['anyone', 'student', 'teacher'],
         'student':  ['anyone', 'student'],
         '*':        ['anyone']
     })
-    # Columns that must not be updated
+    # Columns that must not be updated (by client)
     _readOnly = ['id', 'name', 'size', 'sha1', 'created']
 
 
@@ -100,7 +110,7 @@ class File(DataObject):
             where.append("type = ?")
             bvars.append(file_type)
         if downloadable_to is not None:
-            acl = self._downloadable_to[downloadable_to]
+            acl = self._role2acl[downloadable_to]
             where.append(
                 f"downloadable_to IN ({','.join(['?'] * len(acl))})"
             )
@@ -154,7 +164,7 @@ class File(DataObject):
         self.file = filepath
         self.filedir, self.filename = os.path.split(self.file)
         _, self.filesuffix = os.path.splitext(self.filename)
-        if not File.file_exists(self.file):
+        if not File.exists(self.file):
             raise NotFound(f"File '{self.file}' does not exist!")
 
 
@@ -421,9 +431,70 @@ class File(DataObject):
 
 
 
+    def download(self, filename: str, role: str) -> tuple:
+        #
+        # Check that the file exists
+        #
+        try:
+            folder = app.config.get("DOWNLOAD_FOLDER")
+            filepath = os.path.join(folder, filename)
+            if not File.exists(filepath):
+                app.logger.error(
+                    f"File '{filepath}' does not exist!"
+                )
+                return "File not found", 404
+        except Exception as e:
+            app.logger.exception(
+                f"Exception while checking if '{filepath}' exists!"
+            )
+            return "Internal Server Error", 500
+        #
+        # Retrieve information on to whom is it downloadable to
+        #
+        self.sql = "SELECT downloadable_to FROM file WHERE name = ?"
+        try:
+            self.cursor.execute(self.sql, [filename])
+            # list of tuples
+            result = self.cursor.fetchone()
+            if len(result) < 1:
+                app.logger.error(
+                    f"No database record for existing file '{filepath}'"
+                )
+                return "File Not Found", 404
+        except Exception as e:
+            app.logger.exception("Error executing a query!")
+            return "Internal Server Error", 500
+        #
+        # Check that the file 
+        #
+        try:
+            abs_url_path = os.path.join(
+                app.config.get("DOWNLOAD_URLPATH"),
+                filename
+            )
+            allowlist = self._downloadable_to2acl[result[0]]
+            if role in allowlist:
+                response = flask.Response("")
+                response.headers['Content-Type'] = ""
+                response.headers['X-Accel-Redirect'] = abs_url_path
+                app.logger.debug(
+                    f"Returning response with header X-Accel-Redirect = {response.headers['X-Accel-Redirect']}"
+                )
+                return response
+            else:
+                app.logger.info(
+                    f"User with role '{role}' attempted to download '{filepath}' that is downloadable to '{allowlist}' (file.doanloadable_to: '{result[0]}') (DENIED!)"
+                )
+                return "Unauthorized!", 401
+        except Exception as e:
+            app.logger.exception(
+                f"Exception while matching role '{role}' to (downloadable_to:) '{result[0]}'"
+            )
+            return "Intermal Server Error", 500
+
 
     @staticmethod
-    def file_exists(file: str) -> bool:
+    def exists(file: str) -> bool:
         """Accepts path/file or file and tests if it exists (as a file)."""
         if os.path.exists(file):
             if os.path.isfile(file):

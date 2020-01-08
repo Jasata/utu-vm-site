@@ -159,6 +159,26 @@ def api_file_owned():
 
 
 
+#
+# NOTE: This rule CANNOT be the same as the internal location
+#       in the Nginx configuration file, or Nginx will not hand
+#       the request over to Flask at all.
+#
+@app.route(
+    '/download/<path:path>',
+    methods = ['GET'],
+    strict_slashes = False
+)
+def download(path = None):
+    if not path:
+        return "Not Found", 404
+    try:
+        return api.File().download(path, sso.role)
+    except Exception as e:
+        app.logger.exception(str(e))
+        return "Internal Server Error", 500
+
+
 ###############################################################################
 ### THIS NEEDS RETHINKING ... ONCE THE UPLOAD HAS BEEN IMPLEMENTED ############
 ###############################################################################

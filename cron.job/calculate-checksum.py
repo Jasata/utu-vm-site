@@ -14,6 +14,7 @@
 #
 #
 import os
+import pwd
 import sys
 import logging
 import logging.handlers
@@ -26,7 +27,7 @@ from multiprocessing import Process
 # os.nice() value. Unprivileged; 0 ... 20 (lowest priority)
 NICE        = 20
 
-FILEFOLDER  = '/var/www/files'
+FILEFOLDER  = '/var/www/downloads'
 DATABASE    = '/var/www/vm.utu.fi/application.sqlite3'
 TABLE       = 'file'
 PKCOLUMN    = 'id'
@@ -110,6 +111,7 @@ class Worker(multiprocessing.Process):
     db          = None
     qTask       = None
     qResult     = None
+    taskCount   = 0
     #
     # On creation, Worker(Process) receives two queues:
     #   One for retrieving new work (tasks)
@@ -138,12 +140,15 @@ class Worker(multiprocessing.Process):
             if task.id is None and task.filename is None:
                 log.debug("{}: Exiting".format(self.name))
                 # Put empty task into queue to signal Worker exit
+                # ...but also pass the task count as a result
+                task.result = self.taskCount
                 self.qResult.put(task)
                 break # end while-loop (terminate this worker)
             # perform the task, using Worker's DB connection
             r = task(self.db)
             log.debug(f"{self.name}: {str(task)}")
             self.qResult.put(task)
+            self.taskCount += 1
         # Breaks here to exit
         return
 
@@ -184,6 +189,7 @@ if __name__ == '__main__':
         logging.Formatter('%(name)s: [%(levelname)s] %(message)s')
     )
     log.addHandler(handler)
+    log.info(f"Executing as {pwd.getpwuid(os.geteuid()).pw_name}")
 
 
     select = f"SELECT {PKCOLUMN}, {NAMECOLUMN} FROM {TABLE} "
@@ -193,6 +199,7 @@ if __name__ == '__main__':
             selcur = db.cursor()
             result = selcur.execute(select).fetchall()
             ntasks = len(result)
+            ncompleted = 0
             if ntasks:
                 #
                 # There is work to do! Create taskqueue
@@ -255,17 +262,23 @@ if __name__ == '__main__':
                     elif q_item.id is None:
                         # Worker exited, passing the poison pill to result queue
                         nworkers -= 1
-                        log.debug("Worker exited after completing tasks")
+                        ncompleted += q_item.result
+                        log.debug(
+                            f"Worker exited after completing {q_item.result} tasks"
+                        )
                     elif q_item.result is None:
                         # Was not poison pill, and None result = failure!
                         log.error(
-                            f"SHA1 for ID {q_item.id} '{q_item.name}' failed!"
+                            f"SHA1 for ID {q_item.id} '{q_item.filename}' failed!"
                         )
                     else:
                         # Successful SHA1 calculation
                         log.info(
                             f"File '{q_item.filename}' SHA1: {q_item.result}"
                         )
+                log.info(f"{ncompleted} checksums calculated. Exiting...")
+            else: # ntasks = 0
+                log.info("None of the files need SHA1 to be calculated. Bye!")
 
 
     except Exception as e:
