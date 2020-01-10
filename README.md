@@ -26,24 +26,24 @@ A website for university's Course Virtualization project. Serves both students (
 
 ## Server
 
-Original idea about separate virtual server has been dropped in favor of expanding ftdev resources and reserving an additional DNS name for it (https://vm.utu.fi).
+Original idea about separate virtual server has been dropped in favor of expanding ftdev resources and reserving an additional DNS name for it (https://vm.utu.fi). Or in other words, vm.utu.fi is a *virtual host* in ftdev.utu.fi (virtual server).
 
 ## Functional Specifications
 
  - Publishes a download list (in the downloads -page) of available .OVA files.
  - OVA metadata will be a combination of extracted XML from OVA and uploader specified information.
  - Download statistics will be based on webserver log files, which will be generated into (some kind of) graph/report nightly and made available in separate statistics page.
- - Uses UTU SSO authentication, but restricts itself to UTU UID only. No other **P**ersonally **I**dentifiable **I**nformation (PII) is handled or stored.
+ - Uses UTU SSO authentication, but restricts itself to UTU UID only. No other **P**ersonally **I**dentifiable **I**nformation (PII) is handled or stored. (NOTE: Students have **no** PII of any kind stored).
 
 ## GDPR
 
 *IT-Services will be consulted about UID as PII data. If UID alone is also considered to enough to bring this solution under GDPR regulations, solution model where all UID's are one-way hashed (both in client's session storage and `teacher` database table) will be proposed.*
 
+2020-01-10 update: In a meeting, it has been said that storage of UTU SSO UID (for teachers) is allowable as long as this is clearly indicated in the data privacy statement, along with the description of its usage, purpose for storing it, expected lifetime (when and/or under what conditions it will be cleaned out) and providing a way to exercice all the rights granted by GDPR (which in our case, is a communique to support email address).
+
 ### Items That Need Technical Solutions
 
- - Authentication (without actual identification). Perhaps Kerberos module relying on UTU authentication.
  - Integration of distribution builder - as a separate Build Manager agent, providing a REST API interface.
- - Will the REST API to Build Manager be routed via nginx for Kerberos authentication?
  - HTML5 File API based Flow.js needs server side implementation in Python, since nothing even remotely acceptable exists.
 
 ## Third-party components
