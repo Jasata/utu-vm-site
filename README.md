@@ -1,5 +1,7 @@
 # University of Turku - Course Virtualization
 
+2020-01-10: Version 1.0 release (and first publication) by the end of January 2020.
+
 A website for university's Course Virtualization project. Serves both students (get hypervisor installed and download course specific virtual machine images) and teachers (learn how virtual machines could help running a course, instructions on how to create an virtual machine image, how to get help doing it, uloading and publishing made images).
 
 **See also:**
@@ -7,12 +9,14 @@ A website for university's Course Virtualization project. Serves both students (
   * [Static version](https://jasata.github.io/utu-vm-site/html/) of this project at github.io.
   * [Wiki pages](https://github.com/Jasata/utu-vm-site/wiki) for technical and design notes.
 
+
 ## Design Goals
 
- - **Simplicity** (in implementation, site structure, usage...).
+ - **Simplicity** (in implementation, site structure, usage...). And where not achievable, good and clear documentation.
  - Minimal dependencies (see "Third-party components").
  - Small scope (Only the essentials discussed in the site. More detailed information will be provided in form of PDF documents).
  - **Two-step principle**. All actions (primary use cases) should be accomplished in no more than two clicks. One to choose the relevant subpage, another to open a folding information container (if necessary).
+ - **Integration-friendly Architecture**. Basically meaning that the backend is a REST API and none of the client pages are dynamically parsed.
  
 ### Primary use cases (in order of importance)
  1. Student retrieves course-specific virtual machine image
@@ -45,6 +49,7 @@ Original idea about separate virtual server has been dropped in favor of expandi
 
  - Integration of distribution builder - as a separate Build Manager agent, providing a REST API interface.
  - HTML5 File API based Flow.js needs server side implementation in Python, since nothing even remotely acceptable exists.
+ - Statistics that satisfy not only our curiosity, but also justify the existence of this service when the time comes (in a year or two) that this can no longer be considered to be a education development project (ergo, would need to be adopted by IT-Services).
 
 ## Third-party components
 
@@ -57,8 +62,8 @@ Frontend
  - [Flow.js v.2.13.2](https://github.com/flowjs/flow.js/) for HTML5 File API transfers
  
 Backend
- - Nginx
- - Python 3.7.3 (part of Debian 10)
- - Flask & UWSGI
- - SQLite3
+ - Nginx ver.1.14.0+
+ - Python 3.6.8 (Ubuntu Server 18.04.3 LTS, offered by IT-Services)
+ - Flask 0.12.2 (2017-05-16!! Current version: 1.1.2) & UWSGI 2.0.15+
+ - SQLite3 3.22.0 (2018-01-22)
 
