@@ -23,12 +23,13 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/sso.js"></script>
     <script>
-        // Initialize SSO element
         $(document).ready(function() {
+            // Initialize SSO element
             $("#sso").sso();
-        });
-        $('.navbar-nav a').on('click', function() {
-            $('.navbar-collapse').collapse('hide');
+            // Close sandwich-menu click
+            $('.navbar-nav a').on('click', function() {
+                $('.navbar-collapse').collapse('hide');
+            });
         });
     </script>
 

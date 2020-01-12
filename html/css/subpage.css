@@ -91,7 +91,14 @@ a.navbar-brand::before
     color:                  White;
     border-radius:          5px;
 }
-.navbar:after
+.navbar-container
+{
+    display:                flex;
+    align-items:            flex-start;
+    justify-content:        space-between;
+    background-color:       White;
+}
+.navbar-container:after
 {
     content:                '';
     width:                  100%;
@@ -108,7 +115,19 @@ a.navbar-brand::before
     box-shadow:             0px 5px 6px
                             rgba(0,0,0,.3); /* Opera 10.5, IE 9.0 */
 }
-
+/* Class to overwrite (some) Bootstrap .container properties */
+.navbar-brand-container
+{
+    padding:                0 !important;
+    margin:                 0 !important;
+    width:                  100% !important;
+}
+@media (min-width: 576px)
+{
+    .container {
+        max-width:              none !important;
+    }
+}
 /******************************************************************************
  *
  * Site navigator

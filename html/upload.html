@@ -243,26 +243,29 @@
 
 <body data-spy="scroll" data-target="#navbarContent" data-offset="70">
 
-    <nav class="navbar navbar-expand-md fixed-top navbar-light bg-white py-0">
-        <div class="container">
-            <a class="navbar-brand py-3" href=".">
-                <img id="navbar-logo" src="img/utu-torch-black.png">
-            </a><span id="navbar-title">Upload</span>
-            <button class="navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="nav navbar-nav">
-                    <a class="nav-link p-3" href="#upload">Upload</a>
-                    <a class="nav-link p-3" Href="#publish">Publish and Manage</a>
-                </ul>
+    <!-- Bootstrap class 'fixed-top', 'navbar-container' in subpage.css -->
+    <div class="fixed-top navbar-container">
+        <nav class="navbar navbar-expand-md navbar-light bg-white py-0" style="width: 100%;">
+            <div class="container navbar-brand-container">
+                <a class="navbar-brand py-3" href="."><img id="navbar-logo" src="img/utu-torch-black.png"></a>
+                <span id="navbar-title">Manage</span>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="nav navbar-nav">
+                        <a class="nav-link p-3" href="#upload">Upload</a>
+                        <a class="nav-link p-3" Href="#publish">Edit / Publish</a>
+                    </ul>
+                </div>
             </div>
-            <div id="sso"></div>
-        </div>
-    </nav>
+        </nav>
+        <div id="sso"></div>
+    </div>
+
 
 
 
@@ -331,7 +334,7 @@
 
                 <!-- ARTICLE Publish image -->
                 <article>
-                    <h1 id="publish"><i class="	fa fa-bullhorn"></i>Publish and Manage</h1>
+                    <h1 id="publish"><i class="	fa fa-bullhorn"></i>Edit and Publish</h1>
                     <table  id="fileTable"
                             class="dataTable table-striped nowrap display compact">
                         <thead>
