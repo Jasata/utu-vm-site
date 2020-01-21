@@ -2,7 +2,7 @@ INSERT INTO teacher (uid)
 VALUES
 ('jmjmak'),
 ('jasata'),
-('tuisku'),
+('tumipo'),
 ('apmake'),
 ('tianyl'),
 ('sjprau');
