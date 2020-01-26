@@ -56,9 +56,124 @@ CREATE TABLE uses_for
     FOREIGN KEY (file_id) REFERENCES file (id),
     FOREIGN KEY (course_code) REFERENCES course (code) ON DELETE CASCADE
 );
-CREATE TABLE downloads
+CREATE TABLE downloadable
 (
-    datetime            TEXT        NOT NULL,
     filename            TEXT        NOT NULL,
-    size                INTEGER     NOT NULL
+    file_id             INTEGER         NULL,
+    size                INTEGER     NOT NULL,
+    created             TIMESTAMP   NOT NULL DEFAULT (strftime('%s', 'now')),
+    deleted             TIMESTAMP       NULL,
+    PRIMARY KEY (filename, created),
+    CHECK (deleted IS NULL OR (deleted > created)),
+    FOREIGN KEY (file_id) REFERENCES file (id) ON DELETE SET NULL
 );
+CREATE TABLE download
+(
+    datetime            TIMESTAMP   NOT NULL,
+    filename            TEXT        NOT NULL,
+    size                INTEGER     NOT NULL,
+    complete            TEXT            NULL,
+    file_id             INTEGER         NULL,
+    CHECK (complete IS NULL OR complete IN ('TRUE', 'FALSE'))
+);
+
+-- Ideal solution would have been Nginx logging, storing full/partial status.
+-- Such information is apparently not available from Nginx logging.
+--
+-- file -table data will NOT be permanent. There is enough name collisions to
+-- come even without accumulating filenames that no longer exist.
+-- => file -table data WILL be deleted when the file is removed.
+--
+-- This also means that there eventually will be log entries for filename(s)
+-- that do not refer to the same actual image.
+-- However, a two files cannot exist with the same filename at the same time.
+-- This fact makes time another defining attribute.
+-- Thus, download statistics will be for "a {file} that existed on {datetime}".
+-- This in turn implies a journal of all images, but having such will also
+-- re-enable full vs partial download determination.
+--
+-- 
+CREATE TRIGGER IF NOT EXISTS file_ari
+    AFTER INSERT
+    ON file
+BEGIN
+    INSERT INTO downloadable (
+        filename,
+        file_id,
+        size
+    )
+    VALUES (
+        NEW.name,
+        NEW.id,
+        NEW.size
+    );
+END;
+-- 
+-- cascade foreign key actions do not activate triggers, thus:
+CREATE TRIGGER IF NOT EXISTS file_ard
+    AFTER DELETE
+    ON file
+BEGIN
+    UPDATE  downloadable
+    SET     deleted = strftime('%s', 'now')
+    WHERE   file_id = OLD.id;
+END;
+-- Set download.complete column value
+-- Compares bytes_sent to size of a file that existed when the log row was
+-- written. TRUE if sizes are equal, FALSE if not and NULL if no file existed
+-- when the download was logged.
+CREATE TRIGGER IF NOT EXISTS download_ari
+    AFTER INSERT
+    ON download
+BEGIN
+    UPDATE  download
+    SET     complete = (
+                SELECT  CASE
+                            WHEN d.size IS NULL THEN NULL
+                            WHEN d.size - NEW.size = 0 THEN "TRUE"
+                            ELSE "FALSE"
+                        END AS completed
+                FROM    (
+                        SELECT      NEW.filename AS filename,
+                                    NEW.size AS size
+                        ) dl LEFT OUTER JOIN
+                        (
+                        SELECT      max(created) AS created,
+                                    filename,
+                                    size
+                        FROM        downloadable
+                        WHERE       created <= NEW.datetime
+                                    AND
+                                    (
+                                        deleted IS NULL
+                                        OR
+                                        deleted >= NEW.datetime
+                                    )
+                                    AND
+                                    filename = NEW.filename
+                        GROUP BY    filename,
+                                    size
+                        ) d
+                        ON
+                        dl.filename = d.filename
+            ),
+            file_id = (
+                SELECT  file_id
+                FROM    (
+                        SELECT      max(created) AS created,
+                                    file_id
+                        FROM        downloadable
+                        WHERE       created <= NEW.datetime
+                                    AND
+                                    (
+                                        deleted IS NULL
+                                        OR
+                                        deleted >= NEW.datetime
+                                    )
+                                    AND
+                                    filename = NEW.filename
+                        GROUP BY    file_id
+                        )
+            )
+    WHERE   rowid = NEW.rowid;
+END;
