@@ -7,23 +7,41 @@
 #
 # setup.py - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2020-01-01  Initial version
-#   0.2.0   2020-01-02  Import do_or_die() from old scripts
-#   0.3.0   2020-01-02  Add database creation
-#   0.4.0   2020-01-02  Add overwrite/force parameter
-#   0.5.0   2020-01-02  Add cron job create
-#   0.6.0   2020-01-02  Add cron job detection and removal
-#   0.7.0   2020-01-02  Fix do_or_die() to handle script input
-#   0.8.0   2020-01-02  Add stdout and stderr output to do_or_die()
-#   0.8.1   2020-01-08  Add download config items into flask app instance file
+#   0.1.0   2020-01-01  Initial version.
+#   0.2.0   2020-01-02  Import do_or_die() from old scripts.
+#   0.3.0   2020-01-02  Add database creation.
+#   0.4.0   2020-01-02  Add overwrite/force parameter.
+#   0.5.0   2020-01-02  Add cron job create.
+#   0.6.0   2020-01-02  Add cron job detection and removal.
+#   0.7.0   2020-01-02  Fix do_or_die() to handle script input.
+#   0.8.0   2020-01-02  Add stdout and stderr output to do_or_die().
+#   0.8.1   2020-01-08  Add download config items into flask app instance file.
+#   0.8.2   2020-01-29  Drop Python requirement to v.3.6 (due to vm.utu.fi).
+#   0.9.0   2020-01-30  GITUSER (owner of this file) resolved. Theory is that
+#                       owner is the same account that pulled/cloned this repo.
+#                       This same account is assumed to be the "maintainer" and
+#                       is used as the owner for files created by this script.
 #
 #
 #   REQUIRES ROOT PRIVILEGES TO RUN!
 #
-#   WARNING! This is raspberry pi specific currently because the file ownership
-#            is specifically 'pi' for new files (see dictionary 'files').
-#            Someday, this should be configurable as "developer" or
-#            "maintainer".
+#   IMPORTANT NOTE!
+#           While the execution of this script requires root privileges,
+#           another, equally important local user is the "maintainer".
+#           It is assumed that it will be the same local user who pulled/cloned
+#           this repository and thus, the same user who is the owner of this
+#           script file.
+#
+#           This local user will be awarded with the ownership of the new files
+#           created by this script (which should mean that the new files have
+#           the same owner as the files pulled from the repository).
+#           Maintainer (local user) will also run the cron jobs
+#  NOTE !!! UNLESS the local user is root, in which case, 'www-data' user will
+#           run the cron jobs.
+#
+#           Root user is expected to be the maintainer for production instance.
+#           This way, root user's RSA ID can be used as a Deploy Key in GitHub
+#           while DEV / UAT instance user(s) can have keys that enable pushes.
 #
 # .config for this script
 #       You *must* have "[System]" section at the beginning of the file.
@@ -36,23 +54,22 @@
 #             BUT(!!) for 'overwrite' this is an unsolved issue.
 #
 
-# Requires Python 3.7+ (as does the Flask application)
-REQUIRE_PYTHON_VER = (3, 7)
+# Requires Python 3.6+
+# IMPORTANT! CANNOT be pre-3.6 due to reliance on ordered dicts!!
+REQUIRE_PYTHON_VER = (3, 6)
 
 
 import re
 import os
 import sys
 
-# Python 3.7 or newer
 if sys.version_info < REQUIRE_PYTHON_VER:
     import platform
     print(
         "You need Python {}.{} or newer! ".format(
             REQUIRE_PYTHON_VER[0],
             REQUIRE_PYTHON_VER[1]
-        ),
-        end = ""
+        )
     )
     print(
         "You have Python ver.{} on {} {}".format(
@@ -77,7 +94,7 @@ if sys.version_info < REQUIRE_PYTHON_VER:
 
 
 # PEP 396 -- Module Version Numbers https://www.python.org/dev/peps/pep-0396/
-__version__ = "0.8.1"
+__version__ = "0.9.0"
 __author__  = "Jani Tammi <jasata@utu.fi>"
 VERSION = __version__
 HEADER  = """
@@ -97,22 +114,29 @@ import argparse
 import subprocess
 import configparser
 
-# vm.utu.fi project folder
+# vm.utu.fi project folder, commonly ['vm.utu.fi', 'vm-dev.utu.fi']
 # This script is in the project root, so we get the path to this script
 ROOTPATH = os.path.split(os.path.realpath(__file__))[0]
+# Local account that pulled/clones the repository = owner of this file
+GITUSER  = pwd.getpwuid(os.stat(__file__).st_uid).pw_name
 
 
+#
+# CONFIGURATION
+#
+#   Modify the values in this dictionary, if needed.
+#
 defaults = {
     'choices':                      ['DEV', 'UAT', 'PRD'],
     'common': {
         'mode':                     'PRD',
-        'upload_folder':            '/var/www/vm.utu.fi/unpublished',
+        'upload_folder':            ROOTPATH + '/unpublished',
         'upload_allowed_ext':       ['ova', 'zip', 'img'],
         'download_folder':          '/var/www/downloads',
         'download_urlpath':         '/x-accel-redirect/',
         'sso_cookie':               'ssoUTUauth',
         'sso_session_api':          'https://sso.utu.fi/sso/json/sessions/',
-        'overwrite':                False
+        'overwrite':                False   # Force overwrite on existing files?
     },
     'DEV': {
         'mode':                     'DEV',
@@ -165,8 +189,8 @@ class ConfigFile:
         self,
         name: str,
         content: str,
-        owner: str = None,
-        group: str = None,
+        owner: str = None,          # None defaults to EUID
+        group: str = None,          # None defaults to EGID
         permissions: int = 0o644
     ):
         # Default to effective UID/GID
@@ -179,6 +203,8 @@ class ConfigFile:
         self._gid           = grp.getgrnam(group).gr_gid
         self.permissions    = permissions
         self.content        = content
+
+
     def create(self, overwrite = False, createdirs = True):
         def createpath(path, uid, gid, permissions = 0o775):
             """Give path part only as an argument"""
@@ -187,7 +213,7 @@ class ConfigFile:
                 head, tail = os.path.split(head)
             if head and tail and not os.path.exists(head):
                 try:
-                    createpath(head)
+                    createpath(head, uid, gid)
                 except FileExistsError:
                     pass
                 cdir = os.curdir
@@ -213,8 +239,12 @@ class ConfigFile:
             file.write(self.content)
         os.chmod(self.name, self.permissions)
         os.chown(self.name, self._uid, self._gid)
+
+
     def replace(self, key: str, value: str):
         self.content = self.content.replace(key, value)
+
+
     @property
     def owner(self) -> str:
         return self._owner
@@ -222,6 +252,8 @@ class ConfigFile:
     def owner(self, name: str):
         self._uid           = pwd.getpwnam(name).pw_uid
         self._owner         = name
+
+
     @property
     def group(self) -> str:
         return self._group
@@ -229,6 +261,8 @@ class ConfigFile:
     def group(self, name: str):
         self._gid           = grp.getgrnam(name).gr_gid
         self._group         = name
+
+
     @property
     def uid(self) -> int:
         return self._uid
@@ -236,6 +270,8 @@ class ConfigFile:
     def uid(self, uid: int):
         self._uid           = uid
         self._owner         = pwd.getpwuid(uid).pw_name
+
+
     @property
     def gid(self) -> int:
         return self._gid
@@ -243,6 +279,8 @@ class ConfigFile:
     def gid(self, gid: int):
         self._gid           = gid
         self._group         = grp.getgrgid(gid).gr_name
+
+
     def __str__(self):
         return "{} {}({}).{}({}) {} '{}'". format(
             oct(self.permissions),
@@ -319,7 +357,7 @@ DOWNLOAD_URLPATH        = '{{download_urlpath}}'
 # EOF
 
 """,
-    'pi', 'www-data'
+    GITUSER, 'www-data'
 )
 
 
@@ -497,6 +535,7 @@ if __name__ == '__main__':
         # Create instance config
         #
         log.info("Creating configuration file for Flask application instance")
+        log.info(files['application.conf'].name)
         for key, value in cfg.items():
             files['application.conf'].replace(
                 '{{' + key + '}}',
@@ -547,9 +586,8 @@ if __name__ == '__main__':
                     raise
                 finally:
                     cursor.close()
-        # TODD: MUST change into (current usert).www-data!!
-        do_or_die("chown pi.www-data " + database_file)
-        do_or_die("chmod 664 " + database_file)
+        do_or_die(f"chown {GITUSER}.www-data {database_file}")
+        do_or_die(f"chmod 664 {database_file}")
 
 
 
