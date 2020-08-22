@@ -5,6 +5,7 @@
 *.log
 # Code not-quite-thrown-away
 .discard
+README.LOCAL.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
