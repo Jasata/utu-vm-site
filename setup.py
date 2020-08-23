@@ -389,7 +389,7 @@ def do_or_die(
     stdout = subprocess.DEVNULL,
     stderr = subprocess.DEVNULL
 ):
-    """call do_or_die("ls", out = None), if you want output. Alternatively, subprocess.PIPE will also work. If subprocess.PIPE is given, output is returned."""
+    """Call do_or_die("ls", stdout = subprocess.PIPE), if you want output. Otherwise / by default the output is sent to /dev/null."""
     if not shell:
         # Set empty double-quotes as empty list item
         # Required for commands like; ssh-keygen ... -N ""

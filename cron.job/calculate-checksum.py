@@ -12,6 +12,30 @@
 #   0.3.0   2020-01-03  Add os.nice()
 #   0.4.0   2020-01-03  Slight improvements to error reporting
 #
+#   - cron job created by 'setup.py'.
+#   - Logging via syslog.
+#
+#   1) Script SELECTs all 'file' table rows that have NULL 'sha1' column
+#   2) multiprosessing.Queue() is loaded with Task objects (id, filename)
+#      and
+#      'sha1' row is updated with a string about sheduled SHA1 calculation
+#   3) Worker objects created (parallerization)
+#      See "Each Worker"
+#   4) While any Workers exist:
+#       a) Fetch Task from Result Queue
+#       b) If Task.id is NULL, worker exited (decrement alive Worker count)
+#       c) If Task.result is NULL, SHA1 failed (log error)
+#       d) Else SHA1 calculated OK
+#
+#   Each Worker:
+#       1) Fetch Task object from Queue
+#       2) If Task.id (and filename) are not NULL - Execute Task object:
+#           TASK:
+#           - Open file and feed it to hashlib.sha1() in chunks for SHA1
+#           - Update 'file' table 'sha1' column with SHA1 value.
+#           - Return
+#       3) Put Task object into Result Queue
+#       4) If Task was NULL, EXIT. Else goto step 1.
 #
 import os
 import pwd
@@ -24,7 +48,7 @@ import multiprocessing
 from multiprocessing import Process
 
 
-# os.nice() value. Unprivileged; 0 ... 20 (lowest priority)
+# Unprivileged os.nice() values: 0 ... 20 (= lowest priority)
 NICE        = 20
 
 FILEFOLDER  = '/var/www/downloads'
@@ -39,9 +63,9 @@ SCRIPTNAME  = os.path.basename(__file__)
 
 
 #
-# Task is to calculate SHA1 for one file and nothing else.
-# Poison pill method (strategy where NULL work data
-# triggers the Task to exit ("die"), is used.
+# Task calculates SHA1 for *one* file and nothing else.
+# Poison pill method is used (NULL work data
+# triggers the Task to exit/"die").
 #
 class Task(object):
     id          = None
@@ -56,7 +80,6 @@ class Task(object):
 
 
     def __call__(self, db):
-        # Use worker's database connection
         def sha1(filename: str) -> str:
             """Return SHA1 checksum for given file, in hex format."""
             import hashlib
@@ -77,6 +100,7 @@ class Task(object):
         #    3. Update the row with the actual checksum.
         update = f"UPDATE {TABLE} SET {SHA1COLUMN} = ? WHERE {PKCOLUMN} = ?"
         try:
+            # Using worker's database connection
             cursor = db.cursor()
             self.result = sha1(FILEFOLDER + '/' + self.filename)
             # Update with actual SHA1 value
