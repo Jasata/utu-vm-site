@@ -420,29 +420,54 @@
                         <i class="fa fa-exclamation-triangle"></i>
                         <div>You must have <i>Smart Boot</i> disabled from your BIOS. Please refer to <a href="getting_started.html">Getting Started</a> for details.</div>
                     </div>
+                    <p><strong>Writing the image to your USB disk</strong></p>
+                    <p>The USB versions of the appliances are provided as Raw Disk Images. They cannot
+                        be simply moved to the USB drive, but must be copied byte by byte to make an
+                        exact copy of the image in case. Refer to the following instructions to perform the cloning.</p>
                     <div class="tabgroup-usb">
 
 
                         <div data-tab="Linux">
+                            For experienced users, the dd tool might be a comfortable option, but it is easier to install and use the application Gnome Disc Tool.
                             <ol>
-                                <li>Use dd to write the downloaded image into your USB disk.</li>
-                                <li>Reboot</li>
+                                <li>Install the Gnome Disk Tool through the package manager of your Linux distribution. It is usually called gnome-disk-util or gnome-disk-utility.</li>
+                                <li>After installation, run the tool from your application menu or with the command gnome-disks.</li>
+                                <li>Choose your USB drive from the list in the application window.</li>
+                                <li>Delete all existing partitions from the drive by pressing the minus button beneath <i>Volumes</i>.</li>
+                                <li>After removing all of the existing partitions from your USB drive, press the button
+                                    with three horizontal lines in the top right of the window and choose Restore disk
+                                    image. A dialog opens where you can browse to and choose the image you want to burn on the drive and start the process.</li>
+                                <li>During the burning of the image, Gnome disk utility displays a progress bar (Figure 3.3). After 100 % is reached, the drive is ready. Press on the same button with
+                                    three horizontal lines as earlier, and choose Standby now to switch of the drive so
+                                    it can be removed safely.</li>
+                                <li>The USB appliance is now ready for use.</li>
                             </ol>
                         </div>
 
 
                         <div data-tab="MacOS">
+                            For burning the image, in addition to using the built-in Disk Utility app you need to download <a href="https://www.tweaking4all.com/downloads/raspberrypi/ApplePi-Baker-1.9.9.dmg">ApplePiBaker 1.9.9</a> (note that newer versions up from 2.0 are not able to burn the drive properly).
                             <ol>
-                                <li>Writing USB TBA</li>
+                                <li>Open the Disk Utility app on your Mac.</li>
+                                <li> Choose the drive you intend to use from the list on the left.</li>
+                                <li>Choose MS9-DOS(FAT) as the format from the drop-down menu in the center of the view and
+                                    GUID Partition Map as the Scheme below.</li>
+                                <li>Run ApplePiBaker (you need administrator permissions for this).</li>
+                                <li>Choose your USB drive from the pane on the left.</li>
+                                <li>Select your ISO image through the three dots button beside the IMG file field.</li>
+                                <li>Start burning by pressing the Restore Backup button and wait for the burning process to run.</li>
+                            </ol>
+                            Booting from the USB drive:
+                            <ol>
                                 <li>Reboot</li>
-                                <li>While startup sound is playing, press ALT key down.</li>
+                                <li>While startup sound is playing, press down the ALT key.</li>
                                 <li>When a USB device icon appears, select it. System will now boot with the USB disk.</li>
                             </ol>
                         </div>
 
 
                         <div data-tab="Windows">
-                            <strong>Writing the image to your USB disk</strong>. To write the downloaded image into your USB disk you need to download <a href="https://www.alexpage.de/usb-image-tool/">USB Image Tool</a>.
+                            To write the downloaded image into your USB disk on Windows you first need to download <a href="https://www.alexpage.de/usb-image-tool/">USB Image Tool</a>.
                             <ol>
                                 <li>Run USB Image Tool.</li>
                                 <li>On the left, select your USB device.</li>
@@ -454,6 +479,13 @@
                                 <summary>Show me how</summary>
                                 <p><img src="img/usbversion_usbit.png"></p>
                             </details>
+
+                            Booting from the USB drive in Windows 10:
+                            <ol>
+                                <li>From the Start menu, select Power and Restart while pressing down the shift button.</li>
+                                <li>Windows restarts to a blue Boot Options menu.</li>
+                                <li>Click on the the Use a device option and select your USB drive.</li>
+                            </ol>
                         </div>
 
 
