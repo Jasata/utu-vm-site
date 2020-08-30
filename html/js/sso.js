@@ -8,9 +8,41 @@
  *  0.5.0   2019-12-23  Domain-SSO redirect added
  *  0.6.0   2019-12-23  Clean out unnecessary debug messages
  *  0.7.0   2019-12-25  Add 'stateChanged' event for pages
- *  0.8.0   2010-01-01  API endpoints now under /api/sso
+ *  0.8.0   2020-01-01  API endpoints now under /api/sso
+ *  0.8.1   2020-08-30  Enhance code comments
+ *
+ *
+ *  As the last action, the element build (.sso() -function) triggers an
+ *  'updateState' event which causes the element to issue an Ajax query,
+ *  change the class of the element accordingly and finally trigger
+ *  'stateChanged' event (intended for the page to react).
+ *
+ *  THIS MEANS THAT THE CLASS / LOGIN STATE IS **NOT** AVAILABLE IMMEDIATELY
+ *  IN THE $(document).ready() FUNCTION!!!
+ *
+ *  PROPER WAY TO CONDITIONALLY RENDER CONTENT
+ * ============================================================================
+ *      CSS Classes record login status: ['anonymous', 'student', 'teacher'].
+ *      Write an event handler for 'stateChanged' event, create it in the
+ *      $(document).ready() -function:
+ *
+ *      // Document ready - initialize page elements
+ *      $(document).ready(function() {
+ *          // Initialize SSO element
+ *          $('#sso').sso();
+ *          // SSO stateChanged event handler
+ *          $("#sso").on("stateChanged", function(event) {
+ *              if ($("#sso").hasClass('teacher')) {
+ *                  console.log("TODO: Render page content");
+ *              } else {
+ *                  console.log("Access Denied!");
+ *              }
+ *          });
+ *      });
+ *
  *
  *  HOW TO USE
+ * ============================================================================
  *
  *      Include CSS and Javascript files in your HTML:
  *
@@ -33,9 +65,11 @@
  *  NOTE: Obviously, a server side endpoints are also required...
  * 
  *
- *
- *  Offers 'stateChanged' event for pages to handle. It is triggered after the
- *  SSO session state is read from the server. For example:
+ *  FOR LOGOUT
+ *  ===========================================================================
+ *  #sso emits a 'stateChanged' event on login/logout for pages to handle.
+ *  It is triggered after the SSO session state is read from the server.
+ *  For example:
  *
  *      $("#sso").on("stateChanged", function(event) {
  *          $("#vm_table").DataTable().ajax.reload(null, false);
