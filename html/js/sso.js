@@ -10,6 +10,7 @@
  *  0.7.0   2019-12-25  Add 'stateChanged' event for pages
  *  0.8.0   2020-01-01  API endpoints now under /api/sso
  *  0.8.1   2020-08-30  Enhance code comments
+ *  0.8.2   2020-08-30  Domain-SSO redirect now preserves URL parameters
  *
  *
  *  As the last action, the element build (.sso() -function) triggers an
@@ -105,7 +106,7 @@ jQuery.fn.sso = function(options)
         // It is a LOGIN action
         {
             // direct broser to SSO login page
-            window.location.href = "https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2Fvm.utu.fi%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D" + encodeURIComponent(window.location.pathname);
+            window.location.href = "https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2Fvm.utu.fi%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D" + encodeURIComponent(window.location.pathname + window.location.search);
         }
         else
         // It is a LOGOUT action
