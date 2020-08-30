@@ -10,6 +10,7 @@
 #   0.1.0   2019.12.07  Initial version.
 #   0.2.0   2019.12.28  Add prepublish(), JSONFormSchema()
 #   0.3.0   2019.12.28  Add publish()
+#   0.3.1   2020.08.30  Fix owner check in update()
 #
 #
 #   TODO: remove _* -columns from result sets.
@@ -360,9 +361,9 @@ class File(DataObject):
                     f"File (id: {id}) does not exist!"
                 )
             else:
-                if result[0] != owner:
+                if result[0][0] != owner:
                     raise ValueError(
-                        f"User '{owner}' not the owner of file {id}, or file do"
+                        f"User '{owner}' not the owner of file {id}, user '{result[0][0]}' is!"
                     )
         except Exception as e:
             app.logger.exception("Prerequisite failure!")
@@ -398,7 +399,6 @@ class File(DataObject):
         # Execute Statement
         #
         try:
-            app.logger.debug(f"SQL: {self.sql}")
             self.cursor.execute(self.sql, data)
             #
             # Number of updated rows must be one
@@ -462,6 +462,7 @@ class File(DataObject):
                 )
                 return "File Not Found", 404
         except Exception as e:
+            # All other exceptions
             app.logger.exception("Error executing a query!")
             return "Internal Server Error", 500
         #
