@@ -459,10 +459,11 @@ def upload_file():
         app.logger.error('No file part')
         return flask.redirect(request.url)
     file = request.files['file']
-    # if user does not select file, browser also
+    # if user did not not select a file, the browser can
     # submit an empty part without filename
     if file.filename == '':
         app.logger.error(f"file.filename: '{file.filename or 'None'}'")
+        # redirect back to POST'ing document
         return flask.redirect(request.url)
     if file and allowed_file(file.filename):
         from werkzeug.utils import secure_filename
