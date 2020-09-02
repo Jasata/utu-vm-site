@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    edit_vm_details.html - Form to edit VM data record.
+
+    This form can never be invoked without valid VM ID. VM record is always
+    created from uploaded image (even from .ZIP / .IMG files) and this form
+    merely allows the owner to add / change more details.
+    
+    At the time of writing, there are two possible paths to this page:
+    1) 'upload.html', via an automatic redirect after successful upload.
+    2) Redirect from J-M's image generator (not yet implemented).
+
+    ACCESS: Teacher or Admin ONLY - "Access Denied" Displayed to all others.
+
+-->
+<head>
+    <!-- Do not try to fetch favicon -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+    <meta   charset="utf-8">
+    <meta   name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta   name="description"
+            content="">
+    <meta   name="author"
+            content="jasata@utu.fi">
+
+    <title>Turku university - Course Virtual Machines</title>
+
+    <!-- Vendor -->
+    <link   rel="stylesheet" href="css/font-awesome.min.css">
+    <link   rel="stylesheet" href="css/bootstrap.min.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- JSONForm (bootstrap style CSS dependant) -->
+    <script type="text/javascript" src="js/jsonform/underscore.js"></script>
+    <script type="text/javascript" src="js/jsonform/jsv.js"></script>
+    <script type="text/javascript" src="js/jsonform/jsonform.js"></script>
+    <!-- DataTables -->
+    <link   rel="stylesheet" href="css/datatables.css">
+    <script type="text/javascript" src="js/datatables.js"></script>
+
+    <!-- Site Specific -->
+    <link   rel="stylesheet" href="css/common.css">
+    <link   rel="stylesheet" href="css/subpage.css">
+    <link   rel="stylesheet" href="css/edit_vm_details.css">
+    <link   rel="stylesheet" href="css/sso.css">
+    <script src="js/sso.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/edit_vm_details.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        // JSONForm.js presentation variables 'form' (and 'code')
+        // are found in edit_vm_details.js
+
+        /*** DOCUMENT READY **************************************************
+         * 
+         *  Initialize page elements
+         */
+         $(document).ready(function() {
+            // Initialize SSO element
+            $("#sso").sso();
+            // SSO stateChanged event handler
+            // SSO login state is queried asyncronously and is unavailable
+            // until it triggers 'stateChanged' event.
+            $("#sso").on("stateChanged", function(event) {
+                if ($("#sso").hasClass('teacher')) {
+                    $('#loadingPage').css('display', 'none');
+                    $('#accessDenied').css('display', 'none');
+                    $('#imageForm').css('display', 'block');
+                    if (typeof window.image_id !== 'undefined')
+                    {
+                        console.log("JSONForm loading");
+                        loadForm(window.image_id); // upload.js
+                    }
+                } else {
+                    console.log("Access Denied!");
+                    $('#loadingPage').css('display', 'none');
+                    $('#imageForm').css('display', 'none');
+                    $('#accessDenied').css('display', 'block');
+                }
+            });
+
+
+            // OnClick handler to close sandwich menu
+            $('.navbar-nav a').on('click', function() {
+                $('.navbar-collapse').collapse('hide');
+            });
+
+            // TODO: Complain about the abscense of ID
+            window.image_id = getUrlParameter('id');
+            if (typeof window.image_id == 'undefined')
+            {
+                console.log("Page loaded without image ID!");
+                $('#imageForm').html("<h1>Page called without image ID!</h1>");
+            }
+
+        });
+    </script>
+
+</head>
+
+
+<body data-spy="scroll" data-target="#navbarContent" data-offset="70">
+
+    <div class="fixed-top navbar-container">
+        <nav class="navbar navbar-expand-md navbar-light bg-white py-0" style="width: 100%;">
+            <div class="container navbar-brand-container">
+                <a class="navbar-brand py-3" href="."><img id="navbar-logo" src="img/utu-torch-black.png"></a>
+                <span id="navbar-title">Manage</span>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="nav navbar-nav">
+                        <a class="nav-link p-3" Href="#publish">Edit and Publish</a>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="sso"></div>
+    </div>
+
+
+
+
+
+    <!-- PAGE CONTENT -->
+    <div class="container-fluid">
+        <div class="row" id="content-row">
+            <main>
+
+
+                <nav class="site">
+                    <ol>
+                        <li><a href="index.html">UTU Virtual Machines</a></li>
+                        <li>Edit and Publish VM</li>
+                    </ol>
+                </nav>
+
+
+                <!-- Executive summary -->
+                <article style="display: none;"></article>
+
+
+
+                <!-- ARTICLE Loading page... -->
+                <article id="loadingPage">Loading page...</article>
+                <!-- ARTICLE Access Denied -->
+                <article id="accessDenied" style="display: none;">
+                    <h1>Access is limited to teachers only!</h1>
+                </article>
+                <!-- ARTICLE Publish image -->
+                <article id="imageForm" style="display: none;">
+                    <h1 id="publish"><i class="fa fa-bullhorn"></i>Edit and Publish</h1>
+                    <fieldset>
+                        <legend> Virtual Machine Details </legend>
+                        <form
+                            id="fileForm"
+                            class="please-choose-file"
+                            onsubmit="return onSubmitForm(this);"></form>
+                    </fieldset>
+                </article>
+
+
+
+            </main>
+        </div>
+    </div>
+    <!-- MAIN ENDS -->
+
+
+
+
+    <!-- FOOTER -------------------------------------------------------------->
+    <footer><!-- flex container -->
+        <div>
+            <img    class="footer-logo"
+                    src="img/UTU_logo-white_EN_transparent.png">
+        </div>
+        <div><!-- flex container -->
+            <div>
+                © <a href="https://www.utu.fi">University of Turku</a>,
+                <a href="https://tech.utu.fi/en/">Department of Future  Technologies</a> 2019<br>
+                Brought to you by the <a href="https://gitlab.utu.fi/soft/ftdev/wikis/home">Course virtualization team</a> @ <a href="https://tech.utu.fi/fi/software-engineering/">SwDev laboratory</a>.
+            </div>
+            <div>
+                <a href="documentation.html">Documentation</a>
+                <a href="#">Statistics</a>
+                <a href="privacy.html">Privacy</a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>
