@@ -455,6 +455,8 @@ def upload_file():
     def allowed_file(fname):
         return '.' in fname and \
             fname.rsplit('.', 1)[1].lower() in app.config['UPLOAD_ALLOWED_EXT']
+    # Log request
+    log_request(request)
     if 'file' not in request.files:
         app.logger.error('No file part')
         return flask.redirect(request.url)
