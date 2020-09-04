@@ -11,29 +11,33 @@
  *  0.8.0   2020-01-01  API endpoints now under /api/sso
  *  0.8.1   2020-08-30  Enhance code comments
  *  0.8.2   2020-08-30  Domain-SSO redirect now preserves URL parameters
+ *  0.8.3   2020-09-04  'stateChanged' event triggers with role data
  *
  *
  *  As the last action, the element build (.sso() -function) triggers an
- *  'updateState' event which causes the element to issue an Ajax query,
+ *  'ssoUpdateState' event which causes the element to issue an Ajax query,
  *  change the class of the element accordingly and finally trigger
- *  'stateChanged' event (intended for the page to react).
+ *  'stateChanged' event with the role string as an additional argument.
  *
  *  THIS MEANS THAT THE CLASS / LOGIN STATE IS **NOT** AVAILABLE IMMEDIATELY
  *  IN THE $(document).ready() FUNCTION!!!
  *
  *  PROPER WAY TO CONDITIONALLY RENDER CONTENT
  * ============================================================================
- *      CSS Classes record login status: ['anonymous', 'student', 'teacher'].
- *      Write an event handler for 'stateChanged' event, create it in the
- *      $(document).ready() -function:
+ *  CSS Classes record login status: ['anonymous', 'student', 'teacher'].
+ *  It may temporarily have a class 'deactivated', but only for duration of
+ *  an Ajax query (to reject user input until complete).
+ *
+ *  Write an event handler for 'stateChanged' event, create it in the
+ *  $(document).ready() -function:
  *
  *      // Document ready - initialize page elements
  *      $(document).ready(function() {
  *          // Initialize SSO element
  *          $('#sso').sso();
  *          // SSO stateChanged event handler
- *          $("#sso").on("stateChanged", function(event) {
- *              if ($("#sso").hasClass('teacher')) {
+ *          $("#sso").on("stateChanged", function(event, role) {
+ *              if (role === 'teacher') {
  *                  console.log("TODO: Render page content");
  *              } else {
  *                  console.log("Access Denied!");
@@ -45,39 +49,54 @@
  *  HOW TO USE
  * ============================================================================
  *
- *      Include CSS and Javascript files in your HTML:
+ *  Include CSS and Javascript files in your HTML:
  *
- *          <link rel="stylesheet" href="css/sso.css">
- *          <script src="js/sso.js"></script>
+ *      <link rel="stylesheet" href="css/sso.css">
+ *      <script src="js/sso.js"></script>
  *
- *      Add somewhere a Login/Logout element (must have ID="sso"):
+ *  Add somewhere a Login/Logout element (must have ID="sso"):
  *
- *          <div id="sso"></div>
+ *      <div id="sso"></div>
  *
- *      Build the SSO Login/Logout element after page has loaded:
+ *  Build the SSO Login/Logout element after page has loaded:
  *
- *          <script>
- *              $(document).ready(function() {
- *                  $("#sso").sso();
- *                  // ... other start-up code
+ *      <script>
+ *          $(document).ready(function() {
+ *              $("#sso").sso();
+ *              $("#sso").on("stateChanged", function(event, role) {
+ *                  if (role === 'teacher')
+ *                      console.log('You are a teacher!');
  *              });
- *          </script>
+ *          });
+ *      </script>
  *
  *  NOTE: Obviously, a server side endpoints are also required...
  * 
  *
- *  FOR LOGOUT
+ *  FOR LOGOUT / LOGIN
  *  ===========================================================================
  *  #sso emits a 'stateChanged' event on login/logout for pages to handle.
- *  It is triggered after the SSO session state is read from the server.
- *  For example:
+ *  All dynamic elements in the page must support at least:
  *
- *      $("#sso").on("stateChanged", function(event) {
- *          $("#vm_table").DataTable().ajax.reload(null, false);
- *          $("#usb_table").DataTable().ajax.reload(null, false);
- *      });
+ *      - Disabled or "empty" state (for unauthorised session)
+ *      - Load, Reload amd Empty content
  *
+ *  SSO INTERNAL STATES
+ *  ===========================================================================
+ *  Internally, '#sso' element can have 1 of 4 states
  *
+ *  deactivated
+ *          Transient state during which the element does not accept input.
+ *          Set when the module starts login or logout sequence and replaced
+ *          with the new role [anonymous | student | teacher] -state (class).
+ *  anonymous
+ *          Unauthenticated user. Either has not yet logged in or cannot login
+ *          because has no account.
+ *  student
+ *          UTU SSO Session is authenticated / valid, but the UID is not listed
+ *          in the database - thus the user is a student.
+ *  teacher
+ *          Authenticated UTU SSO session AND the UID is found in the database.
  */
 
 jQuery.fn.sso = function(options)
@@ -118,7 +137,7 @@ jQuery.fn.sso = function(options)
                 success: function(data, textStatus, xhr) {
                     // Executes only after server responds with 200
                     // Trigger 'updateState' to render the element visuals.
-                    $("#sso").trigger('updateState');
+                    $("#sso").trigger('ssoUpdateState');
                 },
                 complete: function(xhr, textStatus) {
                     // Executes also when server resonds with error(s)
@@ -132,12 +151,12 @@ jQuery.fn.sso = function(options)
       //
 /////// updateState handler function
     //
-    $(_this).on('updateState', function(event) {
+    $(_this).on('ssoUpdateState', function(event) {
         // Launch an Ajax query and trigger event 'stateUpdated' (for pages).
         $.getJSON(window.location.origin + '/api/sso', function(data) {
             //console.log(".getJSON() success, role: " + data.role);
         }).done(function(data) {
-            console.log(".getJSON().done(), role: " + data.role);
+            //console.log(".getJSON().done(), role: " + data.role);
             // NOTE: If 'this' is used, inner HTML vanishes! (don't know why).
             $("#sso").removeClass(); // Remove all
             $("#sso").addClass(data.role);
@@ -145,24 +164,24 @@ jQuery.fn.sso = function(options)
                 $("#sso a").text("Login");
             else
                 $("#sso a").text("Logout");
-            // 'stateYodated' wvent for the page-specific code to monitor.
-            // For reloading data elements, for example.
-            $("#sso").trigger('stateChanged');
+            // Emit 'stateUpdated' event for the page code to react on
+            // role change (reloading data elements, for example).
+            $("#sso").trigger('stateChanged', data.role);
         })
         .fail(function(jqxhr, textStatus, error) {
             var err = textStatus + ", " + error;
             console.log(".getJSON().fail()" + err);
         })
-         .always(function() {
+        .always(function() {
             //console.log( ".getJSON.always()" );
-         });
+        });
     });
 
     //
     // Element has been built, trigger event to query SSO session state and
     // render visuals accordingly.
     //
-    $(_this).trigger('updateState');
+    $(_this).trigger('ssoUpdateState');
 
     return _this;
 }
