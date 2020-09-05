@@ -457,22 +457,34 @@ def upload_file():
             fname.rsplit('.', 1)[1].lower() in app.config['UPLOAD_ALLOWED_EXT']
     # Log request
     log_request(request)
+    # Is there a 'file' part in this Request
     if 'file' not in request.files:
         app.logger.error('No file part')
-        return flask.redirect(request.url)
+        return "Request has no file part", 406
     file = request.files['file']
+    if not file:
+        app.logger.error("file part is empty")
+        return "File part is empty!", 406
     # if user did not not select a file, the browser can
     # submit an empty part without filename
     if file.filename == '':
         app.logger.error(f"file.filename: '{file.filename or 'None'}'")
-        # redirect back to POST'ing document
-        return flask.redirect(request.url)
-    if file and allowed_file(file.filename):
-        from werkzeug.utils import secure_filename
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return flask.redirect(request.referrer)
-    return "File not in the list of allowed types", 406
+        return "File has no name!", 406 # flask.redirect(request.url)
+    # And is it allowed file (based on file suffix)?
+    if not allowed_file(file.filename):
+        app.logger.error('File not of allowed type!')
+        return "File type not in the allowed list! ({})".format(
+            app.config['UPLOAD_ALLOWED_EXT'].join(', ')
+        ), 406 # 406 = "Not acceptable"
+    #
+    # Everything is fine! Process file
+    #
+    # Save to upload folder
+    from werkzeug.utils import secure_filename
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    app.logger.debug(f"File saved to '{os.path.join(app.config['UPLOAD_FOLDER'], filename)}'")
+    # return flask.redirect(request.referrer)
 
 
 ###############################################################################
