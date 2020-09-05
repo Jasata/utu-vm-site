@@ -14,66 +14,79 @@
 
 fieldset
 {
-  padding:                    6px;
-  border:                     1px solid silver;
+  padding:                      6px;
+  border:                       1px solid silver;
 }
 legend
 {
-  width:                      auto;
-  font-size:                  1.2rem;
+  width:                        auto;
+  font-size:                    1.2rem;
 }
 
 select#filelist
 {
-  height:                     80px;
-  width:                      100%;
-  overflow:                   hidden;
+  height:                       80px;
+  width:                        100%;
+  overflow:                     hidden;
 }
 
-/*** JSONForm styles *********************************************************/
-.jsonform-required > label:after
+/*** subpage.css overrides ***************************************************/
+article > h1
+/* padding 90px and margin -90px is a hack for Bootstrap navbar that does not
+   have a scroll offset setting. ...but it masks the DropZone FORM in this page
+   and it has to go! */
 {
-  content:                      ' *';
-  color:                      red;
-}
-form.jsonform-hasrequired:after
-{
-  content:                      '* Required field';
-  display:                      block;
-  color:                      red;
-  padding-top:                  1em;
-}
-form.please-choose-file::after
-{
-  content:                      'Please choose file from the list';
-  display:                      block;
-  color:                      Black;
-  padding-top:                  1em;
+  padding-top:                  0;
+  margin-top:                   0;
 }
 
-/* Flow.js style - CURRENTLY UNUSED ******************************************/
-.flow-progress
+
+/*** File DropZone ***********************************************************/
+/* https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/ */
+form#dz-form
 {
-  display:none; 
-  position:relative; 
-  width:400px; 
-  border: 1px solid #ddd; 
-  padding: 1px; 
-  border-radius: 3px; 
+  border:                       2px dashed #ccc;
+  border-radius:                20px;
+  width:                        100%;
+  margin:                       10px 100px 30px 100px auto;
+  padding:                      20px;
 }
-.flow-progress-bar
-{ 
-  background-color: #B4F5B4; 
-  width:0%; 
-  height:20px; 
-  border-radius: 3px; 
+form#dz-form.highlight
+{
+  border-color:                 rgb(160, 160, 160);
+  background-color:             #ececec;
 }
-.flow-progress-percent
-{ 
-  position:absolute; 
-  display:inline-block; 
-  top:3px; 
-  left:48%; 
+form#dz-form input[type=file]
+/* INPUT TYPE="file" is a dinosaur - ugly beyond description and lacking all
+   modern styling options (namely, ability to hide the fugly "Browse" button).
+   DO NOT try to work with this element! Just set it to display: none; and
+   create what you need in other ways.
+  display: none;        does not allocate space
+  visibility: hidden;   space allocated, not rendered, no events captured
+  opacity: 0;           space allocated, transparent, captures events
+*/
+{
+  display:                      none;
+}
+#dz-progress-bar
+{
+  height:                       60px;
+  width:                        100%;
+  visibility:                   hidden;
+}
+/* DropZone text/message display elements */
+#dz-form > label
+{
+  width:                        100%;
+  font-size:                    35px;
+  font-weight:                  Bold;
+  color:                        rgb(210, 210, 210);
+  /* text-align:                   center; */
+}
+#dz-form > div
+{
+  width:                        100%;
+  font-size:                    18px;
 }
 
 

@@ -28,150 +28,208 @@
     <script type="text/javascript" src="js/datatables.js"></script>
 
     <!-- Site Specific -->
-    <link   rel="stylesheet"
-            type="text/css"
-            href="css/common.css">
-    <link   rel="stylesheet"
-            type="text/css"
-            href="css/subpage.css">
-    <link   rel="stylesheet"
-            type="text/css"
-            href="css/upload.css">
-    <link   rel="stylesheet"
-            type="text/css"
-            href="css/sso.css">
+    <link   rel="stylesheet" href="css/common.css">
+    <link   rel="stylesheet" href="css/subpage.css">
+    <link   rel="stylesheet" href="css/upload.css">
+    <link   rel="stylesheet" href="css/sso.css">
+    <script src="js/common.js"></script>
     <script src="js/sso.js"></script>
     <script src="js/upload.js"></script>
 
     <script type="text/javascript" charset="utf-8">
-        // JSONForm.js presentation:
-        form = {
-            "form": [
-                {
-                    "key":          "id",
-                    "type":         "hidden"
+        // Upload API endpoint
+        var APIuploadURL = "/upload/";
+        /*** Send File / POST to API endpoint ********************************
+         *
+         * Reqiured argument is a File object
+         */
+        function postForm(formData)
+        {
+            console.log("postForm(): show progress bar");
+            $("#dz-progress-bar").css('visibility', 'visible');
+            $.ajax({
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(e) {
+                        if (e.lengthComputable) {
+                            var percent = Math.round((e.loaded / e.total) * 100);
+                            $("#dz-progress-bar").val(percent);
+                            dzMessage(percent + '% uploaded...');
+                        }
+                    }, false);
+                    return xhr;
                 },
-                {
-                    "key":          "name",
-                    "title":        "File Name",
-                    "readonly":     true
+                type:           'POST',
+                url:            APIuploadURL,
+                data:           formData,
+                contentType:    false,
+                cache:          false,
+                processData:    false,
+                beforeSend: function() {
+                    console.log(".ajax(): beforeSend");
+                    $('#dz-progress-bar').show();
+                    $("#dz-progress-bar").value = 0;
+                    dzMessage("Upload starting...");
                 },
-                {
-                    "key":          "size",
-                    "title":        "File Size",
-                    "readonly":     true
+                error: function() {
+                    console.log(".ajax(): error");
+                    dzMessage('File upload failed, please try again.');
                 },
-                {
-                    "key":          "sha1",
-                    "title":        "File Checksum",
-                    "readonly":     true,
-                    "placeholder":  "Checksum will be calculated automatically later..."
-                },
-                {
-                    "key":          "label",
-                    "title":        "Label"
-                },
-                {
-                    "key":          "ostype",
-                    "title":        "Operating System",
-                    "placeholder":  "'Debian 10 64-bit' or 'FreeDOS 1.2' for example."
-                },
-                {
-                    "key":          "type",
-                    "title":        "File Type",
-                    "titleMap": {
-                        "vm":   "Virtual Machine image",
-                        "usb":  "Bootable USB-stick image"
+                success: function(resp) {
+                    console.log(".ajax(): success");
+                    if (resp == 'ok') {
+                        dzMessage("File has been uploaded successfully");
+                        $('#dz-form')[0].reset();
+                    } else if (resp == 'err') {
+                        dzMessage("Uploaded file has been rejected by server! Please contact administrator.");
+                        // .html(event.target.responseText); ?
                     }
-                },
-                {
-                    "key":          "version",
-                    "title":        "Version",
-                    "placeholder":  "Version number, date or similar"
-                },
-                {
-                    "key":          "dtap",
-                    "title":        "Status",
-                    "titleMap": {
-                        "development":  "Development Version",
-                        "testing":      "Testing Version",
-                        "acceptance":   "Version for Acceptance Testing",
-                        "production":   "Production Version"
-                    }
-                },
-                {
-                    "key":          "ram",
-                    "title":        "RAM",
-                    "description":  "Allocated memory",
-                    "minimum":      1
-                },
-                {
-                    "key":          "cores",
-                    "title":        "CPU Cores",
-                    "description":  "Allocated number processor cores"
-                },
-                {
-                    "key":          "disksize",
-                    "title":        "Disk Size",
-                    "description":  "Allocated disk space"
-                },
-                {
-                    "key":          "downloadable_to",
-                    "title":        "Downloadable to",
-                    "description":  "Sets the minimum privilege level to be able to download",
-                    "titleMap": {
-                        "nobody":   "NOT AVAILABLE",
-                        "anyone":   "Available to anyone",
-                        "student":  "All university account holders",
-                        "teacher":  "Only teachers"
-                    }
-                },
-                {
-                    "key":          "description",
-                    "title":        "Description",
-                    "type":         "textarea",
-                    "placeholder":  "Up to 300 characters"
-                },
-                {
-                    "type":         "help",
-                    "helpvalue":    "<strong>Click on <em>Submit</em></strong> when you're done"
-                },
-                {
-                    "type":         "submit",
-                    "title":        "Publish"
                 }
-            ]
-        };
-        code = {};
-
-
+            });
+        }
+        /*
+         * File Drop-Zone implementation
+         */
+        function dzLabel(msg) {
+            $("form#dz-form > label").html(msg);
+        }
+        function dzMessage(msg) {
+            $("form#dz-form > div").html(msg);
+        }
+        function dzDeactivate()
+        {
+            console.log("DropZone deactivate");
+            ;[ // FORM#dz-form event handlers
+                'dragenter',
+                'dragover',
+                'dragleave',
+                'mouseenter',
+                'mouseleave',
+                'click',
+                'drop'
+            ].forEach(eventName => {
+                $("form#dz-form").off(eventName);
+            });
+            // Its just nice to still prevent default actions
+            // 2020-09-04: This doesn't trigger?!?!
+            $("form#dz-form").on('drop', function(e) {
+                console.log("#dz-form drop when deactivated!");
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            // INPUT[type=file].onChange() event handler
+            $("form#dz-form input[type=file]").off("change");
+            dzLabel("Upload is available to teachers only!");
+        }
+        function dzActivate()
+        {
+            console.log("DropZone activate");
+            // Highlight handlers /////////////////////////////////////////////
+            ;[
+                'dragenter',
+                'dragover',
+                'mouseenter'
+            ].forEach(eventName => {
+                $("form#dz-form").on(eventName, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $("form#dz-form").addClass('highlight');
+                });
+            });
+            ;[
+                'dragleave',
+                'mouseleave'
+            ].forEach(eventName => {
+                $("form#dz-form").on(eventName, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $("form#dz-form").removeClass('highlight');
+                });
+            });
+            // Drop event handler /////////////////////////////////////////////
+            $("form#dz-form").off('drop');
+            $("form#dz-form").on('drop', function(e) {
+                // In JQuery events, we have to get this under .originalEvent
+                dzLabel("Drop detected!");
+                let files = e.originalEvent.dataTransfer.files;
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).removeClass('highlight');
+                if (files.length > 1)
+                {
+                    dzMessage("Only one file at the time!");
+                    return false;
+                }
+                // Accepted file suffix? 
+                if (!validFileType(files[0].name)) {
+                    dzMessage("File type not allowed! Allowed file extensions are: " + dzExtList());
+                    return false;
+                }
+                console.log(files);
+                let formData = new FormData();
+                formData.append('file', files[0]);
+                dzLabel("Upload in progress...");
+                postForm(formData);
+            });
+            // FORM click handler /////////////////////////////////////////////
+            // Issue .click() to the INPUT TYPE="file" element to open
+            // file selection dialog.
+            // NOTE: The "file" input must have .onClick() handler that stops
+            //       event propagation back to FORM!
+            $('form#dz-form').on('click', function(e) {
+                $('form#dz-form input[type=file]').click();
+            });
+            // File type validation - After 'Choose File' dialog has closed ///
+            $("form#dz-form input[type=file]").off('change');
+            $("form#dz-form input[type=file]").change(function(e) {
+                // Accepted file suffix?
+                if (!validFileType(this.value)) {
+                    dzMessage("File type not allowed! Allowed file extensions are: " + dzExtList());
+                    // See upload.js:clearFileInput()
+                    clearFileInput(this);
+                    return false;
+                }
+                dzLabel("Upload in progress...");
+                postForm(new FormData(this.form));
+            });
+            dzLabel("Drag and drop file here, or click to choose file from disk");
+        } /* function dzActivate() */
 
         /*** DOCUMENT READY **************************************************
          * 
          *  Initialize page elements
          */
         $(document).ready(function() {
+            // DropZone init
+            dzDeactivate();
             // Initialize SSO element
             $("#sso").sso();
-            // Reload table and empty the form on 'stateChanged' event.
+
+            // Attach event handler for 'stateChanged'.
+            // Reload the table and clear out the form on 'stateChanged' event.
             // It only happens when authenticated session is disposed (logout).
-            $("#sso").on('stateChanged', function(event) {
+            $("#sso").on('stateChanged', function(event, role) {
+                console.log("#sso.stateChanged: role: " + role);
                 $('#fileTable').DataTable().ajax.reload(null, false);
-                clearForm();
+                // Dropzone
+                if (role === 'teacher') {
+                    console.log('#sso.stateChanged: activate DropZone');
+                    dzLabel("Drop file here to upload or click to select file from disk");
+                    dzActivate();
+                } else {
+                    console.log('#sso.stateChanged: deactivate DropZone');
+                    dzLabel("Upload available only for teachers!");
+                    dzDeactivate();
+                }
+                console.log("All registered handlers");
+                console.log($._data($('form#dz-form').get(0), "events"));
             });
 
             // OnClick handler to close sandwich menu
-            $('.navbar-nav a').on('click', function() {
+            $('.navbar-nav a').on('click', function(event) {
                 $('.navbar-collapse').collapse('hide');
             });
 
-            // *IF* URL parameter id exists, load the data
-            var id = getUrlParameter('id');
-            if (typeof id !== 'undefined')
-            {
-                console.log("Document Ready loading File...");
-                loadForm(id);
-            }
 
             /******************************************************************
             //
@@ -181,14 +239,14 @@
             // Page accepts Query Parameter to filter the list/table
             searchString = getUrlParameter('search');
             var fileTable = $('#fileTable').DataTable( {
-                responsive: true,
-                'ajax':     'api/file/owned',
-                'dataSrc':  'data',
-                'select': true,
-                "lengthChange": false,  // No "showw N entries" dropdown
-                "searching": false,     // No search box
-                "paging": false,        // No paging widgets
-                "info": false,          // No lower left infor bit
+                responsive:     true,
+                'ajax':         'api/file/owned',
+                'dataSrc':      'data',
+                'select':       true,
+                "lengthChange": false,  // No "show N entries" dropdown
+                "searching":    false,  // No search box
+                "paging":       false,  // No paging widgets
+                "info":         false,  // No lower left infor bit
                 "oSearch":  { "sSearch": searchString },
                 'columns':  [
                     {'data': 'label'},
@@ -200,7 +258,9 @@
                     {
                         "targets": 0,
                         "render": function(data, type, row, meta) {
-                            return createLink(data, row);
+                            // upload.js:openEditVMPage()
+                            // NOTE: openEditVMPage() has a TODO. See upload.js
+                            return '<a onClick="return openEditVMPage(' + row.id + ');">' + data + '</a>';
                         },
                         "className": "column-course"
                     },
@@ -210,15 +270,8 @@
                     }
                 ]
             } );
-            // TODO:
-            // We also need some kind of an even from JSONForm solution
-            // to trigger DataTable row deselect()
-            //
-            /*
-            fileTable.row( { selected: true } ).deselect();
-            */
-        });
 
+        }); /* $(document).ready() */
     </script>
 
 
@@ -275,50 +328,29 @@
                 <!-- ARTICLE Upload image -->
                 <article>
                     <h1 id="upload"><i class="fa fa-cloud-upload"></i>Upload</h1>
-                    <!-- http://talkerscode.com/webtricks/file-upload-progress-bar-using-jquery-and-php.php -->
                     <p>
-                        <div class="flow-drop" ondragenter="jQuery(this).addClass('flow-dragover');" ondragend="jQuery(this).removeClass('flow-dragover');" ondrop="jQuery(this).removeClass('flow-dragover');">
-                            Drop files here to upload or <a class="flow-browse-folder"><u>select folder</u></a> or <a class="flow-browse"><u>select from your computer</u></a> or <a class="flow-browse-image"><u>select images</u></a>
-                          </div>
-                    </p>
-                    <p><!-- name="frmupload" -- >
-                        <form   id="uploadForm"
-                                action="upload_processor.html"
-                                method="POST" 
-                                enctype="multipart/form-data">
-                            <input type="file" name="file" />
-                            <input type="submit" onclick="upload();" />
+                        <form
+                            id="dz-form"
+                            enctype="multipart/form-data">
+                            <label>Upload available only for teachers!</label>
+                            <input type="file" accept=".ova, .img, .zip">
+                            <progress
+                                id="dz-progress-bar"
+                                max="100"
+                                value="0"
+                            ></progress>
+                            <div></div>
                         </form>
-                        <div class='flow-progress' id="flow-progress">
-                            <div    class='flow-progress-bar'
-                                    id='flow-progress-bar'></div>
-                            <div    class='flow-progress-percent'
-                                    id='flow-progress-percent'>0%</div>
-                        </div>-->
-                    </p>
-                    <p>
-                        <div class="flow-progress">
-                            <table>
-                              <tr>
-                                <td width="100%"><div class="progress-container"><div class="progress-bar"></div></div></td>
-                                <td class="progress-text" nowrap="nowrap"></td>
-                                <td class="progress-pause" nowrap="nowrap">
-                                  <a href="#" onclick="r.upload(); return(false);" class="progress-resume-link"><img src="resume.png" title="Resume upload" /></a>
-                                  <a href="#" onclick="r.pause(); return(false);" class="progress-pause-link"><img src="pause.png" title="Pause upload" /></a>
-                                  <a href="#" onclick="r.cancel(); return(false);" class="progress-cancel-link"><img src="cancel.png" title="Cancel upload" /></a>
-                                </td>
-                              </tr>
-                            </table>
-                          </div>
                     </p>
                 </article>
 
 
 
 
-                <!-- ARTICLE Publish image -->
+                <!-- ARTICLE List of Images -->
                 <article>
-                    <h1 id="publish"><i class="	fa fa-bullhorn"></i>Edit and Publish</h1>
+                    <h1 id="publish"><i class="	fa fa-bullhorn"></i>Your Virtual Machines</h1>
+                    <p>Click label to view and edit details.</p>
                     <table  id="fileTable"
                             class="dataTable table-striped nowrap display compact">
                         <thead>
@@ -328,14 +360,6 @@
                             <th class="min-phone-l">Created</th>
                         </thead>
                     </table>
-                    <p>&nbsp;</p>
-                    <fieldset>
-                        <legend> Virtual Machine Details </legend>
-                        <form
-                            id="fileForm"
-                            class="please-choose-file"
-                            onsubmit="return onSubmitForm(this);"></form>
-                    </fieldset>
                 </article>
 
 
