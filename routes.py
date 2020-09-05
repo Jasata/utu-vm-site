@@ -482,9 +482,18 @@ def upload_file():
     # Save to upload folder
     from werkzeug.utils import secure_filename
     filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
     app.logger.debug(f"File saved to '{os.path.join(app.config['UPLOAD_FOLDER'], filename)}'")
-    # return flask.redirect(request.referrer)
+
+    # Generate 'file' table row
+    from api.File import File
+    try:
+        app.logger.debug(f"Prepublish '{filepath}'")
+        return api.response(File().prepublish(filepath, sso.uid))
+    except Exception as e:
+        app.logger.error("Publishing error: " + str(e))
+        return api.exception_response(e)
 
 
 ###############################################################################

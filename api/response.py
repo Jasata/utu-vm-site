@@ -68,8 +68,9 @@ def __make_response(code: int, payload: dict) -> "Flask.response_class":
         return response
     except Exception as e:
         # VERY IMPORTANT! Do NOT re-raise the exception!
-        app.logger.exception("Internal __make_response() error!")
+        app.logger.exception("api.__make_response(): Internal error!")
         # We will try to offer dict instead of Flask.Response...
+        #return ("api.__make_response() Internal Error!", 500)
         return app.response_class(
             response = f"api.__make_response() Internal Error: {str(e)}",
             status   = 500
@@ -137,7 +138,7 @@ def exception_response(ex: Exception):
                 }
             )
     except Exception as e:
-        app.logger.exception("Internal Error!")
+        app.logger.exception("api.exception_response(): Internal Error!")
         return __make_response(
             500,
             {

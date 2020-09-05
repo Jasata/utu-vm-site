@@ -3,8 +3,23 @@
 #
 #   OVFData.py - Modifications by Jani Tammi <jasata@utu.fi>
 #   0.1.0   2019-12-26  Initial version.
+#   0.1.1   2020-09-05  Header description added.
 #
 #
+#   Create OVFData object with OVF XML string.
+#   Read details from object attributes.
+#
+#     .name: str            Virtual machine name
+#     .description: str     Virtual machine description
+#     .osid: int            See _os_type in class OVFData
+#     .ostype: str          See _os_type in class OVFData
+#     .cpus: int            Number of CPUs
+#     .ram: int             Amount of RAM in bytes
+#     .disksize: int        Disk size in bytes
+#
+#   USAGE
+#       ovf = OVFData(ovf_xml)
+#       print(f"This VM has {ovf.ram} bytes of RAM")
 #
 import logging
 import xml.etree.ElementTree as ET
@@ -203,12 +218,15 @@ class OVFData():
         try:
             # <VirtualSystem ovf:id="DTEK2041">
             v_sys = self._root.find('ovf:VirtualSystem', self._ns)
+            ### Name
             self.name = v_sys.get(self._nsattr('id', 'ovf'))
-            # 
-            self.description = v_sys.find(
+            ### Description
+            annotation = v_sys.find(
                 'ovf:AnnotationSection/ovf:Annotation',
                 self._ns
-            ).text
+            )
+            if annotation:
+                self.description = annotation.text
             #
             v_os = v_sys.find('ovf:OperatingSystemSection', self._ns)
             self.osid = v_os.get(self._nsattr('id', 'ovf'))
@@ -220,12 +238,17 @@ class OVFData():
                 self._ns
             )
             # NOTE VMware has vmw:CoresPerSocket. Ignored #####################
-            self.cpus = v_cpu.find('rasd:VirtualQuantity', self._ns).text
+            virtual_quantity = v_cpu.find('rasd:VirtualQuantity', self._ns)
+            if virtual_quantity:
+                self.cpus = virtual_quantity.text
             v_mem = v_sys.find(
                 './ovf:VirtualHardwareSection/ovf:Item/[rasd:ResourceType="4"]',
                 self._ns
             )
-            self.ram = v_mem.find('rasd:VirtualQuantity', self._ns).text
+            ### RAM
+            virtual_memory = v_mem.find('rasd:VirtualQuantity', self._ns)
+            if virtual_memory:
+                self.ram = virtual_memory .text
             self.logger.debug(
                 f"'{self.name}' ({self.ostype}): "
                 f"{self.cpus} CPUs, {self.ram} MB RAM"

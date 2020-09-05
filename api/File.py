@@ -27,6 +27,7 @@ from application        import app
 from .Exception         import *
 from .DataObject        import DataObject
 from .OVFData           import OVFData
+from .Teacher           import Teacher
 
 
 # Extends api.DataObject
@@ -42,6 +43,7 @@ class File(DataObject):
                 return self['*']
     # Translate file.downloadable_to <-> sso.role ACL
     # (who can access if file.downloadable_to says...)
+    # Default value '*' is downloadable to noone.
     _downloadable_to2acl = DefaultDict({
         'teacher':  ['teacher'],
         'student':  ['student', 'teacher'],
@@ -156,17 +158,27 @@ class File(DataObject):
 
 
     def prepublish(self, filepath, owner) -> tuple:
-        """Extract information from the file and prepopulate 'file' table row. Returns (200, "{ 'id': <file.id> }").
-        Possible responses:
-        404 NotFound - Specified file not found
-        409 Conflict - SQLite3 integrity error
-        500 InternalError - Other error
-        200 OK"""
-        self.file = filepath
-        self.filedir, self.filename = os.path.split(self.file)
+        """Arguments 'filepath' must be an absolute path to the VM image and 'owner' must be an /active/ UID in the 'teacher' table.
+        Extract information from the file and prepopulate 'file' table row. On success, returns the 'file' table ID value.
+        Returns:
+        (200, "{ 'id': <file.id> }")
+        Exceptions:
+        404, "Not Found"                NotFound()
+        406, "Not Acceptable"           InvalidArgument()
+        409, "Conflict"                 Conflict()
+        500, "Internal Server Error")   InternalError()
+        """
+        self.filepath = filepath
+        self.filedir, self.filename = os.path.split(self.filepath)
         _, self.filesuffix = os.path.splitext(self.filename)
-        if not File.exists(self.file):
-            raise NotFound(f"File '{self.file}' does not exist!")
+        # Specified file must exist
+        if not File.exists(self.filepath):
+            raise NotFound(f"File '{self.filepath}' does not exist!")
+
+        # Check that the teacher is active
+        if not Teacher(owner).active:
+            raise InvalidArgument(f"Teacher '{owner}' is not active!")
+        app.logger.debug("File and owner checks completed!")
 
 
         # Build a dictionary where keys match 'file' -table column names
@@ -174,18 +186,19 @@ class File(DataObject):
         #
         try:
             if self.filesuffix == '.ova':
-                attributes = File.__ova_attributes(self.file)
+                attributes = File.__ova_attributes(self.filepath)
             else:
-                attributes = File.__img_attributes(self.file)
+                attributes = File.__img_attributes(self.filepath)
             # Cannot be inserted without owner
-            attributes['_owner'] = owner
+            attributes['owner'] = owner
             # File size in bytes
-            attributes['size'] = os.stat(self.file).st_size
+            attributes['size'] = os.stat(self.filepath).st_size
         except Exception as e:
             app.logger.exception("Unexpected error reading file attributes!")
             raise InternalError(
                 "prepublish() error while reading file attributes", str(e)
             ) from None
+        app.logger.debug("OVA/IMG attribute collection successful!")
 
 
         #
@@ -199,13 +212,16 @@ class File(DataObject):
             file_id = self.cursor.lastrowid
             self.cursor.connection.commit()
         except sqlite3.IntegrityError as e:
-            app.logger.exception("sqlite3.IntegrityError" + str(e))
+            self.cursor.connection.rollback()
+            app.logger.exception("sqlite3.IntegrityError" + self.sql + str(e))
             raise Conflict("SQLite3 integrity error", str(e)) from None
         except Exception as e:
-            app.logger.exception("Unexpected error!")
+            self.cursor.connection.rollback()
+            app.logger.exception("Unexpected error while inserting 'file' row!" + str(e))
             raise InternalError(
                 "prepublish() error while inserting", str(e)
             ) from None
+
 
         #
         # Return with ID
@@ -432,6 +448,13 @@ class File(DataObject):
 
 
     def download(self, filename: str, role: str) -> tuple:
+        """Checks that the file exists, has a database record and can be downloaded by the specified role.
+        Possible return values:
+        200: OK (Download started by Nginx/X-Accel-Redirect)
+        401: Role not allowed to download the file
+        404: Specified file does not exist
+        404: Database record not found
+        500: An exception ocurred (and was logged)"""
         #
         # Check that the file exists
         #
@@ -466,9 +489,19 @@ class File(DataObject):
             app.logger.exception("Error executing a query!")
             return "Internal Server Error", 500
         #
-        # Check that the file 
+        # Send file
+        #
+        #   'X-Accel-Redirect' (header directive) is Nginx feature that is
+        #   intercepted by Nginx and the pointed to by that directive is
+        #   then streamed to the client, freeing Flask thread next request.
+        #
+        #   More important is the fact that this header allows serving files
+        #   that are not in the request pointed location (URL), letting the
+        #   application code verify access privileges and/or change the
+        #   content (specify a different file in X-Accel-Redirect).
         #
         try:
+            # Filepath for X-Accel-Redirect
             abs_url_path = os.path.join(
                 app.config.get("DOWNLOAD_URLPATH"),
                 filename
@@ -489,7 +522,7 @@ class File(DataObject):
                 return "Unauthorized!", 401
         except Exception as e:
             app.logger.exception(
-                f"Exception while matching role '{role}' to (downloadable_to:) '{result[0]}'"
+                f"Exception while permission checking role '{role}' (downloadable_to:) '{result[0]}' and/or sending download"
             )
             return "Intermal Server Error", 500
 
@@ -559,6 +592,7 @@ class File(DataObject):
 
     @staticmethod
     def __img_attributes(file: str) -> dict:
+        # Images and .ZIP archives (for pendrives)
         filedir, filename = os.path.split(file)
         # Establish defaults
         attributes = {
