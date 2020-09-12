@@ -26,6 +26,9 @@
     <!-- DataTables -->
     <link   rel="stylesheet" href="css/datatables.css">
     <script type="text/javascript" src="js/datatables.js"></script>
+    <!-- Flow.js -->
+    <script type="text/javascript" src="js/flow.js"></script>
+
 
     <!-- Site Specific -->
     <link   rel="stylesheet" href="css/common.css">
@@ -37,57 +40,79 @@
     <script src="js/upload.js"></script>
 
     <script type="text/javascript" charset="utf-8">
-        // Upload API endpoint
-        var APIuploadURL = "/upload/";
         /*** Send File / POST to API endpoint ********************************
          *
          * Reqiured argument is a File object
          */
-        function postForm(formData)
+        function sendFile(oFile)
         {
             console.log("postForm(): show progress bar");
+            // Cosmetics
             $("#dz-progress-bar").css('visibility', 'visible');
-            $.ajax({
-                xhr: function() {
-                    var xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener("progress", function(e) {
-                        if (e.lengthComputable) {
-                            var percent = Math.round((e.loaded / e.total) * 100);
-                            $("#dz-progress-bar").val(percent);
-                            dzMessage(percent + '% uploaded...');
-                        }
-                    }, false);
-                    return xhr;
-                },
-                type:           'POST',
-                url:            APIuploadURL,
-                data:           formData,
-                contentType:    false,
-                cache:          false,
-                processData:    false,
-                beforeSend: function() {
-                    console.log(".ajax(): beforeSend");
-                    $('#dz-progress-bar').show();
-                    $("#dz-progress-bar").value = 0;
-                    dzMessage("Upload starting...");
-                },
-                error: function() {
-                    console.log(".ajax(): error");
-                    dzMessage('File upload failed, please try again.');
-                },
-                success: function(resp) {
-                    console.log(".ajax(): success");
-                    if (resp == 'ok') {
-                        dzMessage("File has been uploaded successfully");
-                        $('#dz-form')[0].reset();
-                    } else if (resp == 'err') {
-                        dzMessage("Uploaded file has been rejected by server! Please contact administrator.");
-                        // .html(event.target.responseText); ?
-                    }
-                }
+            dzLabel("Upload in progress...");
+            dzDeactivate();
+            // Simultaneous uploads somehow manage to trigger multiple
+            // .save_file() executions at the server end. DO NOT USE!
+            var flow = new Flow({
+                target:                 '/api/file/flow',
+                singleFile:             true,
+                simultaneousUploads:    1,
+                withCredentials:        true, // For credential cookies
+                permanentErrors:        [404, 409, 415, 500, 501],
+                maxChunkRetries:        2,
+                chunkSize:              1024 * 1024 * 20 // 20 MB
             });
+            flow.on('fileProgress', function(file, chunk) {
+                function readablizeBytes(bytes) {
+                  var s = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
+                  var e = Math.floor(Math.log(bytes) / Math.log(1024));
+                return (bytes / Math.pow(1024, e)).toFixed(2) + " " + s[e];
+                }
+                function secondsToStr (temp) {
+                  function numberEnding (number) {
+                    return (number > 1) ? 's' : '';
+                  }
+                  var years = Math.floor(temp / 31536000);
+                  if (years) {
+                    return years + ' year' + numberEnding(years);
+                  }
+                  var days = Math.floor((temp %= 31536000) / 86400);
+                  if (days) {
+                    return days + ' day' + numberEnding(days);
+                  }
+                  var hours = Math.floor((temp %= 86400) / 3600);
+                  if (hours) {
+                    return hours + ' hour' + numberEnding(hours);
+                  }
+                  var minutes = Math.floor((temp %= 3600) / 60);
+                  if (minutes) {
+                    return minutes + ' minute' + numberEnding(minutes);
+                  }
+                  var seconds = temp % 60;
+                  return seconds + ' second' + numberEnding(seconds);
+                }
+                // console.log(`file ${file}, chunk ${chunk}`);
+                dzMessage(Math.floor(file.progress() * 100) + '% complete, '
+                    + readablizeBytes(file.averageSpeed) + '/s, '
+                    + secondsToStr(file.timeRemaining()) + ' remaining'
+                );
+                $("#dz-progress-bar").val(Math.floor(file.progress() * 100));
+            });
+            flow.on('error', function(message, file, chunk) {
+                alert(message);
+                console.log(message);
+                dzActivate();
+            });
+            flow.on('fileSuccess', function(file, message, chunk) {
+                console.log("Completed! Loading upload_process.html...");
+                window.location.href = 'upload_process.html?flowid=' + file.uniqueIdentifier + '&filename=' + file.name;
+            });
+            flow.addFile(oFile);
+            flow.upload();
+            return;
         }
-        /*
+
+        /**********************************************************************
          * File Drop-Zone implementation
          */
         function dzLabel(msg) {
@@ -98,7 +123,7 @@
         }
         function dzDeactivate()
         {
-            console.log("DropZone deactivate");
+            console.log("DropZone deactivated");
             ;[ // FORM#dz-form event handlers
                 'dragenter',
                 'dragover',
@@ -111,19 +136,19 @@
                 $("form#dz-form").off(eventName);
             });
             // Its just nice to still prevent default actions
-            // 2020-09-04: This doesn't trigger?!?!
+////////////// 2020-09-04: This doesn't trigger?!?!
+            // Deactivated element implements default behavior :-(
             $("form#dz-form").on('drop', function(e) {
-                console.log("#dz-form drop when deactivated!");
+                console.log("#dz-form drop event, into deactivated element!");
                 e.preventDefault();
                 e.stopPropagation();
             });
             // INPUT[type=file].onChange() event handler
             $("form#dz-form input[type=file]").off("change");
-            dzLabel("Upload is available to teachers only!");
         }
         function dzActivate()
         {
-            console.log("DropZone activate");
+            console.log("DropZone activated");
             // Highlight handlers /////////////////////////////////////////////
             ;[
                 'dragenter',
@@ -165,11 +190,9 @@
                     dzMessage("File type not allowed! Allowed file extensions are: " + dzExtList());
                     return false;
                 }
-                console.log(files);
-                let formData = new FormData();
-                formData.append('file', files[0]);
-                dzLabel("Upload in progress...");
-                postForm(formData);
+                //console.log(files);
+                sendFile(files[0]);
+                return;
             });
             // FORM click handler /////////////////////////////////////////////
             // Issue .click() to the INPUT TYPE="file" element to open
@@ -179,6 +202,12 @@
             $('form#dz-form').on('click', function(e) {
                 $('form#dz-form input[type=file]').click();
             });
+            $("form#dz-form input[type=file]").on('click', function(e) {
+                // THIS HANDLER IS SUPER IMPORTANT!
+                // Without this, the click propagates to form and the
+                // above form.click handler again triggers this.
+                e.stopPropagation();
+            });
             // File type validation - After 'Choose File' dialog has closed ///
             $("form#dz-form input[type=file]").off('change');
             $("form#dz-form input[type=file]").change(function(e) {
@@ -187,10 +216,10 @@
                     dzMessage("File type not allowed! Allowed file extensions are: " + dzExtList());
                     // See upload.js:clearFileInput()
                     clearFileInput(this);
+                    dzActivate();
                     return false;
                 }
-                dzLabel("Upload in progress...");
-                postForm(new FormData(this.form));
+                sendFile(this.files[0]);
             });
             dzLabel("Drag and drop file here, or click to choose file from disk");
         } /* function dzActivate() */
@@ -200,6 +229,7 @@
          *  Initialize page elements
          */
         $(document).ready(function() {
+            console.log("TODO: INPUT[type=file].onChange() use sendFile() instead!!");
             // DropZone init
             dzDeactivate();
             // Initialize SSO element
@@ -213,16 +243,14 @@
                 $('#fileTable').DataTable().ajax.reload(null, false);
                 // Dropzone
                 if (role === 'teacher') {
-                    console.log('#sso.stateChanged: activate DropZone');
                     dzLabel("Drop file here to upload or click to select file from disk");
                     dzActivate();
                 } else {
-                    console.log('#sso.stateChanged: deactivate DropZone');
                     dzLabel("Upload available only for teachers!");
                     dzDeactivate();
                 }
-                console.log("All registered handlers");
-                console.log($._data($('form#dz-form').get(0), "events"));
+                //console.log("All registered handlers");
+                //console.log($._data($('form#dz-form').get(0), "events"));
             });
 
             // OnClick handler to close sandwich menu
@@ -295,7 +323,7 @@
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="nav navbar-nav">
                         <a class="nav-link p-3" href="#upload">Upload</a>
-                        <a class="nav-link p-3" Href="#publish">Edit / Publish</a>
+                        <a class="nav-link p-3" Href="#publish">Your VMs</a>
                     </ul>
                 </div>
             </div>

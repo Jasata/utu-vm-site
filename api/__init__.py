@@ -107,6 +107,9 @@
 
 from .Publish       import Publish
 from .File          import File
+from .Upload        import Upload
+from .Flow          import Flow
+from .Teacher       import Teacher
 from .Exception     import *
 from .response      import response, exception_response, stream_result_as_csv
 

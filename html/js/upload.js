@@ -2,10 +2,10 @@
  * upload.js - Jani Tammi <jasata@utu.fi>
  * Script library for upload.html and edit_vm_details.html pages.
  *
- *  0.1.0   2019-12-30  Initial version.
- *  0.2.0   2020-08-30  Supports now separate upload and edit pages.
- *  0.3.0   2020-08-30  JSONForm related code moved to edit_vm_details.js.
- *  0.4.0   2020-09-02  General functions moved to 'common.js'.
+ *  2019-12-30  Initial version.
+ *  2020-08-30  Supports now separate upload and edit pages.
+ *  2020-08-30  JSONForm related code moved to edit_vm_details.js.
+ *  2020-09-02  General functions moved to 'common.js'.
  *
  *
  */

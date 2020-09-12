@@ -1,3 +1,8 @@
+-- create.sql - SQLite3 creation script for vm.utu.fi site
+--
+-- 2020-09-10   Add 'upload' table (STILL UNUSED!).
+-- 2020-09-11   Removed type and host_architecture CHECK constraint from 'file'
+--
 CREATE TABLE teacher
 (
     uid                 TEXT        NOT NULL PRIMARY KEY,
@@ -34,10 +39,11 @@ CREATE TABLE file
     FOREIGN KEY (host_architecture) REFERENCES host_architecture (type),
     UNIQUE (label, version, type),
     CHECK (type IN ('usb', 'vm', 'sd')),
-    CHECK ((type = 'vm' AND host_architecture IS NULL) OR (type != 'vm' AND host_architecture IS NOT NULL)),
     CHECK (dtap IN ('development', 'testing', 'acceptance', 'production')),
     CHECK (downloadable_to IN ('anyone', 'student', 'teacher', 'nobody'))
 );
+-- Don't see what is the purpose of this constraint anymore...
+--     CHECK ((type = 'vm' AND host_architecture IS NULL) OR (type != 'vm' AND host_architecture IS NOT NULL)),
 CREATE TABLE course
 (
     code                TEXT        NOT NULL PRIMARY KEY,
@@ -76,6 +82,42 @@ CREATE TABLE download
     file_id             INTEGER         NULL,
     CHECK (complete IS NULL OR complete IN ('TRUE', 'FALSE'))
 );
+-- Table to list on-going (chunked) uploads
+--
+-- (An active) teacher may have an ongoing upload for only one vm image
+-- of the same filename at the time (UNIQUE(owner, filename)).
+-- filename         Name as offered by the client
+-- filesize         In bytes
+-- chunksize        Size of an upload chunk in bytes.
+--                  Decided when row is created and for obvious reasons,
+--                  must not be modified, or upload integrity fails.
+-- chunklist        Serialized Python list object containing as many elements
+--                  as there are chunks (Math.Ceil(filesize/chunksize))
+--                  Has only values True or False. True signified successfully
+--                  received chunk and False not transferred (or error).
+-- created          Simply a timestamp to help cleanup scripts to identify
+--                  failed and stale uploads.
+CREATE TABLE upload
+(
+    upid                INTEGER     NOT NULL PRIMARY KEY AUTOINCREMENT,
+    owner               TEXT        NOT NULL,
+    filename            TEXT        NOT NULL,
+    filesize            INTEGER     NOT NULL,
+    chunksize           INTEGER     NOT NULL,
+    chunklist           TEXT        NOT NULL,
+    created             TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner) REFERENCES teacher (uid),
+    UNIQUE (owner, filename)
+);
+
+CREATE TRIGGER IF NOT EXISTS upload_bru
+    BEFORE UPDATE
+    ON upload
+    FOR EACH ROW
+    WHEN (NEW.chunksize != OLD.chunksize)
+BEGIN
+    SELECT RAISE(ABORT, 'chunksize value must not be changed!');
+END;
 
 -- Ideal solution would have been Nginx logging, storing full/partial status.
 -- Such information is apparently not available from Nginx logging.

@@ -5,15 +5,19 @@
 # Course Virtualization / Website
 # Flask Application routes
 #
-# application.py - Jani Tammi <jasata@utu.fi>
+# routes.py - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2019.12.07  Initial version.
-#   0.2.0   2019.12.23  Add /sso endpoints
-#   0.3.0   2919.12.25  Add /api/publish endpoint
+#   2019-12-07  Initial version
+#   2019-12-23  Add /sso endpoints
+#   2019-12-25  Add /api/publish endpoint
+#   2020-09-07  Add /api/file/upload
+#   2020-09-09  Add /api/file/flow  (Flow.js GET, POST upload endpoint)
+#   2020-09-12  Add /sse/flow-upload-status
+#
 #
 #   This Python module only defines the routes, which the application.py
 #   includes directly into itself.
-#   Any actual work is implemented in the api module.
+#   Most of actual work is implemented in the API modules.
 #
 import os
 import sys
@@ -127,7 +131,7 @@ def api_file_schema():
     strict_slashes = False
 )
 def api_file_id(id):
-    """Database table row endpoint."""
+    """Database table row endpoint. Retrieve (GET) or update (PUT) record."""
     log_request(request)
     try:
         if request.method == 'PUT':
@@ -135,7 +139,7 @@ def api_file_id(id):
         elif request.method == 'GET':
             return api.response(api.File().fetch(id))
         else:
-            raise MethodNotAllowed(
+            raise api.MethodNotAllowed(
                 f"Method {request.method} not supported for this endpoint."
             )
     except Exception as e:
@@ -156,7 +160,6 @@ def api_file_owned():
         return api.response(api.File().search(owner = sso.uid or ''))
     except Exception as e:
         return api.exception_response(e)
-
 
 
 #
@@ -180,68 +183,142 @@ def download(path = None):
 
 
 ###############################################################################
-### THIS NEEDS RETHINKING ... ONCE THE UPLOAD HAS BEEN IMPLEMENTED ############
+#
+# Flow.js - post processing API endpoint
+#
+
 ###############################################################################
+# ONLY to demonstrate how SSE works
+# Response terminates (return) after 4 messages.
+# The Javascript EventSource will reconnect again in 3-5 seconds.
+# CORRECT way is to send an event, like "event: END\ndata: blah blah"
+# and create an .onEND() handler which closes the stream from client end.
 #
-#   /api/publish  (session.ROLE == 'teacher')
+@app.route(
+    '/sse/demo',
+    methods=['GET'],
+    strict_slashes = False
+)
+def dummy_sse(filename: str):
+    def generator():
+        val = 0
+        while True:
+            val += 1
+            msg = f"Message #{val:03d}"
+            if not val % 5:
+                return "event: message\ndata: END\n\n"
+            yield f"event: message\ndata: {msg}\n\n"
+            #Update frequency
+            time.sleep(0.5)
+
+    log_request(request)
+    return flask.Response(
+        generator(),
+        mimetype = "text/event-stream"
+    )
+# END OF DEMONSTRATION CODE ###################################################
+
+
+# SSE - Events for background processing of Flow.js uploads
 #
-#       Endpoint to fill in .OVA/image details and
-#       to publish them (make downloadable)
+#   NONE OF THIS WORKS, unless buffering is disabled!
+#   REQUIRED: Nginx site configuration parameter (uwsgi_buffering off):
 #
-#   GET ?file=<file>
+#   location / {
+#       include uwsgi_params;
+#       client_max_body_size 50M;
+#       uwsgi_pass unix:/run/uwsgi/app/vm.utu.fi/vm.utu.fi.socket;
+#       uwsgi_buffering off; <-- IMPORTANT!!!
+#   }
 #
-#       Return database row for <file> in JSON.
-#
-#   POST
-#
-#       Update <file> -row and move file to downloadable -directory.
-#
-@app.route('/api/publish', methods=['GET'])
-@app.route('/api/publish/<int:id>', methods=['POST'])
-def api_publish(id = None):
-    """POST with uploaded filename will trigger prepublish procedure. For .OVA files this means reading the included .OVF file for characteristics of the virtual machine. A 'file' table row is inserted and the ID will be returned in the response JSON body { 'id': <int> }."""
+@app.route(
+    '/sse/flow-upload-status',
+    methods=['GET'],
+    strict_slashes = False
+    )
+def flow_process_status() -> tuple:
+    """SSE endpoint to supply data to event listener. Required URL parameters: 'filename' and 'flowid'.
+RETURN CODES
+200 OK              no name conflict (GET) / successful assembly (POST)
+400 BadRequest      Malformed requests (no 'filename' and/or 'flowid').
+401 Unauthorized    Not an active teacher
+"""
+    log_request(request)
+    #if not sso.is_teacher:
+    #    return "Active teacher privileges required", 401
+    # Should raise an exception if not defined in URL parameters
     try:
-        # Dummy response tuple REMOVE WHEN THIS ROUTE IS COMPLETED!
-        response = (
-            200,
-            {
-                'data': {
-                    '.role':                f'{sso.role}',
-                    '.is_teacher':          f'{str(sso.is_teacher)}',
-                    '.is_student':          f'{str(sso.is_student)}',
-                    '.is_anonymous':        f'{str(sso.is_anonymous)}',
-                    '.is_authenticated':    f'{str(sso.is_authenticated)}'
-                }
-            }
+        filename = request.args.get('filename', type = str)
+        flowid   = request.args.get('flowid',   type = str)
+    except:
+        return "Both 'filename' and 'flowid' must be defined in URL parameters", 400
+
+    try:
+        app.logger.info("Prerequisites OK... opening event stream")
+        # from werkzeug.datastructures import Headers
+        # headers = Headers()
+        # headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')
+        # headers.add('Pragma', 'no-cache')
+        # headers.add('Expires', '0')
+        # headers.add('X-Accel-Buffering', 'no')
+        return flask.Response(
+            api.Flow.sse_upload_status(filename, flowid),
+            #headers  = headers,
+            mimetype = "text/event-stream"
         )
-        raise api.NotImplemented("Sorry! Not yet implemented!")
 
-        if not sso.is_teacher:
-            raise api.Unauthorized("Teacher privileges required")
-        if not app.config.get('UPLOAD_FOLDER', None):
-            raise api.InternalError(
-                "Configuration parameter 'UPLOAD_FOLDER' is not set!"
-            )
-
-        if request.method == 'GET':
-            file    = request.args.get('file', default = None, type = str)
-            folder  = app.config.get('UPLOAD_FOLDER')
-            if not file:
-                raise api.InvalidArgument(
-                    "GET Request must provide 'file' URI variable"
-                )
-            # Generate JSONForm for editing
-            response = api.Publish(request).preprocess(
-                folder + "/" + file,
-                sso.uid
-            )
-        elif request.method == 'POST':
-            pass
     except Exception as e:
-        return api.exception_response(e)
+        app.logger.exception("Unable to generate SSE!")
+        return str(e), 400
+
+
+#
+# Flow.js API endpoint (/api/file/flow)
+#
+#   HTTP Codes (inFlow.js opts)
+#       successStatuses     Chunk completed OK (Default: [200, 201, 202])
+#       permanentErrors     Cancel upload (Default: [404, 415, 500, 501])
+#       (anything else)     Try again
+#
+@app.route(
+    '/api/file/flow',
+    methods=['GET', 'POST'],
+    strict_slashes = False
+)
+def flow_chunk_upload():
+    """Return 200 if given chunk already exists, return 204 if not."""
+    log_request(request)
+    if not sso.is_teacher:
+        raise api.Unauthorized("Active teacher privileges required")
+
+    flow = api.Flow(request)
+    # Check for filename conflict
+    if api.Flow.exists(
+        os.path.join(
+            api.Flow.download_dir(),
+            request.form.get('flowFilename') or
+            request.args.get('flowFilename')
+        )
+    ):
+        # 409 Conflict
+        return "File by specified name already exists!", 409
+
+    if request.method == "GET":
+        # GET merely checks if the chunk already exists
+        if flow.chunk_exists:
+            return "", 200  # OK
+        return "", 204      # No Content
     else:
-        # api.response(code: int, payload: dict) -> Flask.response_class
-        return api.response(response)
+        if not flow.valid_chunk:
+            return "", 400
+        flow.save_chunk()
+
+    if flow.file_complete:
+        # All chunks uploaded, create '.job' file for cron job
+        # Set owner as current user (which is an active teacher)
+        flow.createJob(sso.uid)
+
+    return "", 200
 
 
 

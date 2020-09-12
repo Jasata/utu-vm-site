@@ -6,7 +6,8 @@
 #
 # api/response.py - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2020.01.01  Initial version.
+#   2020-01-01  Initial version.
+#   2020-09-11  Add mimetype call parameter to response() and __make_response()
 #
 #
 import time
@@ -28,11 +29,16 @@ from .Exception     import *
 # Argument
 #   code: int           HTTP code
 #   payload: dict       Goes to json.dumps()
+#   mimetype: str       Header mimetype
 #
 # Returns
 #   Flask.Response      Object
 #
-def __make_response(code: int, payload: dict) -> "Flask.response_class":
+def __make_response(
+    code: int,
+    payload: dict,
+    mimetype: str = 'application/json'
+) -> "Flask.response_class":
     """Generate Flask.response_class from response code and dictionary."""
     # Paranoia check
     assert(isinstance(payload, dict))
@@ -59,12 +65,12 @@ def __make_response(code: int, payload: dict) -> "Flask.response_class":
         response = app.response_class(
             response    = payload,
             status      = code,
-            mimetype    = 'application/json'
+            mimetype    = mimetype
         )
         # Send list of allowed methods for this endpoint in the header
         allow = [method for method in request.url_rule.methods if method not in ('HEAD', 'OPTIONS')]
         response.headers['Allow']        = ", ".join(allow)
-        response.headers['Content-Type'] = 'application/json'
+        response.headers['Content-Type'] = mimetype
         return response
     except Exception as e:
         # VERY IMPORTANT! Do NOT re-raise the exception!
@@ -82,9 +88,9 @@ def __make_response(code: int, payload: dict) -> "Flask.response_class":
 # api.response((code:int, payload:dict):tuple) -> Flask.response_class
 # JSON Flask.Response create function for Flask route handlers
 #
-def response(response_tuple):
+def response(response_tuple: tuple, mimetype: str = 'application/json'):
     """Create Flask.Response from provided (code:int, data:dict):tuple."""
-    return __make_response(response_tuple[0], response_tuple[1])
+    return __make_response(response_tuple[0], response_tuple[1], mimetype)
 
 
 #

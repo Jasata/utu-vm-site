@@ -435,7 +435,7 @@ class File(DataObject):
         except sqlite3.Error as e:
             # TODO: Check what actually caused the issue
             raise InvalidArgument(
-                "INSERT failed!",
+                "UPDATE failed!",
                 {'sql': self.sql or '', 'exception': str(e)}
             ) from None
         finally:

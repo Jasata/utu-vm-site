@@ -4,7 +4,8 @@
 #
 # APIVERSION - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2019.12.07  Initial version.
+#   0.1.0   2019-12-07  Initial version.
+#   0.2.0   2020-09-13  Sept 2020 release.
 #
 # This file may contain ONLY one single non-comment line.
 # That row can have only one integer number, which represents
@@ -12,4 +13,4 @@
 #
 # 
 
-1
+2
