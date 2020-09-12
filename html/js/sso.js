@@ -1,17 +1,18 @@
 /*
  * sso.js - Jani Tammi <jasata@utu.fi>
  *
- *  0.1.0   2019-12-22  Initial version.
- *  0.2.0   2019-12-22  State and visuals now one and the same
- *  0.3.0   2019-12-22  Remove ::after and compact design
- *  0.4.0   2019-12-23  CANNOT USE Flask session! REST API model implemented
- *  0.5.0   2019-12-23  Domain-SSO redirect added
- *  0.6.0   2019-12-23  Clean out unnecessary debug messages
- *  0.7.0   2019-12-25  Add 'stateChanged' event for pages
- *  0.8.0   2020-01-01  API endpoints now under /api/sso
- *  0.8.1   2020-08-30  Enhance code comments
- *  0.8.2   2020-08-30  Domain-SSO redirect now preserves URL parameters
- *  0.8.3   2020-09-04  'stateChanged' event triggers with role data
+ *  2019-12-22  Initial version.
+ *  2019-12-22  State and visuals now one and the same
+ *  2019-12-22  Remove ::after and compact design
+ *  2019-12-23  CANNOT USE Flask session! REST API model implemented
+ *  2019-12-23  Domain-SSO redirect added
+ *  2019-12-23  Clean out unnecessary debug messages
+ *  2019-12-25  Add 'stateChanged' event for pages
+ *  2020-01-01  API endpoints now under /api/sso
+ *  2020-08-30  Enhance code comments
+ *  2020-08-30  Domain-SSO redirect now preserves URL parameters
+ *  2020-09-04  'stateChanged' event triggers with role data
+ *  2020-09-12  Fixed hardcoded SSO goto URL into window.location.hostname
  *
  *
  *  As the last action, the element build (.sso() -function) triggers an
@@ -125,7 +126,9 @@ jQuery.fn.sso = function(options)
         // It is a LOGIN action
         {
             // direct broser to SSO login page
-            window.location.href = "https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2Fvm.utu.fi%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D" + encodeURIComponent(window.location.pathname + window.location.search);
+            // Use current hostname, not hardcoded...
+            window.location.href = `https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2F${window.location.hostname}%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D`
+            // window.location.href = "https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2Fvm.utu.fi%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D" + encodeURIComponent(window.location.pathname + window.location.search);
         }
         else
         // It is a LOGOUT action
