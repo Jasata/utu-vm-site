@@ -1,0 +1,30 @@
+/*
+ * box-sizing "magic"
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing
+ * Without this, inner element's borders and paddings screw up sizing.
+ */
+ *
+ {
+   -webkit-box-sizing:           border-box;
+   -moz-box-sizing:              border-box;
+   box-sizing:                   border-box;
+ }
+
+/*** subpage.css overrides ***************************************************/
+article > h1
+/* padding 90px and margin -90px is a hack for Bootstrap navbar that does not
+   have a scroll offset setting. ...but it masks the DropZone FORM in this page
+   and it has to go! */
+{
+  padding-top:                  0;
+  margin-top:                   0;
+}
+
+/*** Server processing status ************************************************/
+#progress p
+{
+    font-family:                'Courier New', Courier, monospace;
+}
+
+
+/* EOF */

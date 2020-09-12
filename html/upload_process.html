@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Do not try to fetch favicon -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+    <meta   charset="utf-8">
+    <meta   name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta   name="description"
+            content="">
+    <meta   name="author"
+            content="jasata@utu.fi">
+
+    <title>Turku university - Course Virtual Machines</title>
+
+    <!-- Vendor -->
+    <link   rel="stylesheet" href="css/font-awesome.min.css">
+    <link   rel="stylesheet" href="css/bootstrap.min.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+    <!-- Site Specific -->
+    <link   rel="stylesheet" href="css/common.css">
+    <link   rel="stylesheet" href="css/subpage.css">
+    <link   rel="stylesheet" href="css/upload_process.css">
+    <link   rel="stylesheet" href="css/sso.css">
+    <script src="js/common.js"></script>
+    <script src="js/sso.js"></script>
+    <script src="js/upload_process.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        // Page must be invoked with:
+        // ?id=FlowFile.uniqueIdentifier&filename=FlowFile.
+        var flowid   = null;
+        var filename = null;
+        if ((flowid = getUrlParameter('flowid')) === undefined) {
+            console.log("Page must be called with an upload identifier!");
+            alert("This page cannot be used without uploaded flow id!");
+            window.location.href = "upload.html";
+        }
+        if ((filename = getUrlParameter('filename')) === undefined) {
+            console.log("Page must be called with uploaded file name!");
+            alert("This page cannot be used without uploaded flow id!");
+            window.location.href = "upload.html";
+
+            /* Sorry, NO! This page REQUIRES accurte flowid and filenames!
+            // If no name, make one from the fileid
+            if (fileid.indexOf("-") < 0) {
+                filename = "UNKNOWN.EXT";
+            } else {
+                filename = fileid.substring(fileid.indexOf("-") + 1);
+                // if OVA, ZIP or IMG, accept that as file suffix
+                let ext = filename.substring(filename.length - 3).toLowerCase();
+                if (['ova', 'zip', 'img'].includes(ext)) {
+                    filename = filename.substring(0, filename.length - 3) + '.' + filename.substring(filename.length - 3, filename.length);
+                }
+            }
+            */
+        }
+        console.log(`flowid ${flowid} filename ${filename}`);
+
+        function timeString() {
+            let d = new Date();
+            return `${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`;
+        }
+
+        /*** DOCUMENT READY **************************************************
+         * 
+         *  Initialize page elements
+         */
+         $(document).ready(function() {
+            // Initialize SSO element
+            $("#sso").sso();
+
+            // OnClick handler to close sandwich menu
+            $('.navbar-nav a').on('click', function() {
+                $('.navbar-collapse').collapse('hide');
+            });
+
+            /******************************************************************
+             *
+             * EventSource - Try to keep the user calm until DB record is made.
+             *
+             * https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams
+             *
+             */
+            var evtSource = new EventSource(
+                encodeURI(`/sse/flow-upload-status/?filename=${filename}&flowid=${flowid}`),
+                { withCredentials: true }
+            );
+            evtSource.onopen = function() {
+                console.log(
+                    `Connection to ${evtSource.url} opened.`
+                );
+            };
+            evtSource.onerror = function(event) {
+                console.log("EventSource failed.");
+                console.log(event);
+            };
+            var lastEventMessage = '';
+            evtSource.addEventListener("STATUS", function(event) {
+                //console.log("Event STATUS");
+                newEventMessage = JSON.parse(event.data).message;
+                console.log(newEventMessage + ' <=> ' + lastEventMessage);
+                if (newEventMessage != lastEventMessage) {
+                    const eventList = document.getElementById("eventspace");
+                    const newElement = document.createElement("div");
+                    newElement.innerHTML = `[${timeString()}] ${newEventMessage}`;
+                    eventList.appendChild(newElement);
+                    lastEventMessage = newEventMessage;
+                }
+            }, false);
+            evtSource.addEventListener("ERROR", function(event) {
+                console.log("Event ERROR");
+                const eventList = document.getElementById("eventspace");
+                const newElement = document.createElement("div");
+                newElement.style.color = "Red";
+                newElement.innerHTML = JSON.parse(event.data).message;
+                eventList.appendChild(newElement);
+                evtSource.close();
+            }, false);
+            evtSource.addEventListener("DONE", function(event) {
+                console.log("Event DONE");
+                const eventList = document.getElementById("eventspace");
+                const newElement = document.createElement("div");
+                newElement.style.color = "Green";
+                newElement.innerHTML = "Processing complete! Redirecting...";
+                eventList.appendChild(newElement);
+                evtSource.close();
+                window.location.href = `edit_vm_details.html?id=${JSON.parse(event.data).id}`;
+            }, false);
+
+            console.log("Settings supposedly done...");
+         });
+    </script>
+
+
+</head>
+
+
+<body data-spy="scroll" data-target="#navbarContent" data-offset="70">
+
+
+    <div class="fixed-top navbar-container">
+        <nav class="navbar navbar-expand-md navbar-light bg-white py-0" style="width: 100%;">
+            <div class="container navbar-brand-container">
+                <a class="navbar-brand py-3" href="upload.html"><img id="navbar-logo" src="img/utu-torch-black.png"></a>
+                <span id="navbar-title">Manage</span>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="nav navbar-nav">
+                        <a class="nav-link p-3" href="#server">Processing</a>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="sso"></div>
+    </div>
+
+
+    <!-- PAGE CONTENT -->
+    <div class="container-fluid">
+        <div class="row" id="content-row">
+            <main>
+
+
+                <nav class="site">
+                    <ol>
+                        <li><a href="index.html">UTU Virtual Machines</a></li>
+                        <li><a href="upload.html">Upload and Manage Virtual Machines</a></li>
+                        <li>Process Upload</li>
+                    </ol>
+                </nav>
+
+
+                <!-- Executive summary -->
+                <article>
+                    <p>You VM image upload data has been transferred to the server and now it needs to be processed and added to the database.</p>
+                </article>
+
+
+                <!-- ARTICLE event stream -->
+                <article id="progress">
+                    <h1 id="server"><i class="fa fa-cloud-upload"></i>Server is processing...</h1>
+                    <p id="eventspace"></p>
+                </article>
+
+
+            </main>
+        </div>
+    </div>
+    <!-- MAIN ENDS -->
+
+
+    <!-- FOOTER -------------------------------------------------------------->
+    <footer><!-- flex container -->
+        <div>
+            <img    class="footer-logo"
+                    src="img/UTU_logo-white_EN_transparent.png">
+        </div>
+        <div><!-- flex container -->
+            <div>
+                © <a href="https://www.utu.fi">University of Turku</a>,
+                <a href="https://tech.utu.fi/en/">Department of Future  Technologies</a> 2019<br>
+                Brought to you by the <a href="https://gitlab.utu.fi/soft/ftdev/wikis/home">Course virtualization team</a> @ <a href="https://tech.utu.fi/fi/software-engineering/">SwDev laboratory</a>.
+            </div>
+            <div>
+                <a href="documentation.html">Documentation</a>
+                <a href="#">Statistics</a>
+                <a href="privacy.html">Privacy</a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>

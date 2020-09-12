@@ -7,23 +7,33 @@
 #
 # setup.py - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2020-01-01  Initial version.
-#   0.2.0   2020-01-02  Import do_or_die() from old scripts.
-#   0.3.0   2020-01-02  Add database creation.
-#   0.4.0   2020-01-02  Add overwrite/force parameter.
-#   0.5.0   2020-01-02  Add cron job create.
-#   0.6.0   2020-01-02  Add cron job detection and removal.
-#   0.7.0   2020-01-02  Fix do_or_die() to handle script input.
-#   0.8.0   2020-01-02  Add stdout and stderr output to do_or_die().
-#   0.8.1   2020-01-08  Add download config items into flask app instance file.
-#   0.8.2   2020-01-29  Drop Python requirement to v.3.6 (due to vm.utu.fi).
-#   0.9.0   2020-01-30  GITUSER (owner of this file) resolved. Theory is that
-#                       owner is the same account that pulled/cloned this repo.
-#                       This same account is assumed to be the "maintainer" and
-#                       is used as the owner for files created by this script.
+#   2020-01-01  Initial version.
+#   2020-01-02  Import do_or_die() from old scripts.
+#   2020-01-02  Add database creation.
+#   2020-01-02  Add overwrite/force parameter.
+#   2020-01-02  Add cron job create.
+#   2020-01-02  Add cron job detection and removal.
+#   2020-01-02  Fix do_or_die() to handle script input.
+#   2020-01-02  Add stdout and stderr output to do_or_die().
+#   2020-01-08  Add download config items into flask app instance file.
+#   2020-01-29  Drop Python requirement to v.3.6 (due to vm.utu.fi).
+#   2020-01-30  GITUSER (owner of this file) resolved. Theory is that owner is
+#               the same account that pulled/cloned this repo. This same
+#               account is assumed to be the "maintainer" and is used as the
+#               owner for files created by this script.
+#   2020-09-11  Modified cron job creation code, added ability to configure
+#               crontab scheduling (in the cronjobs dictionary) and option
+#               to install cron jobs to specified user (see 'cronjobs' dict).
 #
 #
-#   REQUIRES ROOT PRIVILEGES TO RUN!
+#   ==> REQUIRES ROOT PRIVILEGES TO RUN! <==
+#
+#
+#   1. Creates instance/application.conf
+#   2. Creates application.sqlite3
+#   3. If DEV, inserts test data into application.sqlite3
+#   4. Creates cron jobs
+#
 #
 #   IMPORTANT NOTE!
 #           While the execution of this script requires root privileges,
@@ -54,7 +64,7 @@
 #             BUT(!!) for 'overwrite' this is an unsolved issue.
 #
 
-# Requires Python 3.6+
+# Requires Python 3.6+ (f-strings, ordered dictionaries)
 # IMPORTANT! CANNOT be pre-3.6 due to reliance on ordered dicts!!
 REQUIRE_PYTHON_VER = (3, 6)
 
@@ -94,7 +104,7 @@ if sys.version_info < REQUIRE_PYTHON_VER:
 
 
 # PEP 396 -- Module Version Numbers https://www.python.org/dev/peps/pep-0396/
-__version__ = "0.9.0"
+__version__ = "0.9.1"
 __author__  = "Jani Tammi <jasata@utu.fi>"
 VERSION = __version__
 HEADER  = """
@@ -130,7 +140,7 @@ defaults = {
     'choices':                      ['DEV', 'UAT', 'PRD'],
     'common': {
         'mode':                     'PRD',
-        'upload_folder':            ROOTPATH + '/unpublished',
+        'upload_folder':            ROOTPATH + '/uploads',
         'upload_allowed_ext':       ['ova', 'zip', 'img'],
         'download_folder':          '/var/www/downloads',
         'download_urlpath':         '/x-accel-redirect/',
@@ -164,10 +174,107 @@ defaults = {
 }
 
 
+# If in doubt, use: https://crontab.guru/#0_3/3_*_*_*
+# See also class CronJob
+# NOTE: 'script' cannot start with '/' character - it has to be
+#       a path relative to the execution directory of this script.
 cronjobs = {
-    'remove failed uploads':    '/cron.job/remove-failed-uploads.py',
-    'calculate SHA1 checksums': '/cron.job/calculate-checksum.py'
+    'remove failed uploads': {
+        'script':   'cron.job/remove-failed-uploads.py',
+        'schedule': '0 3 * * *'         # At 03:00 every day
+    },
+    'calculate SHA1 checksums':
+    {
+        'script':   'cron.job/calculate-checksum.py',
+        'schedule': '*/5 * * * *'       # Every 5 minutes
+    },
+    'assemble flow chunks':
+    {
+        'script':   'cron.job/flow-upload-processor.py',
+        'schedule': '*/1 * * * *',      # Every minute
+        'user':     'www-data'
+    }
 }
+
+class CronJob():
+
+    def __init__(self, script: str, schedule: str, user: str = None):
+        """."""
+        self.script = os.path.join(
+            # NOT working directory, but directory for this script!
+            os.path.dirname(os.path.realpath(__file__)),
+            script
+        )
+        self.schedule = schedule
+        self.user = user
+
+
+    def remove(self):
+        usr = "-u " + self.user if self.user else ""
+        cmd =  f"crontab {usr} -l 2>/dev/null | "
+        cmd += f"grep -v '{self.script}' | crontab {usr} -"
+        CronJob.subprocess(cmd, shell = True)
+
+
+    def create(self, force: bool = False):
+        if self.exists:
+            if force:
+                self.remove()
+            else:
+                raise ValueError(
+                    f"Job '{self.script}' already exists!"
+                )
+        #self.script += " -with args"
+        usr = "-u " + self.user if self.user else ""
+        cmd = f'(crontab {usr} -l 2>/dev/null; echo "{self.schedule} '
+        cmd += f'{self.script} >/dev/null 2>&1") | crontab {usr} -'
+        CronJob.subprocess(cmd, shell = True)
+
+
+    @property
+    def exists(self) -> bool:
+        """Argument is script name."""
+        usr = "-u " + self.user if self.user else ""
+        pipe = subprocess.Popen(
+            f'crontab {usr} -l 2> /dev/null',
+            shell = True,
+            stdout = subprocess.PIPE
+        )
+        for line in pipe.stdout:
+            if self.script in line.decode('utf-8'):
+                return True
+        return False
+
+
+    @staticmethod
+    def subprocess(
+        cmd: str,
+        shell: bool = False,
+        stdout = subprocess.DEVNULL,
+        stderr = subprocess.DEVNULL
+    ):
+        """Call do_or_die("ls", stdout = subprocess.PIPE), if you want output. Otherwise / by default the output is sent to /dev/null."""
+        if not shell:
+            # Set empty double-quotes as empty list item
+            # Required for commands like; ssh-keygen ... -N ""
+            cmd = ['' if i == '""' or i == "''" else i for i in cmd.split(" ")]
+        prc = subprocess.run(
+            cmd,
+            shell  = shell,
+            stdout = stdout,
+            stderr = stderr
+        )
+        if prc.returncode:
+            raise ValueError(
+                f"code: {prc.returncode}, command: '{cmd}'"
+            )
+        # Return output (stdout, stderr)
+        return (
+            prc.stdout.decode("utf-8") if stdout == subprocess.PIPE else None,
+            prc.stderr.decode("utf-8") if stderr == subprocess.PIPE else None
+        )
+
+
 
 class ConfigFile:
     """As everything in this script, assumes superuser privileges. Only filename and content are required. User and group will default to effective user and group values on creation time and permissions default to common text file permissions wrxwr-wr- (0o644).
@@ -361,19 +468,10 @@ DOWNLOAD_URLPATH        = '{{download_urlpath}}'
 )
 
 
-
-def cronjob_exists(job: str) -> bool:
-    pipe = subprocess.Popen(
-        'crontab -l 2> /dev/null',
-        shell = True,
-        stdout = subprocess.PIPE
-    )
-    for line in pipe.stdout:
-        if job in line.decode('utf-8'):
-            return True
-    return False
-
-
+###############################################################################
+#
+# General functions
+#
 def file_exists(file: str) -> bool:
     """Accepts path/file or file and tests if it exists (as a file)."""
     if os.path.exists(file):
@@ -594,26 +692,27 @@ if __name__ == '__main__':
         #
         # Create cron jobs
         #
-        # */5 * * * *    Every 5 minutes
-        for title, script in cronjobs.items():
-            if cronjob_exists(script):
-                log.error(f"Job '{title}' already exists")
+        # Required cronjobs dictionary format:
+        #   { 'titlestring':
+        #       {'script': str, 'schedule': str[,'user': str]},
+        #       ... 
+        #   }
+        # 'script'      filepath relative to the path of this script
+        # 'schedule'    crontab "* * * * *" format
+        # 'user'        (optional) to run cron job as user (other than root)
+        for title, jobDict in cronjobs.items():
+            cronjob = CronJob(**jobDict)
+            if cronjob.exists:
                 if cfg['overwrite']:
-                    do_or_die(
-                        f"crontab -l 2>/dev/null | grep -v '{script}' | crontab -",
-                        shell = True
-                    )
+                    cronjob.remove()
                     log.info(f"Pre-existing job '{title}' removed")
                 else:
+                    log.error(f"Job '{title}' already exists")
                     raise ValueError(
-                        f"Job '{script}' already exists!"
+                        f"Job '{title}' already exists!"
                     )
             log.info(f"Creating cron job to {title}")
-            script = ROOTPATH + script
-            #script += " -with args"
-            script += " >/dev/null 2>&1"
-            cmd = f'(crontab -l 2>/dev/null; echo "*/5 * * * * {script}") | crontab -'
-            do_or_die(cmd, shell = True)
+            cronjob.create()
 
 
     except Exception as e:

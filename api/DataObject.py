@@ -2,8 +2,9 @@
 #
 # DataObject class (SQLite3 utilities)
 #
-#   2019-12-27  Jani Tammi  Add .enum: list into column object DotDict.
-#                           Extracted from SQL schema (CHECK col IN (...)).
+#   2019-12-27  Add .enum: list into column object DotDict.
+#               Extracted from SQL schema (CHECK col IN (...)).
+#   2020-09-08  Added selectSQL(), insertSQL() and updateSQL() functions.
 #
 #
 #   Every API class should derive itself from this class.
@@ -298,7 +299,71 @@ class DataObject(list):
         return schema
 
 
+
     def __str__(self):
         return "\n".join([str(c) for c in self])
+
+
+
+    def insertSQL(self, data: dict) -> str:
+        """Generate INSERT statement to match 'data' dictionary."""
+        try:
+            sql = f"INSERT INTO {self.table_name} "
+            sql += f"({','.join(data.keys())}) "
+            sql += f"VALUES (:{',:'.join(data.keys())})"
+            #app.logger.debug("DataObject.insertSQL(): " + sql)
+            return sql
+        except Exception as e:
+            app.logger.exception("DataObject.insertSQL(): Error parsing SQL")
+            raise InternalError(
+                "Error parsing SQL",
+                {'sql': sql or '', 'exception' : str(e)}
+            )
+
+
+
+    def updateSQL(self, data: dict, pkeys: list, ro: list = []) -> str:
+        """Generate UPDATE statement to match 'data' dictionary. For correct syntax, 'pkeys' list must be specified with all primary keys and optionally, 'ro' (read-only) list should contain column names that must not be updated."""
+        try:
+            # columns list, without primary key(s)
+            cols = [ c for c in data.keys() if c not in pkeys ]
+            # Remove read-only columns, in case someone injected them
+            cols = [ c for c in cols if c not in ro ]
+            app.logger.debug(f"DataObject.updateSQL(): Columns: {','.join(cols)}")
+            sql = f"UPDATE {self.table_name} SET "
+            sql += ",".join([ c + ' = :' + c for c in cols ])
+            sql += " WHERE "
+            sql += " AND ".join([k + ' = :' + k for k in pkeys])
+            #app.logger.debug("DataObject.updateSQL(): " + sql)
+            return sql
+        except Exception as e:
+            app.logger.exception("DataObject.updateSQL(): Error parsing SQL")
+            raise InternalError(
+                "SQL parsing error",
+                {'sql' : sql or '', 'exception' : str(e)}
+            ) from None
+
+
+
+    def selectSQL(self, where: dict, columns: list = None) -> str:
+        """TBA"""
+        try:
+            if not columns:
+                cols = '*'
+            elif isinstance(columns, list):
+                cols = ", ".join(columns)
+            else:
+                cols = columns
+            sql = f"SELECT {cols} FROM {self.table_name} WHERE "
+            sql += " AND ".join([ f"{k} = :{k}" for k in where ])
+            #app.logger.debug("DataObject.selectSQL(): " + sql)
+            return sql
+        except Exception as e:
+            app.logger.exception("DataObject.selectSQL(): Error parsing SQL")
+            raise InternalError(
+                "Error parsing SQL",
+                {'sql': sql or '', 'exception' : str(e)}
+            )
+
 
 # EOF

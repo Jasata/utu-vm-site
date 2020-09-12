@@ -24,6 +24,8 @@ from flask          import g
 class Teacher():
 
     def __init__(self, uid: str):
+        if not uid:
+            raise ValueError("Not a teacher!")
         self.__uid      = None
         self.__created  = None
         self.__status   = None
