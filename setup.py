@@ -404,7 +404,7 @@ files = {}
 files['application.conf'] = ConfigFile(
     ROOTPATH + '/instance/application.conf',
     """
-# -*- coding: utf-8 -*-
+s# -*- coding: utf-8 -*-
 #
 # Turku University (2019) Department of Future Technologies
 # Website for Course Virtualization Project
