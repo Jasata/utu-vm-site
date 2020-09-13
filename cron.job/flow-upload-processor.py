@@ -2,18 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 # Turku University (2020) Department of Future Technologies
-# Course Virtualization / Website
-# Backend cron Job - Assemble Flow.js upload chunks and create database entry.
+# Course Virtualization / Website / Cron Jobs
+# Assemble Flow.js upload chunks and create database entry.
 #
 # flow-upload-processor.py - Jani Tammi <jasata@utu.fi>
-#
 #   2020-09-09  Initial version.
 #   2020-09-10  OVF parsing added.
 #   2020-09-12  Fixed OVFData constructor logger -argument.
 #               Now writes '.error' files for failed image concatenations.
+#   2020-09-13  Site specific configurations now read from CONFIG_FILE
 #
-#   - cron job created by 'setup.py'.
-#   - Logging via syslog.
+#   - Job added to crontab by 'setup.py'.
+#   - Logging to syslog.
+#   - Must be executed as 'www-data'.
 #
 #
 # FUNCTIONAL DESCRIPTION
@@ -47,13 +48,28 @@ from OVFData import OVFData
 
 # Unprivileged os.nice() values: 0 ... 20 (= lowest priority)
 NICE            = 20
-UPLOAD_DIR      = "/var/www/vm.utu.fi/uploads"
-DOWNLOAD_DIR    = "/var/www/downloads"
 EXECUTE_AS      = "www-data"
-LOGLEVEL        = logging.INFO # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
-DATABASE        = '/var/www/vm.utu.fi/application.sqlite3'
+LOGLEVEL        = logging.DEBUG  # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
+CONFIG_FILE     = "site.config" # All instance/site specific values
 
 SCRIPTNAME = os.path.basename(__file__)
+
+
+
+def read_config_file(cfgfile: str):
+    """Reads (with ConfigParser()) '[Site]' and creates global variables. Argument 'cfgfile' has to be a filename only (not path + file) and the file must exist in the same directory as this script."""
+    cfgfile = os.path.join(
+        os.path.split(os.path.realpath(__file__))[0],
+        cfgfile
+    )
+    if not os.path.exists(cfgfile):
+        raise FileNotFoundError(f"Site configuration '{cfgfile}' not found!")
+    import configparser
+    cfg = configparser.ConfigParser()
+    cfg.optionxform = lambda option: option # preserve case
+    cfg.read(cfgfile)
+    for k, v in cfg.items('Site'):
+        globals()[k] = v
 
 
 def exists(file: str) -> bool:
@@ -250,12 +266,25 @@ if __name__ == '__main__':
            f"This job must be executed as {EXECUTE_AS} (stared by user '{running_as}')"
         )
     else:
-        log.debug(f"Started! (executing as {running_as})")
+        log.debug(f"Started! (executing as '{running_as}')")
+
+
+    #
+    # Read site specific configuration
+    #
+    log.debug(f"CWD: {os.getcwd()}")
+    try:
+        log.debug(f"Reading site configuration '{CONFIG_FILE}'")
+        read_config_file(CONFIG_FILE)
+    except:
+        log.exception(f"Error reading site configuration '{CONFIG_FILE}'")
+        os._exit(-1)
 
 
     #
     # Compile list of '.job' files and reserve them
     #
+    log.debug(f"Looking for jobs in '{UPLOAD_DIR}'")
     pid = os.getpid()
     jobs = []
     try:
@@ -351,6 +380,7 @@ if __name__ == '__main__':
         except Exception as e:
             log.debug(str(e))
             log.error("Error while inserting 'file' row!")
+            # Jump to the ext job
             continue
         else:
             n_success += 1

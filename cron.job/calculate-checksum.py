@@ -2,18 +2,20 @@
 # -*- coding: utf-8 -*-
 #
 # Turku University (2020) Department of Future Technologies
-# Course Virtualization / Website
-# Backend cron Job - Calculate SHA1 Checksums for VM Images
+# Course Virtualization / Website / Cron Jobs
+# Calculate SHA1 Checksums for VM Images
 #
-#   calculate-checksum.py - Jani Tammi <jasata@utu.fi>
+# calculate-checksum.py - Jani Tammi <jasata@utu.fi>
+#   2020-01-02  Initial version
+#   2020-01-02  Parallerized processing
+#   2020-01-03  Add os.nice()
+#   2020-01-03  Slight improvements to error reporting
+#   2020-09-13  Run as 'www-data' instead of root
 #
-#   0.1.0   2020-01-02  Initial version
-#   0.2.0   2020-01-02  Parallerized processing
-#   0.3.0   2020-01-03  Add os.nice()
-#   0.4.0   2020-01-03  Slight improvements to error reporting
+#   - Job added to crontab by 'setup.py'.
+#   - Logging to syslog.
+#   - Must be executed as 'www-data'.
 #
-#   - cron job created by 'setup.py'.
-#   - Logging via syslog.
 #
 #   1) Script SELECTs all 'file' table rows that have NULL 'sha1' column
 #   2) multiprosessing.Queue() is loaded with Task objects (id, filename)
@@ -50,9 +52,11 @@ from multiprocessing import Process
 
 # Unprivileged os.nice() values: 0 ... 20 (= lowest priority)
 NICE        = 20
+EXECUTE_AS      = "www-data"
+LOGLEVEL        = logging.INFO  # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
+CONFIG_FILE     = "site.config" # All instance/site specific values
 
-FILEFOLDER  = '/var/www/downloads'
-DATABASE    = '/var/www/vm.utu.fi/application.sqlite3'
+# Settings specific for this script (and, unlikely to change)
 TABLE       = 'file'
 PKCOLUMN    = 'id'
 SHA1COLUMN  = 'sha1'
@@ -60,6 +64,22 @@ NAMECOLUMN  = 'name'
 
 SCRIPTNAME  = os.path.basename(__file__)
 
+
+
+def read_config_file(cfgfile: str):
+    """Reads (with ConfigParser()) '[Site]' and creates global variables. Argument 'cfgfile' has to be a filename only (not path + file) and the file must exist in the same directory as this script."""
+    cfgfile = os.path.join(
+        os.path.split(os.path.realpath(__file__))[0],
+        cfgfile
+    )
+    if not os.path.exists(cfgfile):
+        raise FileNotFoundError(f"Site configuration '{cfgfile}' not found!")
+    import configparser
+    cfg = configparser.ConfigParser()
+    cfg.optionxform = lambda option: option # preserve case
+    cfg.read(cfgfile)
+    for k, v in cfg.items('Site'):
+        globals()[k] = v
 
 
 #
@@ -102,7 +122,7 @@ class Task(object):
         try:
             # Using worker's database connection
             cursor = db.cursor()
-            self.result = sha1(FILEFOLDER + '/' + self.filename)
+            self.result = sha1(DOWNLOAD_DIR + '/' + self.filename)
             # Update with actual SHA1 value
             cursor.execute(update, [self.result, self.id])
             if cursor.rowcount != 1:
@@ -216,6 +236,32 @@ if __name__ == '__main__':
     log.info(f"Executing as {pwd.getpwuid(os.geteuid()).pw_name}")
 
 
+    #
+    # Resolve user and require to be executed as EXECUTE_AS
+    #
+    running_as = pwd.getpwuid(os.geteuid()).pw_name
+    if running_as != EXECUTE_AS:
+        log.error(
+           f"This job must be executed as {EXECUTE_AS} (stared by user '{running_as}')"
+        )
+    else:
+        log.debug(f"Started! (executing as '{running_as}')")
+
+
+    #
+    # Read site specific configuration
+    #
+    try:
+        log.debug(f"Reading site configuration '{CONFIG_FILE}'")
+        read_config_file(CONFIG_FILE)
+    except:
+        log.exception(f"Error reading site configuration '{CONFIG_FILE}'")
+        os._exit(-1)
+
+
+    #
+    # Actual work
+    #
     select = f"SELECT {PKCOLUMN}, {NAMECOLUMN} FROM {TABLE} "
     select += f"WHERE {SHA1COLUMN} IS NULL"
     try:

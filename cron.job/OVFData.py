@@ -5,6 +5,7 @@
 #   2019-12-26  Initial version.
 #   2020-09-05  Header description added.
 #   2020-09-12  Add conditional reads to system data extract function.
+#   2020-09-13  Enhanced conditionals in the system data read function.
 #
 #
 #   Create OVFData object with OVF XML string.
@@ -229,30 +230,38 @@ class OVFData():
                 )
                 if annotation:
                     self.description = annotation.text
-                #
+                ### OS ID and Type
                 v_os = v_sys.find('ovf:OperatingSystemSection', self._ns)
                 if v_os:
                     self.osid = v_os.get(self._nsattr('id', 'ovf'))
                     # OS type -string from lookup dictionary
                     self.ostype = self._os_type[self.osid]
-                #
+                ### CPUs
                 v_cpu = v_sys.find(
                     './ovf:VirtualHardwareSection/ovf:Item/[rasd:ResourceType="3"]',
                     self._ns
                 )
-            # NOTE VMware has vmw:CoresPerSocket. Ignored #####################
-            virtual_quantity = v_cpu.find('rasd:VirtualQuantity', self._ns)
-            if virtual_quantity:
-                self.cpus = virtual_quantity.text
-            v_mem = v_sys.find(
-                './ovf:VirtualHardwareSection/ovf:Item/[rasd:ResourceType="4"]',
-                self._ns
-            )
-            if v_mem:
-                ### RAM
-                virtual_memory = v_mem.find('rasd:VirtualQuantity', self._ns)
-                if virtual_memory:
-                    self.ram = virtual_memory.text
+                if v_cpu:
+                    # NOTE VMware has vmw:CoresPerSocket. Ignored #############
+                    virtual_quantity = v_cpu.find(
+                        'rasd:VirtualQuantity',
+                        self._ns
+                    )
+                    if virtual_quantity:
+                        self.cpus = virtual_quantity.text
+                ### MEMORY
+                v_mem = v_sys.find(
+                    './ovf:VirtualHardwareSection/ovf:Item/[rasd:ResourceType="4"]',
+                    self._ns
+                )
+                if v_mem:
+                    virtual_memory = v_mem.find(
+                        'rasd:VirtualQuantity',
+                        self._ns
+                    )
+                    if virtual_memory:
+                        self.ram = virtual_memory.text
+            # if v_sys
             self.logger.debug(
                 f"'{self.name}' ({self.ostype}): "
                 f"{self.cpus} CPUs, {self.ram} MB RAM"
