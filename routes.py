@@ -291,35 +291,33 @@ def flow_chunk_upload():
     if not sso.is_teacher:
         raise api.Unauthorized("Active teacher privileges required")
 
-    flow = api.Flow(request)
-    # Check for filename conflict
-    if api.Flow.exists(
-        os.path.join(
-            api.Flow.download_dir(),
-            request.form.get('flowFilename') or
-            request.args.get('flowFilename')
-        )
-    ):
-        # 409 Conflict
-        return "File by specified name already exists!", 409
+    try:
+        flow = api.Flow(request)
 
-    if request.method == "GET":
-        # GET merely checks if the chunk already exists
-        if flow.chunk_exists:
-            return "", 200  # OK
-        return "", 204      # No Content
-    else:
-        if not flow.valid_chunk:
-            return "", 400
-        flow.save_chunk()
+        # Check for filename conflict
+        if flow.file_exists:
+            return "File by specified name already exists!", 409 # Conflict
 
-    if flow.file_complete:
-        # All chunks uploaded, create '.job' file for cron job
-        # Set owner as current user (which is an active teacher)
-        flow.createJob(sso.uid)
+        if request.method == "GET":
+            # GET merely checks if the chunk already exists
+            if flow.chunk_exists:
+                return "", 200  # OK
+            return "", 204      # No Content
+        else:
+            if flow.chunk_validated:
+                flow.save_chunk()
+            else:
+                return "Checksum failure", 400  # Bad Request (Flow.js will retry chunk upload)
 
-    return "", 200
+        if flow.upload_completed:
+            # All chunks uploaded, create '.job' file for cron job
+            # Set owner as current user (which is an active teacher)
+            flow.create_job(sso.uid)
 
+        return "", 200
+    except:
+        app.logger.exception("Flow upload exception!")
+        return "Internal server error! Contact administration!", 500
 
 
 ###############################################################################

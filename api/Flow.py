@@ -48,6 +48,7 @@ class Flow():
             self.flowFilename           = mdict.get('flowFilename')
             self.flowRelativePath       = mdict.get('flowRelativePath')
             self.flowTotalChunks        = int(mdict.get('flowTotalChunks'))
+            self.checksum               = mdict.get('sha1', None)
         except Exception as e:
             # For debugging purposes, dump request.args and regquest.form
             for k, v in request.args.items():
@@ -63,23 +64,69 @@ class Flow():
     @property
     def chunk_exists(self) -> bool:
         chunkfile = Path(self.__chunk_filepath())
-        app.logger.debug(
-            f"Chunk '{self.__chunk_filepath()}' {('does not exist', 'exists')[int(chunkfile.exists())]}"
-        )
+        # app.logger.debug(
+        #     f"Chunk '{self.__chunk_filepath()}' {('does not exist', 'exists')[int(chunkfile.exists())]}"
+        # )
         return chunkfile.exists() and chunkfile.is_file()
 
 
     @property
-    def valid_chunk(self) -> bool:
-        """How do I determine valid chunk??? Checksums??"""
+    def file_exists(self) -> bool:
+        """Checks for a name conflict in the DOWNLOAD_DIR."""
+        flowfilepath = os.path.join(self.downdir, self.flowFilename)
+        if os.path.exists(flowfilepath):
+            # Still a conflict even if the existing name is not a file
+            return True
+        return False
+
+
+    @property
+    def upload_completed(self) -> bool:
+        for i in range (1, self.flowTotalChunks + 1):
+            if not Path(self.__chunk_filepath(i)).exists():
+                return False 
         return True
 
 
     @property
-    def file_complete(self) -> bool:
-        for i in range (1, self.flowTotalChunks + 1):
-            if not Path(self.__chunk_filepath(i)).exists():
-                return False 
+    def chunk_validated(self) -> bool:
+        """Assuming that client sent checksums are SHA1."""
+        if not self.checksum:
+            app.logger.info("No checksum! Accepted without validation...")
+            return True
+
+        # Each value in request.files[<n>] is a Werkzeug FileStorage
+        # This is supposedly a thing wrapper and thus /SHOULD/ also provide
+        # the standard methods such as .read() etc.
+        chunk = self.request.files["file"]
+        if not chunk:
+            raise api.BadRequest(
+                f"Cannot validate! Request does not contain 'file' (aka. 'chunk')!"
+            )
+
+        import hashlib
+        # BUF_SIZE is totally arbitrary. Anywhere between 64kB and 1MB ??
+        BUF_SIZE = 1024 * 1024
+        sha1 = hashlib.sha1()
+        try:
+            while True:
+                data = chunk.read(BUF_SIZE)
+                if not data:
+                    break
+                sha1.update(data)
+        finally:
+            # We MUST "rewind", or chunk.save() will same zero bytes!
+            chunk.seek(0)
+        # Compare to client sent checksum
+        if sha1.hexdigest() != self.checksum:
+            app.logger.error(
+                f"SHA1 ERROR: '{self.flowFilename}' chunk {self.flowChunkNumber} (client) '{self.checksum}' <> '{sha1.hexdigest()}' (server)"
+            )
+            return False
+
+        app.logger.debug(
+            f"SHA1: '{self.flowFilename}' chunk {self.flowChunkNumber} (client) '{self.checksum}' == '{sha1.hexdigest()}' (server)"
+        )
         return True
 
 
@@ -87,7 +134,7 @@ class Flow():
         if not self.request.method == 'POST':
             raise BadRequest("Not a POST request, cannot save a chunk!")
         # FileStorage object wrapper
-        chunk = self.request.files["file"]                    
+        chunk = self.request.files["file"]
         if not chunk:
             raise BadRequest("Request contains no file part!")
         # Blindly write over
@@ -102,7 +149,7 @@ class Flow():
         )
 
 
-    def createJob(self, owner: str) -> str:
+    def create_job(self, owner: str) -> str:
         """Creates a '.job' file into the upload directory for uploaded chunks. File will contain a JSON string with the necessary parameters for a cron job to assemble the uploads and create the database entry."""
         import json
         jobfilename = os.path.join(self.updir, f"{self.flowIdentifier}.job")
@@ -160,15 +207,6 @@ class Flow():
         return downdir
 
 
-    @staticmethod
-    def exists(filepath: str) -> bool:
-        """Accepts path/file or file and tests if it exists (as a file)."""
-        if os.path.exists(filepath):
-            if os.path.isfile(filepath):
-                return True
-        return False
-
-
     #
     # SSE - Server-Sent Events
     #
@@ -185,14 +223,29 @@ class Flow():
         def get_file_id(filename: str) -> int:
             with app.app_context():
                 with sqlite3.connect(app.config.get('SQLITE3_DATABASE_FILE')) as db:
-                    sql     = "SELECT id FROM file WHERE name = :filename"
-                    cursor = db.cursor()
-                    result = cursor.execute(sql, locals()).fetchall()
-                    if len(result) > 1:
-                        raise ValueError(f"Multiple results for '{filename}'!")
-                    if len(result) < 1:
-                        return None
-                    return result[0][0]
+                    retries = 3
+                    while retries:
+                        try:
+                            sql = "SELECT id FROM file WHERE name = :filename"
+                            cursor = db.cursor()
+                            result = cursor.execute(sql, locals()).fetchall()
+                        except sqlite3.OperationalError:
+                            retries -= 1
+                            time.sleep(0.2)
+                        else:
+                            retries = 0
+                            if len(result) > 1:
+                                raise ValueError(
+                                    f"Multiple results for '{filename}'!"
+                                )
+                            if len(result) < 1:
+                                return None
+                            return result[0][0]
+        def exists(filepath: str) -> bool:
+            if os.path.exists(filepath):
+                if os.path.isfile(filepath):
+                    return True
+            return False
         def older(filepath: str, min: float) -> bool:
             return os.path.getmtime(filepath) < (time.time() - (min * 60))
         def event(evtType: str, payload: dict) -> str:
@@ -214,7 +267,7 @@ class Flow():
         while True:
             if len(glob.glob(chunkfilenamepattern)) > 0:
                 # We have chunks!
-                if Flow.exists(jobfilepath):
+                if exists(jobfilepath):
                     # .job file exists
                     if older(jobfilepath, 5):
                         # ...but is older than 5 minutes
@@ -230,7 +283,7 @@ class Flow():
                     # No '.job' file
                     if len(glob.glob(taggedjobfilenamepattern)) > 0:
                         # Tagged job file exists
-                        if Flow.exists(errfilepath):
+                        if exists(errfilepath):
                             # Error file found!
                             yield evterror(
                                 "File prosessing has failed! Contact administration!"
@@ -247,7 +300,7 @@ class Flow():
                         )
             else:
                 # No chunks!
-                if Flow.exists(imgfilepath):
+                if exists(imgfilepath):
                     # image file exists!
                     file_id = get_file_id(filename)
                     if file_id:

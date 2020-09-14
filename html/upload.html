@@ -26,9 +26,9 @@
     <!-- DataTables -->
     <link   rel="stylesheet" href="css/datatables.css">
     <script type="text/javascript" src="js/datatables.js"></script>
-    <!-- Flow.js -->
+    <!-- Flow.js & SHA1 -->
     <script type="text/javascript" src="js/flow.js"></script>
-
+    <script type="text/javascript" src="js/sha1.js"></script>
 
     <!-- Site Specific -->
     <link   rel="stylesheet" href="css/common.css">
@@ -60,7 +60,44 @@
                 withCredentials:        true, // For credential cookies
                 permanentErrors:        [404, 409, 415, 500, 501],
                 maxChunkRetries:        2,
-                chunkSize:              1024 * 1024 * 20 // 20 MB
+                chunkSize:              1024 * 1024 * 20, // 20 MB
+                preprocess : function(chunk) {
+                    // Src: https://github.com/flowjs/flow.js/issues/9#issuecomment-288750191
+                    if (chunk.readState == 0) {
+                        // readState=0 : Read of file chunk not started.
+                        // Triggering it now.
+                        console.log(`chunk.readState = ${chunk.readState}`);
+                        chunk.preprocessState = 0;
+                        var read = chunk.flowObj.opts.readFileFn;
+                        read(chunk.fileObj, chunk.startByte, chunk.endByte, chunk.fileObj.file.type, chunk);
+                    } else if (chunk.readState == 1) {
+                        // readState=1 : Wait! Read of chunk is in progress. 
+                        console.log(`chunk.readState = ${chunk.readState}`);
+                        chunk.preprocessState = -1;
+                    } else if (chunk.readState == 2) {
+                        // readState=2 : Read is finished.
+                        // Compute checksum.
+                        console.log(`chunk.readState = ${chunk.readState}`);
+                        var reader = new FileReader();
+                        reader.onloadend = function () {
+                            chunk.sha1 = sha1(reader.result);
+                            console.log(
+                                `Finished computing chunk#${chunk.offset} ` +
+                                `(starting at : ${chunk.startByte}, ` +
+                                `finishing at : ${chunk.endByte}) ` +
+                                `sha1 : ${chunk.sha1}`
+                            );
+                            chunk.preprocessFinished();
+                        };
+                        reader.readAsBinaryString(chunk.bytes);
+                        //reader.readAsArrayBuffer(chunk.bytes);
+                    }
+                },
+                query : function(file, chunk, isTest) {
+                    // preprocess cannot include anything in the request
+                    // THIS can and does
+                    return { 'sha1' : chunk.sha1 };
+                }
             });
             flow.on('fileProgress', function(file, chunk) {
                 function readablizeBytes(bytes) {
