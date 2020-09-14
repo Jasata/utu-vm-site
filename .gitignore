@@ -3,6 +3,7 @@
 *.sqlite3-shm
 *.sqlite3-wal
 *.log
+cron.job/site.config
 # Code not-quite-thrown-away
 .discard
 README.LOCAL.txt
