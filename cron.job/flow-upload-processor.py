@@ -49,7 +49,7 @@ from OVFData import OVFData
 # Unprivileged os.nice() values: 0 ... 20 (= lowest priority)
 NICE            = 20
 EXECUTE_AS      = "www-data"
-LOGLEVEL        = logging.DEBUG  # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
+LOGLEVEL        = logging.INFO  # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
 CONFIG_FILE     = "site.config" # All instance/site specific values
 
 SCRIPTNAME = os.path.basename(__file__)
