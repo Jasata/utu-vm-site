@@ -13,24 +13,27 @@
  *  2020-08-30  Domain-SSO redirect now preserves URL parameters
  *  2020-09-04  'stateChanged' event triggers with role data
  *  2020-09-12  Fixed hardcoded SSO goto URL into window.location.hostname
+ *  2020-09-15  SSO goto/destination fixed, again...
  *
+ * USE
+ * ----------------------------------------------------------------------------
+ *  1)  A <div id="sso"></div> is placed in the HTML document to act as the
+ *      login/logout button. 'css/sso.css' contains the stylings.
+ *  2)  Document header includes 'js/sso.js'.
+ *  3)  "Document Ready" -function initializes the SSO element:
  *
- *  As the last action, the element build (.sso() -function) triggers an
- *  'ssoUpdateState' event which causes the element to issue an Ajax query,
- *  change the class of the element accordingly and finally trigger
- *  'stateChanged' event with the role string as an additional argument.
+ *      $(document).ready(function() {
+ *          // Initialize SSO element
+ *          $('#sso').sso();
  *
- *  THIS MEANS THAT THE CLASS / LOGIN STATE IS **NOT** AVAILABLE IMMEDIATELY
- *  IN THE $(document).ready() FUNCTION!!!
- *
- *  PROPER WAY TO CONDITIONALLY RENDER CONTENT
- * ============================================================================
- *  CSS Classes record login status: ['anonymous', 'student', 'teacher'].
- *  It may temporarily have a class 'deactivated', but only for duration of
- *  an Ajax query (to reject user input until complete).
- *
- *  Write an event handler for 'stateChanged' event, create it in the
- *  $(document).ready() -function:
+ *  4)  Initialization is asynchronous.
+ *      THIS MEANS THAT THE LOGIN STATE IS **NOT** AVAILABLE IMMEDIATELY
+ *      IN THE $(document).ready() FUNCTION!!!
+
+ *      After the session state has been resolved by the initialization
+ *      function, 'stateChanged' event is triggered. If other elements in
+ *      the page demend on login/session state for visual/display purposes,
+ *      an event handler should be created:
  *
  *      // Document ready - initialize page elements
  *      $(document).ready(function() {
@@ -39,21 +42,35 @@
  *          // SSO stateChanged event handler
  *          $("#sso").on("stateChanged", function(event, role) {
  *              if (role === 'teacher') {
- *                  console.log("TODO: Render page content");
+ *                  // Make necessary calls or trigger appropriate events
  *              } else {
  *                  console.log("Access Denied!");
  *              }
  *          });
  *      });
  *
+ *      The 'role' argument will provide the session state:
+ *      ['anonymous', 'student', 'teacher']
  *
- *  HOW TO USE
+ *
+ * ALTERNATIVE WAY TO GET SSO SESSION STATE
+ * ----------------------------------------------------------------------------
+ *  The $('div#sso') has a class to match the SSO session state - however,
+ *  in addition to valid CSS Classes (['anonymous', 'student', 'teacher']),
+ *  it may temporarily have a class 'deactivated', but only for duration of
+ *  an Ajax query (to reject user input until complete).
+ *
+ *  However, Writing an event handler for 'ssoUpdateState' is recommended.
+ *
+ *
+ *
+ * SERVER IMPLEMENTATION
  * ============================================================================
  *
  *  Include CSS and Javascript files in your HTML:
  *
  *      <link rel="stylesheet" href="css/sso.css">
- *      <script src="js/sso.js"></script>
+ *      <script type="text/javascript" src="js/sso.js"></script>
  *
  *  Add somewhere a Login/Logout element (must have ID="sso"):
  *
@@ -126,9 +143,10 @@ jQuery.fn.sso = function(options)
         // It is a LOGIN action
         {
             // direct broser to SSO login page
-            // Use current hostname, not hardcoded...
-            window.location.href = `https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2F${window.location.hostname}%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D`
-            // window.location.href = "https://sso.utu.fi/sso/XUI/#login/&goto=https%3A%2F%2Fvm.utu.fi%3A443%2Fapi%2Fsso%2flogin%3Fdestination%3D" + encodeURIComponent(window.location.pathname + window.location.search);
+            // parameters:
+            // 'goto': Where UTU SSO will redirect the client
+            // 'destination': Where vm.utu.fi/api/sso/login will redirect to
+            window.location.href = `https://sso.utu.fi/sso/XUI/#login/&goto=${encodeURIComponent(window.location.protocol + '//' + window.location.host)}%2Fapi%2Fsso%2flogin%3Fdestination%3D${encodeURIComponent(window.location.pathname + window.location.search)}`;
         }
         else
         // It is a LOGOUT action

@@ -289,7 +289,7 @@ def flow_chunk_upload():
     """Return 200 if given chunk already exists, return 204 if not."""
     log_request(request)
     if not sso.is_teacher:
-        raise api.Unauthorized("Active teacher privileges required")
+        return "Active teacher privileges required", 401 # Unauthorized
 
     try:
         flow = api.Flow(request)
@@ -326,7 +326,7 @@ def flow_chunk_upload():
 #
 @app.route('/api/sso', methods=['GET'], strict_slashes = False)
 def sso_state():
-    """Returns a sigle iten JSON: { "role": "[anonymous|student|teacher]" }. This also implicitly indicates the authentication state (anonymous = not authenticated)."""
+    """Returns a sigle item JSON: { "role": "[anonymous|student|teacher]" }. This also implicitly indicates the authentication state (anonymous = not authenticated)."""
     app.logger.debug(
         f"SSO STATE QUERY: session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}' sso.roleJSON = {sso.roleJSON}"
     )

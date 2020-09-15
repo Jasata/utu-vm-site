@@ -249,10 +249,12 @@ class SSO:
 
 
     def __get_uid(self) -> str:
+        """Query SSO session REST API: POST authentication cookie value"""
         sso_hash = self.request.cookies.get(self.sso_cookie)
         if not sso_hash:
             return None
         try:
+            # {SSO API}/{SSO COOKIE VALUE}?_action=validate
             response = requests.post(
                 self.session_api + sso_hash,
                 params = {
