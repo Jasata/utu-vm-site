@@ -661,7 +661,10 @@ if __name__ == '__main__':
         log.info("Creating application database")
         # Because sqlite3.connect() has no open mode parameters
         if cfg['overwrite']:
-            os.remove(database_file)
+            try:
+                os.remove(database_file)
+            except:
+                pass
         with    open(script_file, "r") as file, \
                 sqlite3.connect(database_file) as db:
             script = file.read()
