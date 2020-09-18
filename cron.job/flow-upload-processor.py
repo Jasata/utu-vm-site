@@ -10,7 +10,8 @@
 #   2020-09-10  OVF parsing added.
 #   2020-09-12  Fixed OVFData constructor logger -argument.
 #               Now writes '.error' files for failed image concatenations.
-#   2020-09-13  Site specific configurations now read from CONFIG_FILE
+#   2020-09-13  Site specific configurations now read from CONFIG_FILE.
+#   2020-09-18  Config file now 'site.conf'.
 #
 #   - Job added to crontab by 'setup.py'.
 #   - Logging to syslog.
@@ -46,11 +47,13 @@ import sqlite3
 
 from OVFData import OVFData
 
+# pylint: disable=undefined-variable
+
 # Unprivileged os.nice() values: 0 ... 20 (= lowest priority)
 NICE            = 20
 EXECUTE_AS      = "www-data"
 LOGLEVEL        = logging.INFO  # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
-CONFIG_FILE     = "site.config" # All instance/site specific values
+CONFIG_FILE     = "site.conf" # All instance/site specific values
 
 SCRIPTNAME = os.path.basename(__file__)
 
@@ -263,8 +266,9 @@ if __name__ == '__main__':
     running_as = pwd.getpwuid(os.geteuid()).pw_name
     if running_as != EXECUTE_AS:
         log.error(
-           f"This job must be executed as {EXECUTE_AS} (stared by user '{running_as}')"
+           f"This job must be executed as {EXECUTE_AS} (started by user '{running_as}')"
         )
+        os._exit(-1)
     else:
         log.debug(f"Started! (executing as '{running_as}')")
 

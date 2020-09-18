@@ -26,6 +26,9 @@
 #               to install cron jobs to specified user (see 'cronjobs' dict).
 #   2020-09-13  Creates 'cron.job/site.config' - Always overwritten!'
 #   2020-09-18  Added .ISO to default allowed upload file extensions.
+#               Rename 'cron.jobs/site.config' -> 'cron.jobs/site.conf' to be
+#               inline with other config file naming.
+#   2020-09-18  Add ALLOWED_EXT to 'cron.jobs/site.conf'.
 #
 #
 #   ==> REQUIRES ROOT PRIVILEGES TO RUN! <==
@@ -106,7 +109,7 @@ if sys.version_info < REQUIRE_PYTHON_VER:
 
 
 # PEP 396 -- Module Version Numbers https://www.python.org/dev/peps/pep-0396/
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__  = "Jani Tammi <jasata@utu.fi>"
 VERSION = __version__
 HEADER  = """
@@ -128,6 +131,7 @@ import configparser
 # vm.utu.fi project folder, commonly ['vm.utu.fi', 'vm-dev.utu.fi']
 # This script is in the project root, so we get the path to this script
 ROOTPATH = os.path.split(os.path.realpath(__file__))[0]
+SCRIPTNAME = os.path.basename(__file__)
 # Local account that pulled/clones the repository = owner of this file
 GITUSER  = pwd.getpwuid(os.stat(__file__).st_uid).pw_name
 
@@ -194,6 +198,12 @@ cronjobs = {
     {
         'script':   'cron.job/flow-upload-processor.py',
         'schedule': '*/1 * * * *',      # Every minute
+        'user':     'www-data'
+    },
+    'import orphaned vm images from download directory':
+    {
+        'script':   'cron.jobs/import-download-folder.py',
+        'schedule': '*/15 * * * *',
         'user':     'www-data'
     }
 }
@@ -569,11 +579,7 @@ if __name__ == '__main__':
     if os.getuid() != 0:
         parser.print_help(sys.stderr)
         print("ERROR: root privileges required!")
-        print(
-            "Use: 'sudo {}' (alternatively 'sudo su -' or 'su -')".format(
-                App.Script.name
-            )
-        )
+        print(f"Use: 'sudo {SCRIPTNAME}' (or 'sudo su -' or 'su -')")
         os._exit(1)
 
 
@@ -704,7 +710,8 @@ if __name__ == '__main__':
         sitecfg.set('Site', 'UPLOAD_DIR',   cfg['upload_folder'])
         sitecfg.set('Site', 'DOWNLOAD_DIR', cfg['download_folder'])
         sitecfg.set('Site', 'DATABASE',     os.path.join(ROOTPATH, 'application.sqlite3'))
-        with open("cron.job/site.config", "w") as sitecfgfile:
+        sitecfg.set('Site', 'ALLOWED_EXT',  cfg['upload_allowed_ext'])
+        with open("cron.job/site.conf", "w") as sitecfgfile:
             sitecfg.write(sitecfgfile)
         # Required cronjobs dictionary keys ('script', 'schedule'):
         #   { 'titlestring':

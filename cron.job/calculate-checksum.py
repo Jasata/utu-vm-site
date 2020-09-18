@@ -11,6 +11,7 @@
 #   2020-01-03  Add os.nice()
 #   2020-01-03  Slight improvements to error reporting
 #   2020-09-13  Run as 'www-data' instead of root
+#   2020-09-18  Config file now 'site.conf'.
 #
 #   - Job added to crontab by 'setup.py'.
 #   - Logging to syslog.
@@ -49,12 +50,13 @@ import sqlite3
 import multiprocessing
 from multiprocessing import Process
 
+# pylint: disable=undefined-variable
 
 # Unprivileged os.nice() values: 0 ... 20 (= lowest priority)
 NICE        = 20
 EXECUTE_AS      = "www-data"
 LOGLEVEL        = logging.INFO  # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
-CONFIG_FILE     = "site.config" # All instance/site specific values
+CONFIG_FILE     = "site.conf" # All instance/site specific values
 
 # Settings specific for this script (and, unlikely to change)
 TABLE       = 'file'
@@ -242,8 +244,9 @@ if __name__ == '__main__':
     running_as = pwd.getpwuid(os.geteuid()).pw_name
     if running_as != EXECUTE_AS:
         log.error(
-           f"This job must be executed as {EXECUTE_AS} (stared by user '{running_as}')"
+           f"This job must be executed as {EXECUTE_AS} (started by user '{running_as}')"
         )
+        os._exit(-1)
     else:
         log.debug(f"Started! (executing as '{running_as}')")
 

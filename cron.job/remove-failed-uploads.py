@@ -7,6 +7,7 @@
 #
 # remove-failed-uploads.py - Jani Tammi <jasata@utu.fi>
 #   2020-09-13  Skeleton/framework - does not do anything yet.
+#   2020-09-18  Config file now 'site.conf'.
 #
 #   - Job added to crontab by 'setup.py'.
 #   - Logging to syslog.
@@ -18,11 +19,13 @@ import pwd
 import logging
 import logging.handlers
 
+# pylint: disable=undefined-variable
+
 # Unprivileged os.nice() values: 0 ... 20 (= lowest priority)
 NICE            = 20
 EXECUTE_AS      = "root"
 LOGLEVEL        = logging.INFO  # logging.[DEBUG|INFO|WARNING|ERROR|CRITICAL]
-CONFIG_FILE     = "site.config" # All instance/site specific values
+CONFIG_FILE     = "site.conf" # All instance/site specific values
 
 SCRIPTNAME = os.path.basename(__file__)
 
@@ -76,8 +79,9 @@ if __name__ == '__main__':
     running_as = pwd.getpwuid(os.geteuid()).pw_name
     if running_as != EXECUTE_AS:
         log.error(
-           f"This job must be executed as {EXECUTE_AS} (stared by user '{running_as}')"
+           f"This job must be executed as {EXECUTE_AS} (started by user '{running_as}')"
         )
+        os._exit(-1)
     else:
         log.debug(f"Started! (executing as '{running_as}')")
 
