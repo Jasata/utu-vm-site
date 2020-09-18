@@ -85,23 +85,17 @@
                 </article>
 
                 <article>
-                    <h1 id="overview">Overview</h1>
+                    <h1 id="overview"><i class="fa fa-street-view"></i>Overview</h1>
                     <p>Especially bachelor's level courses can have well over hundred participants, sometimes over two hundred. <strong>Trying to help everyone sort out their personal computers to install the required software ... can be a pain</strong>, to put it mildly. This not only consumes great amount of instructors time, but can also make the first week modest in terms of reached learning goals while time is used to sort out problems and let everyone stay with the course.</p>
                     <p>This is a terrible waste of student's and teacher's time, and simply shouldn't be. Alternative approaches include things such as faculty provided computer classrooms, which are much too small and would require running the same sessions multiple times, or trying to cope with provided browser based virtualization - where all the work and configuration are discarded each time the student logs out. Quite simply, these are not viable solutions.</p>
                     <p><strong>Fortunately virtualization can provide a solution.</strong> Instead of struggling with each set of software and tools required in each course, students should only have to deal with one installation - the hypervisor (which runs virtual machines). And because that one installation is so important to multiple courses (which use course virtualization), it can justifiably be allocated some resources, unlike with each specific software required by a course.</p>
                     <p><strong>With an initial investment of creating the virtual learning environment (installing the software yourself), you can export the result, upload it here and let students download and use the exact same thing you have. Such time investment can be used for several years, or until you see a need to update your virtual environment.</strong></p>
                     <p><strong>Our virtualization solution saves your time, your students time and everyones nerves</strong>.</p>
-                    <!--
-                    <p>Heterogeneous devices used by students no longer need to pose a challenges as using a standardized course specific virtual machine can provide everyone with identical and equally well working learning environment. No longer installing and configuring development tools on various platforms impose limitations or challenge students’ personal skill in getting the required software installed. No longer do you, the teacher, need to become an IT support person for your students and spend time finding reasons why certain OS/hardware/version does not seem to install or function as expected.</p>-->
-                    <!-- <p>
-                        <details>
-                            <summary>What is a hypervisor?</summary>
-                            <p>A hypervisor is a program that emulates a computer.</p>
-                        </details>
-                    </p> -->
-                    <!-- elaborate and add more explanation hidden behind detail tags. remember to keep texts short enough -->
+                </article>
 
-                    <h1 id="benefits">Benefits of Virtualization</h1>
+
+                <article>
+                    <h1 id="benefits"><i class="fa fa-thumbs-o-up"></i>Benefits of Virtualization</h1>
                     <p>Installation of a hypervisor is considerably simpler than installing and configuring large and/or complex development tools. At least, the issues involved are limited to a fairly well known set. Instead of every student installing and configuring all of the software needed on a course, often needing at least some lecturer or peer assistance, after getting their hypervisor running, students can avoid all course related software installation simply by downloading and running a virtual machine with all the required software pre-installed. <strong>This can completely eliminate all the work previously spent in getting everyone's tools ready.</strong> Time that can be used for actual course activities instead. The approach also has several other positive effects:</p>
                     <ul>
                         <li><strong>Identical and known environments</strong> The teacher has comprehensive knowledge of the environment that students have at their disposal, making it significantly easier to provide technical support for the course work. Compared to self-installed software on multiple platforms and versions, using a VM ensures that every student is working on an identical environment. Replicating a reported problem should be both easy and reliable - and in more challenging cases, student can be instructed to export the VM and send it to the teacher to be looked at (in case remote session is not feasible).</li>
@@ -111,8 +105,11 @@
                         <li><strong>Simple recovery</strong> In cases of cathastrophic failures or system corruption, recovery is easy and fast. Student either restores an earlier snapshot, or if none have been taken, simply downloads the image again and double-clicks it to install it again. It is extremely unlikely that a student would need assistance in restoring the working environment.</li>
                     </ul>
                     <p>Virtual machine images also offer many potential other enhancements for teachers who are willing to spend some additional time. For example, it is relatively simple to hide some programs and let them simply appear in the user interface at given date and time (after related topics are handled in lectures), keeping the environment focused on tools that the student is expected to use at any given time over the course. For more complex courses, reactions and stimulus could be programmed or scripted into the virtual machine to challenge students to deal with unexpected conditions - the kind that the teacher has control over.</p>
+                </article>
 
-                    <h1 id="limitations">Known Limitations</h1>
+
+                <article>
+                    <h1 id="limitations"><i class="fa fa-level-down"></i>Known Limitations</h1>
                     <p>While the benefits are numerous and significant, virtual machines also have certain limitations. Following items should be noted:</p>
                     <ul>
                         <li><strong>Windows or other operating systems that require licenses cannot be freely distributed.</strong><br/>Our first-choice operating system is Debian Linux, but course software may not always be available for Linux. If your course software requires licensed operating system, you need to take care that the image is made available only to your students, in the quantity and/or duration dictated by the licensing terms (this site offers some features to support this, and they will be extended when necessary).</li>
