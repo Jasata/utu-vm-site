@@ -710,7 +710,7 @@ if __name__ == '__main__':
         sitecfg.set('Site', 'UPLOAD_DIR',   cfg['upload_folder'])
         sitecfg.set('Site', 'DOWNLOAD_DIR', cfg['download_folder'])
         sitecfg.set('Site', 'DATABASE',     os.path.join(ROOTPATH, 'application.sqlite3'))
-        sitecfg.set('Site', 'ALLOWED_EXT',  cfg['upload_allowed_ext'])
+        sitecfg.set('Site', 'ALLOWED_EXT',  ', '.join(cfg['upload_allowed_ext']))
         with open("cron.job/site.conf", "w") as sitecfgfile:
             sitecfg.write(sitecfgfile)
         # Required cronjobs dictionary keys ('script', 'schedule'):
