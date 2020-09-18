@@ -38,6 +38,9 @@ from application    import app, sso
 # ApiException classes, data classes
 import api
 
+# Pylint doesn't understand app.logger ...so we disable all these warnings
+# pylint: disable=maybe-no-member
+
 
 #
 # Debug log-function
