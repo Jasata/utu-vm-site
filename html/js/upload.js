@@ -6,6 +6,7 @@
  *  2020-08-30  Supports now separate upload and edit pages.
  *  2020-08-30  JSONForm related code moved to edit_vm_details.js.
  *  2020-09-02  General functions moved to 'common.js'.
+ *  2020-09-18  Add .ISO to allowed upload file extensions.
  *
  *
  */
@@ -13,7 +14,8 @@
 var allowedExtensions = [
     'ova',
     'img',
-    'zip'
+    'zip',
+    'iso'
 ];
 
 // For UI messages telling the allowed extensions

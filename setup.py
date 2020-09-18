@@ -24,7 +24,8 @@
 #   2020-09-11  Modified cron job creation code, added ability to configure
 #               crontab scheduling (in the cronjobs dictionary) and option
 #               to install cron jobs to specified user (see 'cronjobs' dict).
-#   2020-09-13  Creates 'cron.job/site.config' - Always overwritten!
+#   2020-09-13  Creates 'cron.job/site.config' - Always overwritten!'
+#   2020-09-18  Added .ISO to default allowed upload file extensions.
 #
 #
 #   ==> REQUIRES ROOT PRIVILEGES TO RUN! <==
@@ -141,7 +142,7 @@ defaults = {
     'common': {
         'mode':                     'PRD',
         'upload_folder':            ROOTPATH + '/uploads',
-        'upload_allowed_ext':       ['ova', 'zip', 'img'],
+        'upload_allowed_ext':       ['ova', 'zip', 'img', 'iso'],
         'download_folder':          '/var/www/downloads',
         'download_urlpath':         '/x-accel-redirect/',
         'sso_cookie':               'ssoUTUauth',
