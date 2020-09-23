@@ -2,7 +2,8 @@
  * edit_vm_details.js - Jani Tammi <jasata@utu.fi>
  * JSONForm scripts for edit_vm_details.html.
  *
- *  0.1.0   2020-08-30  Initial version.
+ *  2020-08-30  Initial version.
+ *  2020-09-23  Add byte size handling (kB, MB, GB...)
  *
  *  REQUIRES A <FORM ID="fileForm">
  */
@@ -130,8 +131,6 @@ code = {
     onBeforeRender: function (data, node) {
         // Compute the value of "myvalue" here
         if (['ram', 'disksize'].includes(data.keydash)) {
-            console.log(data);
-            console.log(formatBytes(data.value, 0));
             data.value = formatBytes(data.value, 0);
         }
     }
