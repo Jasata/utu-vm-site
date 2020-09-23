@@ -89,6 +89,7 @@
         {
             console.log(bytes);
             if (bytes == null) return "";
+            if (isNaN(bytes)) return bytes;
             if (bytes === 0) return '0 Bytes';
 
             const k = 1024;
