@@ -37,7 +37,7 @@ form = {
         },
         {
             "key":          "sha1",
-            "title":        "File Checksum",
+            "title":        "File Checksum (SHA1)",
             "readonly":     true,
             "placeholder":  "Checksum will be calculated automatically later..."
         },
