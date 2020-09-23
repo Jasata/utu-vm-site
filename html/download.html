@@ -186,7 +186,9 @@
                         // description (\n -> <br/>)
                         "targets": 5,
                         "render": function(data, type, row, meta) {
-                            if(data.indexOf("\n") == -1) {
+                            if (data == null) {
+                                return data;
+                            } else if(data.indexOf("\n") == -1) {
                                 // No newline characters
                                 return data;
                             } else {
