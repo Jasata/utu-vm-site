@@ -181,7 +181,7 @@
                         "render": function(data, type, row, meta) {
                             return formatBytes(data, 0);
                         }
-                    },
+                    } /*,
                     {
                         // description (\n -> <br/>)
                         "targets": 5,
@@ -196,9 +196,10 @@
                                 return '<br/>' +
                                         data.replace(
                                             /(?:\r\n|\r|\n)/g, '<br>'
-                                        ).replace(
-                                            /\s/g, '&nbsp;'
                                         );
+                                        //.replace(
+                                        //    /\s/g, '&nbsp;'
+                                        //);
                             }
                         }
                     } /*,
@@ -258,6 +259,20 @@
                             return formatBytes(data, 2);
                         },
                         "className": "text-center"
+                    },
+                    {
+                        // RAM
+                        "targets": 6,
+                        "render": function(data, type, row, meta) {
+                            return formatBytes(data, 0);
+                        }
+                    },
+                    {
+                        // disksize
+                        "targets": 8,
+                        "render": function(data, type, row, meta) {
+                            return formatBytes(data, 0);
+                        }
                     } /*,
                     {
                         // created
@@ -345,7 +360,7 @@
                     <h1 id="vms"><i class="fa fa-hdd-o"></i>Virtual Machines</h1>
                     <!-- DataTables -->
                     <table  id="vm_table"
-                            class="dataTable table-striped nowrap downloads">
+                            class="dataTable table-striped downloads">
                         <thead>
                             <th class="all">Label</th>
                             <th class="min-phone-l">Version</th>
@@ -436,7 +451,7 @@
                     <h1 id="usb"><i class="	fa fa-usb"></i>USB Operating Systems</h1>
                     <!-- DataTables -->
                     <table  id="usb_table"
-                            class="dataTable table-striped nowrap downloads">
+                            class="dataTable table-striped downloads">
                         <thead>
                             <th class="all">Label</th>
                             <th class="min-phone-l">Version</th>

@@ -30,6 +30,11 @@
     margin-bottom:                  20px;
 }
 
+/* Make dtr-data look really nice (render whitespaces) */
+span.dtr-data {
+    white-space:                    pre-wrap;
+}
+
 /*** Override softing indicator style ***************************/
 table.dataTable thead th
 {
