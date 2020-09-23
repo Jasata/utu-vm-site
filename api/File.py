@@ -7,10 +7,11 @@
 #
 # File.py - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2019.12.07  Initial version.
-#   0.2.0   2019.12.28  Add prepublish(), JSONFormSchema()
-#   0.3.0   2019.12.28  Add publish()
-#   0.3.1   2020.08.30  Fix owner check in update()
+#   2019-12-07  Initial version.
+#   2019-12-28  Add prepublish(), JSONFormSchema()
+#   2019-12-28  Add publish()
+#   2020-08-30  Fix owner check in update()
+#   2020-09-23  Add decode_bytemultiple()
 #
 #
 #   TODO: remove _* -columns from result sets.
@@ -336,7 +337,6 @@ class File(DataObject):
             'id' : <int>
         }
         """
-        app.logger.debug("Hello from File.update()!")
         app.logger.debug("this.primarykeys: " + str(self.primarykeys))
         app.logger.debug("fnc arg id: " + str(id))
         if not request.json:
@@ -388,6 +388,17 @@ class File(DataObject):
                 {'request.json' : request.json, 'exception' : str(e)}
             ) from None
         app.logger.debug("Prerequisites OK!")
+
+
+        #
+        # Handle byte-size variables ('disksize' and 'ram')
+        # "2 GB" (etc) -> 2147483648 and so on... except when the string makes
+        # no sense. Then it is used as-is instad.
+        #
+        if "ram" in data:
+            data['ram']         = File.decode_bytemultiple(data['ram'])
+        if "disksize" in data:
+            data['disksize']    = File.decode_bytemultiple(data['disksize'])
 
 
         #
@@ -525,6 +536,32 @@ class File(DataObject):
                 f"Exception while permission checking role '{role}' (downloadable_to:) '{result[0]}' and/or sending download"
             )
             return "Intermal Server Error", 500
+
+
+    @staticmethod
+    def decode_bytemultiple(value: str):
+        mult = {
+            "KB"    : 1024,
+            "MB"    : 1048576,
+            "GB"    : 1073741824,
+            "TB"    : 1099511627776,
+            "PB"    : 2214416418340864
+        }
+        try:
+            # Assume bytes first
+            return int(value, 10)
+        except:
+            for k, v in mult.items():
+                if value.strip().upper().endswith(k):
+                    try:
+                        return int(float(value[:-2].replace(',', '.')) * v)
+                        #return int(value[:-2], 10) * v
+                    except:
+                        app.logger.debug(f"Unable to convert '{value}'")
+                        return value
+            # multiple not found, return as-is
+            return value
+
 
 
     @staticmethod
