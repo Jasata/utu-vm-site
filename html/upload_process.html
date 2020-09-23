@@ -44,21 +44,7 @@
             alert("This page cannot be used without uploaded flow id!");
             window.location.href = "upload.html";
 
-            /* Sorry, NO! This page REQUIRES accurte flowid and filenames!
-            // If no name, make one from the fileid
-            if (fileid.indexOf("-") < 0) {
-                filename = "UNKNOWN.EXT";
-            } else {
-                filename = fileid.substring(fileid.indexOf("-") + 1);
-                // if OVA, ZIP or IMG, accept that as file suffix
-                let ext = filename.substring(filename.length - 3).toLowerCase();
-                if (['ova', 'zip', 'img'].includes(ext)) {
-                    filename = filename.substring(0, filename.length - 3) + '.' + filename.substring(filename.length - 3, filename.length);
-                }
-            }
-            */
         }
-        console.log(`flowid ${flowid} filename ${filename}`);
 
         function timeString() {
             let d = new Date();
@@ -182,6 +168,7 @@
                 <!-- Executive summary -->
                 <article>
                     <p>You VM image upload data has been transferred to the server and now it needs to be processed and added to the database.</p>
+                    <p><strong>You do not need to stay in this page.</strong> Even if you leave this page, upload will still be processed. If you choose to stay and wait, you will be redirected to the 'edit' view so that you can fill in other data.</p>
                 </article>
 
 
