@@ -126,8 +126,35 @@ form = {
         }
     ]
 };
-code = {};
+code = {
+    onBeforeRender: function (data, node) {
+        // Compute the value of "myvalue" here
+        if (['ram', 'disksize'].includes(data.keydash)) {
+            console.log(data.keydash);
+            data.value = formatBytes(data.value, 0);
+        }
+    }
+};
 
+
+function formatBytes(bytes, decimals = 2)
+/* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
+{
+    console.log(bytes);
+    if (bytes == null) return "";
+    if (isNaN(bytes)) return bytes;
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    var dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    // No decimals for Bytes
+    if (i == 0) dm = 0;
+    return (bytes / Math.pow(k, i)).toFixed(dm) + ' ' + sizes[i];
+}
 
 /*****************************************************************************
  * 
