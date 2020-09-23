@@ -43,7 +43,8 @@ form = {
         },
         {
             "key":          "label",
-            "title":        "Label"
+            "title":        "Label",
+            "description":    "Descriptive name for this virtual machine"
         },
         {
             "key":          "ostype",
@@ -77,7 +78,8 @@ form = {
             "key":          "ram",
             "title":        "RAM",
             "description":  "Allocated memory",
-            "minimum":      1
+            "minimum":      1,
+            "description":  "2 GB, 2048 MB, or 2097152, for example"
         },
         {
             "key":          "cores",
@@ -87,7 +89,7 @@ form = {
         {
             "key":          "disksize",
             "title":        "Disk Size",
-            "description":  "Allocated disk space"
+            "description":  "Required disk space for students to run this VM"
         },
         {
             "key":          "downloadable_to",
