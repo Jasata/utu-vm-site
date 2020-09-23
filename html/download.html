@@ -87,8 +87,9 @@
         function formatBytes(bytes, decimals = 2)
         /* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
         {
-            if (bytes == null) return "";
+            if (bytes == null) return bytes;
             if (isNaN(bytes)) return bytes;
+            if (typeof bytes === 'string' && bytes.trim() == '') return bytes;
             if (bytes === 0) return '0 Bytes';
 
             const k = 1024;
