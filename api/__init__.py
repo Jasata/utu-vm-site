@@ -7,8 +7,9 @@
 #
 # api/__init__.py - Jani Tammi <jasata@utu.fi>
 #
-#   0.1.0   2019.12.07  Initial version.
-#   0.2.0   2020.01.01  Moved response handlers into response.py module
+#   2019-12-07  Initial version.
+#   2020-01-01  Moved response handlers into response.py module
+#   2020-09-23  Remove Publish class
 #
 #
 #   DOCUMENTATION
@@ -105,7 +106,6 @@
 #
 #
 
-from .Publish       import Publish
 from .File          import File
 from .Upload        import Upload
 from .Flow          import Flow
