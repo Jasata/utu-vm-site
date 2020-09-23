@@ -130,7 +130,6 @@ code = {
     onBeforeRender: function (data, node) {
         // Compute the value of "myvalue" here
         if (['ram', 'disksize'].includes(data.keydash)) {
-            console.log(data.keydash);
             data.value = formatBytes(data.value, 0);
         }
     }
@@ -140,7 +139,6 @@ code = {
 function formatBytes(bytes, decimals = 2)
 /* https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript */
 {
-    console.log(bytes);
     if (bytes == null) return "";
     if (isNaN(bytes)) return bytes;
     if (bytes === 0) return '0 Bytes';
