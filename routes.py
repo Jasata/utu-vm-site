@@ -13,6 +13,7 @@
 #   2020-09-07  Add /api/file/upload
 #   2020-09-09  Add /api/file/flow  (Flow.js GET, POST upload endpoint)
 #   2020-09-12  Add /sse/flow-upload-status
+#   2020-09-23  Clean obsolete code
 #
 #
 #   This Python module only defines the routes, which the application.py
@@ -190,38 +191,6 @@ def download(path = None):
 # Flow.js - post processing API endpoint
 #
 
-###############################################################################
-# ONLY to demonstrate how SSE works
-# Response terminates (return) after 4 messages.
-# The Javascript EventSource will reconnect again in 3-5 seconds.
-# CORRECT way is to send an event, like "event: END\ndata: blah blah"
-# and create an .onEND() handler which closes the stream from client end.
-#
-@app.route(
-    '/sse/demo',
-    methods=['GET'],
-    strict_slashes = False
-)
-def dummy_sse(filename: str):
-    def generator():
-        val = 0
-        while True:
-            val += 1
-            msg = f"Message #{val:03d}"
-            if not val % 5:
-                return "event: message\ndata: END\n\n"
-            yield f"event: message\ndata: {msg}\n\n"
-            #Update frequency
-            time.sleep(0.5)
-
-    log_request(request)
-    return flask.Response(
-        generator(),
-        mimetype = "text/event-stream"
-    )
-# END OF DEMONSTRATION CODE ###################################################
-
-
 # SSE - Events for background processing of Flow.js uploads
 #
 #   NONE OF THIS WORKS, unless buffering is disabled!
@@ -257,16 +226,9 @@ RETURN CODES
         return "Both 'filename' and 'flowid' must be defined in URL parameters", 400
 
     try:
-        app.logger.info("Prerequisites OK... opening event stream")
-        # from werkzeug.datastructures import Headers
-        # headers = Headers()
-        # headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')
-        # headers.add('Pragma', 'no-cache')
-        # headers.add('Expires', '0')
-        # headers.add('X-Accel-Buffering', 'no')
+        app.logger.debug("Prerequisites OK... opening event stream")
         return flask.Response(
             api.Flow.sse_upload_status(filename, flowid),
-            #headers  = headers,
             mimetype = "text/event-stream"
         )
 
@@ -335,6 +297,7 @@ def sso_state():
     )
     return sso.roleJSON, 200
 
+
 @app.route('/api/sso/login', methods=['GET'], strict_slashes = False)
 def sso_login():
     """This is the landing URI from SSO login page. SSO REST API is re-queried and session is updated accordingly. Finally, 'destination' URL parameter is used to redirect the broser to the final location - persumably the page from where the "login" link/button was pressed."""
@@ -345,6 +308,7 @@ def sso_login():
         type = str
     )
     return flask.redirect(destination, code = 302)
+
 
 @app.route('/api/sso/logout', methods=['GET'], strict_slashes = False)
 def sso_logout():
@@ -517,61 +481,6 @@ def api_doc():
     except Exception as e:
         return api.exception_response(e)
 
-
-
-
-
-
-#
-# Very bad file upload implementation - simply for getting the site published
-# on time on January 2020. HTML5 File API based, chunk'ed and checksum'ed
-# solution will be completed later.
-#
-
-@app.route('/upload/', methods=['POST'])
-def upload_file():
-    def allowed_file(fname):
-        return '.' in fname and \
-            fname.rsplit('.', 1)[1].lower() in app.config['UPLOAD_ALLOWED_EXT']
-    # Log request
-    log_request(request)
-    # Is there a 'file' part in this Request
-    if 'file' not in request.files:
-        app.logger.error('No file part')
-        return "Request has no file part", 406
-    file = request.files['file']
-    if not file:
-        app.logger.error("file part is empty")
-        return "File part is empty!", 406
-    # if user did not not select a file, the browser can
-    # submit an empty part without filename
-    if file.filename == '':
-        app.logger.error(f"file.filename: '{file.filename or 'None'}'")
-        return "File has no name!", 406 # flask.redirect(request.url)
-    # And is it allowed file (based on file suffix)?
-    if not allowed_file(file.filename):
-        app.logger.error('File not of allowed type!')
-        return "File type not in the allowed list! ({})".format(
-            app.config['UPLOAD_ALLOWED_EXT'].join(', ')
-        ), 406 # 406 = "Not acceptable"
-    #
-    # Everything is fine! Process file
-    #
-    # Save to upload folder
-    from werkzeug.utils import secure_filename
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(filepath)
-    app.logger.debug(f"File saved to '{os.path.join(app.config['UPLOAD_FOLDER'], filename)}'")
-
-    # Generate 'file' table row
-    from api.File import File
-    try:
-        app.logger.debug(f"Prepublish '{filepath}'")
-        return api.response(File().prepublish(filepath, sso.uid))
-    except Exception as e:
-        app.logger.error("Publishing error: " + str(e))
-        return api.exception_response(e)
 
 
 ###############################################################################

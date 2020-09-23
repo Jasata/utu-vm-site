@@ -30,6 +30,8 @@ from .DataObject        import DataObject
 from .OVFData           import OVFData
 from .Teacher           import Teacher
 
+# Pylint doesn't understand app.logger ...so we disable all these warnings
+# pylint: disable=maybe-no-member
 
 # Extends api.DataObject
 class File(DataObject):

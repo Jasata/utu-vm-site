@@ -5,6 +5,7 @@
 #   0.1.0   2020-09-05  Initial version.
 #
 #   Retrieves table 'teacher' data, or raises and exception for not-found.
+#   (2020-09-23 Used only by File.py:prepublish() ...)
 #
 #
 #     .uid: str             UTU UID (primary key)
