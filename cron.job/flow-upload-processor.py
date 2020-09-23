@@ -12,6 +12,7 @@
 #               Now writes '.error' files for failed image concatenations.
 #   2020-09-13  Site specific configurations now read from CONFIG_FILE.
 #   2020-09-18  Config file now 'site.conf'.
+#   2020-09-23  Add SHA1 calculation
 #
 #   - Job added to crontab by 'setup.py'.
 #   - Logging to syslog.
@@ -126,7 +127,7 @@ def allocate(filename: str, size: int) -> str:
 
 
 def assemble_file(job: dict) -> str:
-    """Assembles flow chunks into a VM image file."""
+    """Assembles flow chunks into a VM image file. Returns full filepath as received from allocate()."""
     chunks = glob.glob(os.path.join(UPLOAD_DIR, f"{job['flowid']}.[0-9]*"))
     BLKSIZE = 1024 * 1024
     total = 0       # Total bytes written into target file
@@ -235,6 +236,22 @@ def basic_attributes(filepath: str) -> dict:
 
 
 
+def sha1(filepath: str) -> str:
+    """Return SHA1 checksum for given file, in hex format."""
+    import hashlib
+    # BUF_SIZE is totally arbitrary. Anywhere between 64kB and 1MB ??
+    BUF_SIZE = 1024 * 1024
+    sha1 = hashlib.sha1()
+    with open(filepath, 'rb') as f:
+        while True:
+            data = f.read(BUF_SIZE)
+            if not data:
+                break
+            sha1.update(data)
+    return sha1.hexdigest()
+
+
+
 ###############################################################################
 #
 # MAIN
@@ -319,6 +336,7 @@ if __name__ == '__main__':
             with open(jobfilename, "r") as jsonfile:
                 job = json.load(jsonfile)
             #log.debug(str(job))
+            # vmfile will be full filepath
             vmfile = assemble_file(job)
         except Exception as e:
             log.error(
@@ -349,6 +367,16 @@ if __name__ == '__main__':
             else:
                 # Merge, 'ovfdata' overwrites values in 'data' dictionary
                 data = {**data, **ovfdata}
+
+
+        #
+        # Calculate SHA1 checksum
+        #
+        try:
+            data['sha1'] = sha1(vmfile)
+        except:
+            log.exception("Error while calculating SHA1")
+            # we can ignore this, backgroud task will take care of it
 
 
         #
