@@ -29,6 +29,7 @@
 #               Rename 'cron.jobs/site.config' -> 'cron.jobs/site.conf' to be
 #               inline with other config file naming.
 #   2020-09-18  Add ALLOWED_EXT to 'cron.jobs/site.conf'.
+#   2020-09-27  Change database script location to 'sql/'.
 #
 #
 #   ==> REQUIRES ROOT PRIVILEGES TO RUN! <==
@@ -177,6 +178,37 @@ defaults = {
         'overwrite':                False
     }
 }
+
+#
+# SQL scripts - Order is important!
+#
+dbscripts = [
+    {
+        "label":    "Core Structure",
+        "filename": os.path.join(ROOTPATH, "sql/core.sql"),
+        "mode":     [ "DEV", "UAT", "PRD" ]
+    },
+    {
+        "label":    "Download Statistics",
+        "filename": os.path.join(ROOTPATH, "sql/download_statistics.sql"),
+        "mode":     [ "DEV", "UAT", "PRD" ]
+    },
+    {
+        "label":    "Virtualization Team Teacher Roles",
+        "filename": os.path.join(ROOTPATH, "sql/insert_teachers.sql"),
+        "mode":     [ "DEV", "UAT", "PRD" ]
+    },
+    {
+        "label":    "Host Architectures",
+        "filename": os.path.join(ROOTPATH, "sql/insert_host_architectures.sql"),
+        "mode":     [ "DEV", "UAT", "PRD" ]
+    },
+    {
+        "label":    "Generate Development Data",
+        "filename": os.path.join(ROOTPATH, "sql/generate_dev_data.py"),
+        "mode":     [ "DEV" ]
+    }
+]
 
 
 # If in doubt, use: https://crontab.guru/#0_3/3_*_*_*
@@ -521,6 +553,31 @@ def do_or_die(
     )
 
 
+
+def execute_sql(scriptfilepath: str, dbfilepath: str):
+    # Isolation levels:
+    # https://docs.python.org/3.8/library/sqlite3.html#sqlite3-controlling-transactions
+    with sqlite3.connect(dbfilepath) as db, \
+         open(scriptfilepath, "r") as scriptfile:
+        script = scriptfile.read()
+        cursor = db.cursor()
+        try:
+            cursor.executescript(script)
+        except:
+            db.rollback()
+            raise
+        else:
+            db.commit()
+        finally:
+            cursor.close()
+
+
+
+def execute_python(scriptfilepath: str, dbfilepath: str):
+    exec(open(scriptfilepath).read())
+
+
+
 ##############################################################################
 #
 # MAIN
@@ -655,48 +712,29 @@ if __name__ == '__main__':
         #
         # 2. Create application.sqlite3
         #
-        script_file     = ROOTPATH + '/create.sql'
-        devscript_file  = ROOTPATH + '/insert_dev.sql'
-        database_file   = ROOTPATH + '/application.sqlite3'
+        dbfile = os.path.join(ROOTPATH, "application.sqlite3")
         log.info("Creating application database")
         # Because sqlite3.connect() has no open mode parameters
         if cfg['overwrite']:
             try:
-                os.remove(database_file)
+                os.remove(dbfile)
             except:
                 pass
-        with    open(script_file, "r") as file, \
-                sqlite3.connect(database_file) as db:
-            script = file.read()
-            cursor = db.cursor()
-            try:
-                cursor.executescript(script)
-                db.commit()
-            except Exception as e:
-                log.exception(str(e))
-                log.error("SQL script failed!")
-                raise
-            finally:
-                cursor.close()
+        for script in [f for f in dbscripts if cfg['mode'] in f['mode']]:
+            log.debug(f"processing DB script '{script}'")
+            if script['filename'].endswith(".sql"):
+                execute_sql(script['filename'], dbfile)
+            elif script['filename'].endswith(".py"):
+                execute_python(script['filename'], dbfile)
+            else:
+                raise ValueError(
+                    f"Unsupported script type! ('{script['filename']}')"
+                )
         #
-        # Insert Development Data (for DEV setup)
+        # Set owner and permissions for the database file
         #
-        if cfg['mode'] == 'DEV':
-            with    open(devscript_file, "r") as file, \
-                    sqlite3.connect(database_file) as db:
-                script = file.read()
-                cursor = db.cursor()
-                try:
-                    cursor.executescript(script)
-                    db.commit()
-                except Exception as e:
-                    log.exception(str(e))
-                    log.error("SQL script failed!")
-                    raise
-                finally:
-                    cursor.close()
-        do_or_die(f"chown {GITUSER}.www-data {database_file}")
-        do_or_die(f"chmod 664 {database_file}")
+        do_or_die(f"chown {GITUSER}.www-data {dbfile}")
+        do_or_die(f"chmod 664 {dbfile}")
 
 
 

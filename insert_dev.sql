@@ -1,16 +1,5 @@
-INSERT INTO teacher (uid)
-VALUES
-('jmjmak'),
-('jasata'),
-('tumipo'),
-('apmake'),
-('tianyl'),
-('sjprau');
-INSERT INTO host_architecture
-VALUES
-('amd64', 'Intel 64-bit'),
-('arm', 'ARM 64/32-bit'),
-('riscv', 'RISC-V');
+
+
 INSERT INTO file (label, version, size, sha1, name, type, host_architecture, owner, downloadable_to)
 VALUES
 ("Java (generic)", "356", "1996267520", NULL, "utuvm-java-356.ova", "vm", NULL, "jmjmak", "teacher"),
