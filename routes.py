@@ -167,6 +167,22 @@ def api_file_owned():
 
 
 #
+# /api/file/delete/<int:id>
+#
+# Provide VM ID and sso user ID to File.delete() which checks ownership and deletes
+#
+@app.route('/api/file/delete/<int:id>', methods=['DELETE'], strict_slashes = False)
+def remove_file(id):
+    log_request(request)
+
+    try:
+        return api.response(api.File().delete(vm_id = id, user_id = sso.uid))
+    except Exception as e:
+        return api.exception_response(e)
+
+
+
+#
 # NOTE: This rule CANNOT be the same as the internal location
 #       in the Nginx configuration file, or Nginx will not hand
 #       the request over to Flask at all.
@@ -321,6 +337,8 @@ def sso_logout():
         f"AFTER sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}"
     )
     return "OK", 200
+
+
 
 
 ###############################################################################
@@ -483,6 +501,61 @@ def api_doc():
 
 
 
+<<<<<<< Updated upstream
+=======
+#
+# Very bad file upload implementation - simply for getting the site published
+# on time on January 2020. HTML5 File API based, chunk'ed and checksum'ed
+# solution will be completed later.
+#
+
+@app.route('/upload/', methods=['POST'])
+def upload_file():
+    def allowed_file(fname):
+        return '.' in fname and \
+            fname.rsplit('.', 1)[1].lower() in app.config['UPLOAD_ALLOWED_EXT']
+    # Log request
+    log_request(request)
+    # Is there a 'file' part in this Request
+    if 'file' not in request.files:
+        app.logger.error('No file part')
+        return "Request has no file part", 406
+    file = request.files['file']
+    if not file:
+        app.logger.error("file part is empty")
+        return "File part is empty!", 406
+    # if user did not not select a file, the browser can
+    # submit an empty part without filename
+    if file.filename == '':
+        app.logger.error(f"file.filename: '{file.filename or 'None'}'")
+        return "File has no name!", 406 # flask.redirect(request.url)
+    # And is it allowed file (based on file suffix)?
+    if not allowed_file(file.filename):
+        app.logger.error('File not of allowed type!')
+        return "File type not in the allowed list! ({})".format(
+            app.config['UPLOAD_ALLOWED_EXT'].join(', ')
+        ), 406 # 406 = "Not acceptable"
+    #
+    # Everything is fine! Process file
+    #
+    # Save to upload folder
+    from werkzeug.utils import secure_filename
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
+    app.logger.debug(f"File saved to '{os.path.join(app.config['UPLOAD_FOLDER'], filename)}'")
+
+    # Generate 'file' table row
+    from api.File import File
+    try:
+        app.logger.debug(f"Prepublish '{filepath}'")
+        return api.response(File().prepublish(filepath, sso.uid))
+    except Exception as e:
+        app.logger.error("Publishing error: " + str(e))
+        return api.exception_response(e)
+
+
+>>>>>>> Stashed changes
 ###############################################################################
 #
 # Static content

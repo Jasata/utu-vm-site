@@ -124,6 +124,15 @@ form = {
                 event.preventDefault();
                 location.replace(parent_url);
             }
+        },
+        {
+            "type":         "button",
+            "title":        "Delete",
+            "onClick":      function (event) {
+                event.preventDefault();
+                deleteVM();
+                location.replace(parent_url);
+            }
         }
     ]
 };
@@ -317,4 +326,39 @@ function onSubmitForm(formObj) {
 
     // Must not let the HTML FORM do anything; return false
     return false;
+}
+
+
+/*
+ * Delete function under construction
+ */
+function deleteVM() {
+    console.log("edit_vm_details.js:deleteVM()");
+
+    var data = {};
+    // Pack data into an array
+    var x = $("#fileForm").serializeArray(); 
+    $.each(x, function(i, field) {
+        data[field.name] = field.value;
+    });
+    console.log(data);
+
+    console.log("Delete VM id " + data.id + ", ask for confirmation");
+    if(confirm("Are you sure you want to delete " + data.name + "?")){
+        console.log("Delete VM id " + data.id + " confirmed, send DELETE request");
+        const xhr_data = new XMLHttpRequest();
+
+        xhr_data.onreadystatechange = function() {
+            if (xhr_data.readyState === 4) {
+                console.log("Response: " + xhr_data.status);
+            }
+        }
+
+        xhr_data.open('DELETE', '/api/file/delete/' + data.id);
+        xhr_data.send();
+    } else {
+        console.log("Deletion cancelled.");
+    }
+
+
 }
