@@ -34,6 +34,28 @@
     <link   rel="stylesheet"
             type="text/css"
             href="css/index.css">
+    
+    <link   rel="stylesheet" href="css/sso.css">
+    <script src="js/common.js"></script>
+    <script src="js/sso.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            $("#sso").sso();
+            $("#sso").on('stateChanged', function(event, role) {
+                console.log("#sso.stateChanged: role: " + role);
+                // 
+                if (role === 'teacher') {
+                    console.log("Role: " + role);
+                    document.getElementsByClassName('teacher-visible')[0].style.display = 'block';
+                    document.getElementsByClassName('teacher-invisible')[0].style.display = 'none';
+                } else {
+                    document.getElementsByClassName('teacher-visible')[0].style.display = 'none';
+                }
+            })
+        })
+        
+        </script>
 
 </head>
 
@@ -54,17 +76,21 @@
                     src="img/UTU_logo-black_no-text_transparent.png">
 
         </div>
-        <div class="col-8 vflexbox">
+        <div class="col-6 vflexbox">
             <h1 class="align-middle header-title">
                 Course Virtualization
             </h1>
+            
         </div>
+        <div class="col-2 vflexbox">
+            <div id="sso"></div>
+        </div>
+        
     </div><!-- row -->
 
     <!-- MAIN --------------------------------------------------------------->
-    <div class="row">
-
-        <div class="col-md-6 col-sm-12">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-sm-12" id="student" >
             <div class="imenu imenu-student">
                 <div class="imenu-title">Students</div>
                 <a href="getting_started.html">
@@ -120,8 +146,9 @@
                     </div>
                 </a>
             </div>
+            
         </div>
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-6 col-sm-12 display-none teacher-visible" style="display: none;">
             <div class="imenu imenu-lecturer">
                 <span class="imenu-title">teachers</span>
                 <a href="introduction.html">
@@ -157,7 +184,7 @@
                                 <i class="fa fa-cloud-upload imenu-icon"></i>
                             </div>
                             <div class="col-xs-11">
-                                <div class="imenu-label">Upload VM image</div>
+                                <div class="imenu-label">Upload and manage VM images</div>
                                 <div class="imenu-text">Make your virtual machine available to students.</div>
                             </div>
                         </div>
@@ -178,8 +205,11 @@
                 </a>
             </div>
         </div>
-
+        
     </div><!-- row -->
+    <div class="row justify-content-center">
+        <div class="teacher-invisible" >Login to acces teacher tools</div>
+    </div>
     <!-- MAIN ENDS -->
 
 </div><!-- container-fluid -->
