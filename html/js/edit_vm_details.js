@@ -131,7 +131,6 @@ form = {
             "onClick":      function (event) {
                 event.preventDefault();
                 deleteVM();
-                location.replace(parent_url);
             }
         }
     ]
@@ -344,7 +343,9 @@ function deleteVM() {
     console.log(data);
 
     console.log("Delete VM id " + data.id + ", ask for confirmation");
-    if(confirm("Are you sure you want to delete " + data.name + "?")){
+    if(confirm(
+        "Are you sure you want to delete " + data.name + "?\n\nThis action cannot be undone! Deletion is permanent!"
+        )){
         console.log("Delete VM id " + data.id + " confirmed, send DELETE request");
         const xhr_data = new XMLHttpRequest();
 
@@ -356,6 +357,7 @@ function deleteVM() {
 
         xhr_data.open('DELETE', '/api/file/delete/' + data.id);
         xhr_data.send();
+        location.replace(parent_url);
     } else {
         console.log("Deletion cancelled.");
     }
