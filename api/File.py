@@ -248,7 +248,7 @@ class File(DataObject):
 
     # TODO ####################################################################
     def publish(self, file_id: int) -> tuple:
-        """Moves a file from uload folder to download folder and makes it accessible/downloadable."""
+        """Moves a file from upload folder to download folder and makes it accessible/downloadable."""
         return (200, { "data": "OK" })
 
 
@@ -460,6 +460,94 @@ class File(DataObject):
 
 
 
+    def delete(self, vm_id, user_id):
+        """Delete file with the given id.
+        Checks that:
+        - file exists
+        - user is the owner of the file
+        (TODO) users with admin rights should be able to delete others' files
+
+        Possible return values:
+        200: OK (Delete query sent)
+        403: User is not allowed to delete the file
+        404: Specified file does not exist
+        404: Database record not found
+        500: An exception ocurred (and was logged)"""
+        #
+        # Check that the file exists and get filename
+        #
+        self.sql = "SELECT name FROM file WHERE id = ?"
+        try:
+            result = self.cursor.execute(self.sql,[vm_id]).fetchall()
+            if len(result) != 1:
+                app.logger.debug(f"VM with id '{vm_id}' not found")
+                return (404, { "data": "Not found" })
+
+            filename = result[0][0]
+            app.logger.debug("fetched: " + filename)
+
+            folder = app.config.get("DOWNLOAD_FOLDER")
+            filepath = os.path.join(folder, filename)
+            if not File.exists(filepath):
+                app.logger.error(
+                    f"File '{filepath}' does not exist!"
+                )
+                return (404, {"data": "File not found"})
+        except Exception as e:
+            app.logger.exception(
+                f"Exception while checking if '{filepath}' exists!"
+            )
+            return (500, {"data": "Internal Server Error"})
+
+        #
+        # Check ownership
+        #
+        self.sql = "SELECT owner FROM file WHERE id = ?"
+        try:
+            result = self.cursor.execute(self.sql, [vm_id]).fetchall()
+            if len(result) != 1:
+                app.logger.debug(f"VM with id '{vm_id}' not found")
+                return (404, { "data": "Not found" })
+            owner = result[0][0]
+            app.logger.debug("fetched: " + owner)
+            if owner != user_id:
+                app.logger.debug(
+                    f"User '{user_id}' tried to delete '{filename}', owner: '{owner}' (denied)"
+                    )
+                return (403, { "data": "Forbidden" })
+        except Exception as e:
+            app.logger.exception(
+                f"Exception while checking file '{vm_id}' ownership!"
+            )
+            return (500, {"data": "Internal Server Error"})
+        
+        #
+        # If all checks have been passed, delete database row and file
+        #
+        self.sql = "DELETE FROM file WHERE id = ?"
+        try:
+            self.cursor.execute(self.sql, [vm_id])
+            self.cursor.connection.commit()
+            # Check that the row has been deleted before deleting file
+            self.sql = "SELECT name FROM file WHERE id = ?"
+            result = self.cursor.execute(self.sql,[vm_id]).fetchall()
+            if len(result) != 0:
+                app.logger.exception(
+                    f"Exception while trying to delete '{filepath}'"
+                )
+                return (500, {"data": "Internal Server Error"})
+            else:
+                os.remove(filepath)
+        except Exception as e:
+            app.logger.exception(
+                f"Exception while trying to delete '{filepath}'"
+            )
+            return (500, {"data": "Internal Server Error"})
+
+        app.logger.debug(f"File '{vm_id}' deleted")
+        return (200, { "data": "OK" })
+
+
     def download(self, filename: str, role: str) -> tuple:
         """Checks that the file exists, has a database record and can be downloaded by the specified role.
         Possible return values:
@@ -530,14 +618,14 @@ class File(DataObject):
                 return response
             else:
                 app.logger.info(
-                    f"User with role '{role}' attempted to download '{filepath}' that is downloadable to '{allowlist}' (file.doanloadable_to: '{result[0]}') (DENIED!)"
+                    f"User with role '{role}' attempted to download '{filepath}' that is downloadable to '{allowlist}' (file.downloadable_to: '{result[0]}') (DENIED!)"
                 )
                 return "Unauthorized!", 401
         except Exception as e:
             app.logger.exception(
                 f"Exception while permission checking role '{role}' (downloadable_to:) '{result[0]}' and/or sending download"
             )
-            return "Intermal Server Error", 500
+            return "Internal Server Error", 500
 
 
     @staticmethod

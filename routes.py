@@ -167,6 +167,22 @@ def api_file_owned():
 
 
 #
+# /api/file/delete/<int:id>
+#
+# Provide VM ID and sso user ID to File.delete() which checks ownership and deletes
+#
+@app.route('/api/file/delete/<int:id>', methods=['DELETE'], strict_slashes = False)
+def remove_file(id):
+    log_request(request)
+
+    try:
+        return api.response(api.File().delete(vm_id = id, user_id = sso.uid))
+    except Exception as e:
+        return api.exception_response(e)
+
+
+
+#
 # NOTE: This rule CANNOT be the same as the internal location
 #       in the Nginx configuration file, or Nginx will not hand
 #       the request over to Flask at all.
@@ -321,6 +337,8 @@ def sso_logout():
         f"AFTER sso.logout(): session.UID = {session.get('UID', '(does not exist)')}, session.ROLE = {session.get('ROLE', 'does not exist')}"
     )
     return "OK", 200
+
+
 
 
 ###############################################################################
@@ -480,8 +498,6 @@ def api_doc():
             return api.response((200, {'endpoints': eplist}))
     except Exception as e:
         return api.exception_response(e)
-
-
 
 ###############################################################################
 #
